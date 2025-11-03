@@ -217,14 +217,11 @@ export default function FAQSection() {
           {/* Right Column - Chatbot */}
           <div className="lg:sticky lg:top-24 h-fit px-8 md:px-16">
             <div
-              className={`bg-gray-900/50 backdrop-blur-sm border-l border-emerald-500/20 overflow-hidden flex flex-col ${
-                isVisible
-                  ? 'animate-slide-in-faq'
-                  : 'opacity-0'
+              className={`bg-gray-900/50 backdrop-blur-sm border-l border-emerald-500/20 overflow-hidden flex flex-col transition-opacity duration-700 ${
+                isVisible ? 'opacity-100' : 'opacity-0'
               }`}
               style={{
                 height: '600px',
-                transform: isVisible ? 'none' : 'translate(20vw, 15vh) scale(0.3) rotate(-35deg)'
               }}
             >
               {/* Chat Header */}
@@ -347,37 +344,6 @@ export default function FAQSection() {
           scrollbar-color: rgba(16, 185, 129, 0.6) rgba(31, 41, 55, 0.5);
         }
 
-        /* Chatbot entrance animation - From jumping trajectory */
-        @keyframes slideInFromBottomRight {
-          0% {
-            opacity: 0;
-            transform: translate(20vw, 15vh) scale(0.3) rotate(-35deg);
-          }
-          20% {
-            opacity: 0.3;
-            transform: translate(15vw, 10vh) scale(0.5) rotate(-25deg);
-          }
-          40% {
-            opacity: 0.6;
-            transform: translate(10vw, 5vh) scale(0.7) rotate(-15deg);
-          }
-          65% {
-            opacity: 0.9;
-            transform: translate(2vw, 1vh) scale(0.95) rotate(-5deg);
-          }
-          80% {
-            opacity: 1;
-            transform: translate(-0.5rem, -0.5rem) scale(1.05) rotate(0deg);
-          }
-          100% {
-            opacity: 1;
-            transform: translate(0, 0) scale(1) rotate(0deg);
-          }
-        }
-
-        .animate-slide-in-faq {
-          animation: slideInFromBottomRight 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
       `}</style>
     </section>
   );
