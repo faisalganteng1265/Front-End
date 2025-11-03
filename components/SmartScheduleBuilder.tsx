@@ -58,7 +58,7 @@ export default function SmartScheduleBuilder() {
   const [activeTab, setActiveTab] = useState<'input' | 'result'>('input');
   const [activityMode, setActivityMode] = useState<'flexible' | 'specific'>('flexible');
 
-  // Form states for adding course
+ 
   const [newCourse, setNewCourse] = useState<Partial<ScheduleItem>>({
     type: 'kuliah',
     name: '',
@@ -68,7 +68,7 @@ export default function SmartScheduleBuilder() {
     description: ''
   });
 
-  // Form states for adding activity
+
   const [newActivity, setNewActivity] = useState<Partial<ScheduleItem>>({
     type: 'kegiatan',
     name: '',
