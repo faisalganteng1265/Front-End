@@ -9,10 +9,11 @@ export default function GallerySection() {
   ];
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-black to-gray-900 relative overflow-hidden">
+    <section className="py-20 px-6 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
       {/* Decorative background elements */}
-      <div className="absolute top-10 right-10 w-64 h-64 bg-emerald-900/20 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-10 left-10 w-72 h-72 bg-teal-900/20 rounded-full blur-3xl"></div>
+      <div className="absolute top-10 right-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-10 left-10 w-72 h-72 bg-teal-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Gallery Grid */}
