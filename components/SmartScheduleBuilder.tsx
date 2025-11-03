@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AnimatedContent from './AnimatedContent';
 
 interface ScheduleItem {
@@ -79,6 +79,37 @@ export default function SmartScheduleBuilder() {
     hasSpecificTime: false,
     description: ''
   });
+
+  const [editedOptimizedSchedule, setEditedOptimizedSchedule] = useState<OptimizedSchedule | null>(null);
+
+  useEffect(() => {
+    if (optimizedSchedule) {
+      // Perform a deep copy to ensure editedOptimizedSchedule is independent
+      setEditedOptimizedSchedule(JSON.parse(JSON.stringify(optimizedSchedule)));
+    }
+  }, [optimizedSchedule]);
+
+  const handleScheduleItemChange = (
+    day: string,
+    index: number,
+    field: keyof DaySchedule,
+    value: string
+  ) => {
+    if (!editedOptimizedSchedule) return;
+
+    const updatedSchedule = { ...editedOptimizedSchedule.optimizedSchedule };
+    const dayActivities = [...updatedSchedule[day]];
+    dayActivities[index] = {
+      ...dayActivities[index],
+      [field]: value,
+    };
+    updatedSchedule[day] = dayActivities;
+
+    setEditedOptimizedSchedule({
+      ...editedOptimizedSchedule,
+      optimizedSchedule: updatedSchedule,
+    });
+  };
 
   const addCourse = () => {
     if (!newCourse.name || !newCourse.day || !newCourse.startTime || !newCourse.endTime) {
@@ -367,9 +398,9 @@ export default function SmartScheduleBuilder() {
               <div className="space-y-6 bg-white p-8 rounded-lg shadow-md">
               <div className="space-y-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-3xl font-bold text-fuchsia-600">KEGIATAN LAIN</h3>
-                  <div className="px-4 py-2 bg-fuchsia-100 border border-fuchsia-200 rounded-full">
-                    <span className="text-fuchsia-700 font-semibold">{activities.length} Kegiatan</span>
+                  <h3 className="text-3xl font-bold text-emerald-600">KEGIATAN LAIN</h3>
+                  <div className="px-4 py-2 bg-emerald-100 border border-emerald-200 rounded-full">
+                    <span className="text-emerald-700 font-semibold">{activities.length} Kegiatan</span>
                   </div>
                 </div>
 
@@ -379,8 +410,8 @@ export default function SmartScheduleBuilder() {
                       onClick={() => setActivityMode('flexible')}
                       className={`py-4 px-4 rounded-lg font-semibold transition-all ${
                         activityMode === 'flexible'
-                          ? 'bg-fuchsia-500 text-white shadow-lg'
-                          : 'bg-white text-fuchsia-600 border border-gray-300 hover:bg-gray-50'
+                          ? 'bg-emerald-500 text-white shadow-lg'
+                          : 'bg-white text-emerald-600 border border-gray-300 hover:bg-gray-50'
                       }`}
                     >
                       <div className="text-sm">WAKTU FLEKSIBEL</div>
@@ -390,8 +421,8 @@ export default function SmartScheduleBuilder() {
                       onClick={() => setActivityMode('specific')}
                       className={`py-4 px-4 rounded-lg font-semibold transition-all ${
                         activityMode === 'specific'
-                          ? 'bg-yellow-500 text-white shadow-lg'
-                          : 'bg-white text-yellow-600 border border-gray-300 hover:bg-gray-50'
+                          ? 'bg-sky-500 text-white shadow-lg'
+                          : 'bg-white text-sky-600 border border-gray-300 hover:bg-gray-50'
                       }`}
                     >
                       <div className="text-sm">WAKTU SPESIFIK</div>
@@ -404,10 +435,7 @@ export default function SmartScheduleBuilder() {
                     <div className="space-y-4">
                       <input
                         type="text"
-                        placeholder="Nama Kegiatan"
-                        value={newActivity.name}
-                        onChange={(e) => setNewActivity({ ...newActivity, name: e.target.value })}
-                        className="w-full bg-gray-50 text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:border-fuchsia-500 focus:outline-none focus:ring-1 focus:ring-fuchsia-500 transition-all"
+                        className="w-full bg-gray-50 text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
                       />
                       
                       <select
@@ -454,7 +482,7 @@ export default function SmartScheduleBuilder() {
                       
                       <button
                         onClick={addActivity}
-                        className="w-full bg-fuchsia-500 hover:bg-fuchsia-600 text-white px-6 py-3 rounded-lg font-bold transition-all shadow-md hover:shadow-lg"
+                        className="w-full bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-bold transition-all shadow-md hover:shadow-lg"
                       >
                         + TAMBAH KEGIATAN
                       </button>
@@ -469,7 +497,7 @@ export default function SmartScheduleBuilder() {
                         placeholder="Nama Kegiatan"
                         value={newActivity.name}
                         onChange={(e) => setNewActivity({ ...newActivity, name: e.target.value })}
-                        className="w-full bg-gray-50 text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:border-yellow-500 focus:outline-none focus:ring-1 focus:ring-yellow-500 transition-all"
+                        className="w-full bg-gray-50 text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all"
                       />
                       
                       <select
@@ -514,7 +542,7 @@ export default function SmartScheduleBuilder() {
                       
                       <button
                         onClick={addActivity}
-                        className="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg font-bold transition-all shadow-md hover:shadow-lg"
+                        className="w-full bg-sky-500 hover:bg-sky-600 text-white px-6 py-3 rounded-lg font-bold transition-all shadow-md hover:shadow-lg"
                       >
                         + TAMBAH KEGIATAN
                       </button>
@@ -527,10 +555,10 @@ export default function SmartScheduleBuilder() {
                   <div className="space-y-3">
                     {activities.map(activity => (
                       <div key={activity.id} className={`bg-gray-50 rounded-r-lg p-4 flex justify-between items-center transition-all hover:shadow-md ${
-                        activity.hasSpecificTime ? 'border-l-4 border-yellow-500' : 'border-l-4 border-fuchsia-500'
+                        activity.hasSpecificTime ? 'border-l-4 border-sky-500' : 'border-l-4 border-emerald-500'
                       }`}>
                         <div className="flex-1">
-                          <p className={`font-semibold text-lg ${activity.hasSpecificTime ? 'text-yellow-700' : 'text-fuchsia-700'}`}>
+                          <p className={`font-semibold text-lg ${activity.hasSpecificTime ? 'text-sky-700' : 'text-emerald-700'}`}>
                             {activity.name}
                           </p>
                           <p className="text-gray-500 text-sm mt-1">
@@ -563,7 +591,7 @@ export default function SmartScheduleBuilder() {
             <button
               onClick={generateSchedule}
               disabled={isLoading || (courses.length === 0 && activities.length === 0)}
-              className="w-full bg-gradient-to-r from-teal-500 via-fuchsia-500 to-pink-500 text-white py-5 rounded-xl font-bold text-xl hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+              className="w-full bg-gradient-to-r from-teal-500 via-emerald-500 to-pink-500 text-white py-5 rounded-xl font-bold text-xl hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
             >
               {isLoading ? (
                 <>
@@ -593,7 +621,7 @@ export default function SmartScheduleBuilder() {
               </AnimatedContent>
               <AnimatedContent direction="horizontal" reverse={true} delay={0.1}>
               <div className="bg-white border border-gray-200 rounded-xl p-6 text-center shadow-md">
-                <div className="text-4xl font-bold text-fuchsia-600 mb-2">{optimizedSchedule.analysis.totalKegiatan}</div>
+                <div className="text-4xl font-bold text-emerald-600 mb-2">{optimizedSchedule.analysis.totalKegiatan}</div>
                 <div className="text-gray-500 text-sm uppercase tracking-wider">Total Kegiatan</div>
               </div>
               </AnimatedContent>
@@ -605,7 +633,7 @@ export default function SmartScheduleBuilder() {
               </AnimatedContent>
               <AnimatedContent direction="horizontal" delay={0.2}>
               <div className="bg-white border border-gray-200 rounded-xl p-6 text-center shadow-md">
-                <div className="text-2xl font-bold text-yellow-600 mb-2">{optimizedSchedule.analysis.workLoadBalance}</div>
+                <div className="text-2xl font-bold text-sky-600 mb-2">{optimizedSchedule.analysis.workLoadBalance}</div>
                 <div className="text-gray-500 text-sm uppercase tracking-wider">Beban Kerja</div>
               </div>
               </AnimatedContent>
@@ -642,7 +670,7 @@ export default function SmartScheduleBuilder() {
 
             {/* Weekly Schedule - 3 Column Grid for Better Readability */}
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {Object.entries(optimizedSchedule.optimizedSchedule).map(([day, schedule], dayIndex) => (
+              {editedOptimizedSchedule && Object.entries(editedOptimizedSchedule.optimizedSchedule).map(([day, schedule], dayIndex) => (
                 <AnimatedContent key={day} delay={dayIndex * 0.1}>
                 <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-lg transition-all">
                   <h3 className="text-xl font-bold text-teal-600 mb-4 pb-3 border-b-2 border-gray-200 uppercase tracking-wider">
@@ -665,21 +693,32 @@ export default function SmartScheduleBuilder() {
                         </div>
 
                         {/* Content */}
-                        <h4 className="text-gray-800 font-semibold mb-1">{item.activity}</h4>
+                        <input
+                          type="text"
+                          value={item.activity}
+                          onChange={(e) => handleScheduleItemChange(day, index, 'activity', e.target.value)}
+                          className="w-full bg-transparent text-gray-800 font-semibold mb-1 focus:outline-none border-b border-transparent focus:border-gray-300"
+                        />
                         
-                        {item.description && (
-                          <p className="text-gray-600 text-sm mb-1">{item.description}</p>
-                        )}
+                        <textarea
+                          value={item.description || ''}
+                          onChange={(e) => handleScheduleItemChange(day, index, 'description', e.target.value)}
+                          className="w-full bg-transparent text-gray-600 text-sm mb-1 focus:outline-none border-b border-transparent focus:border-gray-300 resize-none"
+                          rows={1}
+                        />
                         
-                        {item.location && (
-                          <p className="text-gray-500 text-xs">{item.location}</p>
-                        )}
+                        <input
+                          type="text"
+                          value={item.location || ''}
+                          onChange={(e) => handleScheduleItemChange(day, index, 'location', e.target.value)}
+                          className="w-full bg-transparent text-gray-500 text-xs focus:outline-none border-b border-transparent focus:border-gray-300"
+                        />
 
                         {/* Type Badge */}
                         <div className="mt-2">
                           <span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${
                             item.type === 'kuliah' ? 'bg-teal-100 text-teal-800 border border-teal-200' :
-                            item.type === 'kegiatan' ? 'bg-fuchsia-100 text-fuchsia-800 border border-fuchsia-200' :
+                            item.type === 'kegiatan' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
                             item.type === 'routine' ? 'bg-gray-200 text-gray-800 border border-gray-300' :
                             'bg-lime-100 text-lime-800 border border-lime-200'
                           }`}>
@@ -703,10 +742,23 @@ export default function SmartScheduleBuilder() {
                   REKOMENDASI AI
                 </h2>
                 <ul className="space-y-3">
-                  {optimizedSchedule.recommendations.map((rec, i) => (
+                  {editedOptimizedSchedule && editedOptimizedSchedule.recommendations.map((rec, i) => (
                     <li key={i} className="flex items-start gap-3 bg-gray-50 p-3 rounded-lg border-l-4 border-lime-500">
                       <span className="text-lime-600 font-bold text-lg">✓</span>
-                      <span className="text-gray-700 text-sm">{rec}</span>
+                      <textarea
+                        value={rec}
+                        onChange={(e) => {
+                          if (!editedOptimizedSchedule) return;
+                          const updatedRecs = [...editedOptimizedSchedule.recommendations];
+                          updatedRecs[i] = e.target.value;
+                          setEditedOptimizedSchedule({
+                            ...editedOptimizedSchedule,
+                            recommendations: updatedRecs,
+                          });
+                        }}
+                        className="w-full bg-transparent text-gray-700 text-sm focus:outline-none border-b border-transparent focus:border-gray-300 resize-none"
+                        rows={1}
+                      />
                     </li>
                   ))}
                 </ul>
@@ -716,14 +768,27 @@ export default function SmartScheduleBuilder() {
               {/* Tips */}
               <AnimatedContent direction="horizontal" delay={0.3}>
               <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                <h2 className="text-2xl font-bold text-yellow-600 mb-4 uppercase tracking-wider">
+                <h2 className="text-2xl font-bold text-sky-600 uppercase tracking-wider">
                   TIPS PRODUKTIVITAS
                 </h2>
                 <ul className="space-y-3">
-                  {optimizedSchedule.tips.map((tip, i) => (
-                    <li key={i} className="flex items-start gap-3 bg-gray-50 p-3 rounded-lg border-l-4 border-yellow-500">
-                      <span className="text-yellow-600 font-bold text-lg">★</span>
-                      <span className="text-gray-700 text-sm">{tip}</span>
+                  {editedOptimizedSchedule && editedOptimizedSchedule.tips.map((tip, i) => (
+                    <li key={i} className="flex items-start gap-3 bg-gray-50 p-3 rounded-lg border-l-4 border-sky-500">
+                      <span className="text-sky-600 font-bold text-lg">★</span>
+                      <textarea
+                        value={tip}
+                        onChange={(e) => {
+                          if (!editedOptimizedSchedule) return;
+                          const updatedTips = [...editedOptimizedSchedule.tips];
+                          updatedTips[i] = e.target.value;
+                          setEditedOptimizedSchedule({
+                            ...editedOptimizedSchedule,
+                            tips: updatedTips,
+                          });
+                        }}
+                        className="w-full bg-transparent text-gray-700 text-sm focus:outline-none border-b border-transparent focus:border-gray-300 resize-none"
+                        rows={1}
+                      />
                     </li>
                   ))}
                 </ul>
