@@ -6,10 +6,8 @@ export default function HowItWorksSection() {
   // Generate rain drops on client-side only to avoid hydration errors
   const [rainDrops, setRainDrops] = useState<Array<{ id: number; left: number; delay: number; duration: number }>>([]);
 
-  // Generate grass blades on client-side
-  const [grassBg, setGrassBg] = useState<Array<{ id: number; left: number; height: number; delay: number; opacity: number }>>([]);
-  const [grassFg, setGrassFg] = useState<Array<{ id: number; left: number; height: number; delay: number }>>([]);
-  const [grassSmall, setGrassSmall] = useState<Array<{ id: number; left: number; height: number; delay: number }>>([]);
+  // Generate floating particles
+  const [particles, setParticles] = useState<Array<{ id: number; left: number; top: number; size: number; delay: number; duration: number }>>([]);
 
   useEffect(() => {
     setRainDrops(Array.from({ length: 40 }, (_, i) => ({
@@ -19,26 +17,13 @@ export default function HowItWorksSection() {
       duration: 1 + Math.random() * 1,
     })));
 
-    setGrassBg(Array.from({ length: 50 }, (_, i) => ({
+    setParticles(Array.from({ length: 30 }, (_, i) => ({
       id: i,
-      left: i * 2,
-      height: Math.random() * 40 + 40,
-      delay: Math.random() * 2,
-      opacity: 0.6,
-    })));
-
-    setGrassFg(Array.from({ length: 60 }, (_, i) => ({
-      id: i,
-      left: i * 1.8,
-      height: Math.random() * 60 + 50,
-      delay: Math.random() * 3,
-    })));
-
-    setGrassSmall(Array.from({ length: 80 }, (_, i) => ({
-      id: i,
-      left: i * 1.3,
-      height: Math.random() * 30 + 20,
-      delay: Math.random() * 4,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      size: Math.random() * 4 + 2,
+      delay: Math.random() * 5,
+      duration: 3 + Math.random() * 4,
     })));
   }, []);
 
@@ -69,17 +54,53 @@ export default function HowItWorksSection() {
       <div className="absolute bottom-20 right-1/3 w-88 h-88 bg-emerald-900 blob-4 opacity-15"></div>
       <div className="absolute top-1/2 right-10 w-64 h-64 bg-emerald-900 blob-5 opacity-20"></div>
 
+      {/* Floating Particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        {particles.map((particle) => (
+          <div
+            key={particle.id}
+            className="absolute rounded-full bg-emerald-400/30 animate-float-particle"
+            style={{
+              left: `${particle.left}%`,
+              top: `${particle.top}%`,
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+              animationDelay: `${particle.delay}s`,
+              animationDuration: `${particle.duration}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Decorative Geometric Shapes */}
+      <div className="absolute top-20 left-10 w-20 h-20 border-2 border-emerald-500/20 rotate-45 animate-spin-very-slow"></div>
+      <div className="absolute top-40 right-16 w-16 h-16 border-2 border-teal-500/20 rounded-full animate-pulse-slow"></div>
+      <div className="absolute bottom-32 left-20 w-24 h-24 border-2 border-emerald-500/15 animate-spin-very-slow" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute bottom-40 right-24 w-12 h-12 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-full animate-bounce-slow"></div>
+      <div className="absolute top-1/3 left-1/4 w-8 h-8 border-2 border-emerald-400/25 rotate-12"></div>
+      <div className="absolute top-2/3 right-1/3 w-14 h-14 border-2 border-teal-400/20 rounded-lg rotate-45 animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
+
       {/* Decorative Vertical Lines on sides */}
       <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-emerald-500/30 to-transparent hidden md:block" style={{ left: '5%' }}></div>
       <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-emerald-500/20 to-transparent hidden md:block" style={{ left: '10%' }}></div>
       <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-emerald-500/30 to-transparent hidden md:block" style={{ right: '5%' }}></div>
       <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-emerald-500/20 to-transparent hidden md:block" style={{ right: '10%' }}></div>
 
-      {/* Glowing orbs on sides */}
-      <div className="absolute left-8 top-1/4 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl animate-pulse-slow hidden md:block"></div>
-      <div className="absolute left-12 top-3/4 w-24 h-24 bg-teal-500/10 rounded-full blur-2xl animate-pulse-slow hidden md:block" style={{ animationDelay: '2s' }}></div>
-      <div className="absolute right-8 top-1/3 w-28 h-28 bg-emerald-500/10 rounded-full blur-2xl animate-pulse-slow hidden md:block" style={{ animationDelay: '1s' }}></div>
-      <div className="absolute right-12 top-2/3 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl animate-pulse-slow hidden md:block" style={{ animationDelay: '3s' }}></div>
+      {/* Horizontal Lines */}
+      <div className="absolute left-0 right-0 top-1/4 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent"></div>
+      <div className="absolute left-0 right-0 top-3/4 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent"></div>
+
+      {/* Glowing orbs on sides - More vibrant */}
+      <div className="absolute left-8 top-1/4 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl animate-pulse-slow hidden md:block"></div>
+      <div className="absolute left-12 top-3/4 w-32 h-32 bg-teal-500/20 rounded-full blur-3xl animate-pulse-slow hidden md:block" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute right-8 top-1/3 w-36 h-36 bg-emerald-500/20 rounded-full blur-3xl animate-pulse-slow hidden md:block" style={{ animationDelay: '1s' }}></div>
+      <div className="absolute right-12 top-2/3 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl animate-pulse-slow hidden md:block" style={{ animationDelay: '3s' }}></div>
+
+      {/* Corner decorations */}
+      <div className="absolute top-0 left-0 w-32 h-32 border-l-2 border-t-2 border-emerald-500/20"></div>
+      <div className="absolute top-0 right-0 w-32 h-32 border-r-2 border-t-2 border-emerald-500/20"></div>
+      <div className="absolute bottom-0 left-0 w-32 h-32 border-l-2 border-b-2 border-emerald-500/20"></div>
+      <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-emerald-500/20"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header with Badge */}
@@ -220,67 +241,39 @@ export default function HowItWorksSection() {
         </div>
       </div>
 
-      {/* Grass decoration at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none z-20">
-        {/* Grass layer 1 - Background */}
-        <div className="absolute bottom-0 left-0 right-0 h-full">
-          {grassBg.map((grass) => (
-            <div
-              key={`grass-bg-${grass.id}`}
-              className="grass-blade-bg absolute bottom-0"
-              style={{
-                left: `${grass.left}%`,
-                height: `${grass.height}px`,
-                animationDelay: `${grass.delay}s`,
-                opacity: grass.opacity,
-                width: '10px',
-                background: 'linear-gradient(to top, #065f46, #10b981)',
-                borderRadius: '50% 50% 0 0',
-                transformOrigin: 'bottom center',
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Grass layer 2 - Foreground */}
-        <div className="absolute bottom-0 left-0 right-0 h-full">
-          {grassFg.map((grass) => (
-            <div
-              key={`grass-fg-${grass.id}`}
-              className="grass-blade-fg absolute bottom-0"
-              style={{
-                left: `${grass.left}%`,
-                height: `${grass.height}px`,
-                animationDelay: `${grass.delay}s`,
-                width: '8px',
-                background: 'linear-gradient(to top, #047857, #34d399)',
-                borderRadius: '60% 60% 0 0',
-                transformOrigin: 'bottom center',
-                boxShadow: '0 0 10px rgba(16, 185, 129, 0.3)',
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Small grass details */}
-        <div className="absolute bottom-0 left-0 right-0 h-full">
-          {grassSmall.map((grass) => (
-            <div
-              key={`grass-small-${grass.id}`}
-              className="grass-blade-small absolute bottom-0"
-              style={{
-                left: `${grass.left}%`,
-                height: `${grass.height}px`,
-                animationDelay: `${grass.delay}s`,
-                width: '5px',
-                background: 'linear-gradient(to top, #064e3b, #059669)',
-                borderRadius: '50% 50% 0 0',
-                transformOrigin: 'bottom center',
-                opacity: 0.8,
-              }}
-            />
-          ))}
-        </div>
+      {/* Bottom Decorative Wave Pattern */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none z-20">
+        <svg className="absolute bottom-0 w-full" viewBox="0 0 1440 100" preserveAspectRatio="none">
+          <path
+            d="M0,50 Q360,0 720,50 T1440,50 L1440,100 L0,100 Z"
+            fill="url(#wave-gradient-1)"
+            opacity="0.4"
+          />
+          <path
+            d="M0,60 Q360,20 720,60 T1440,60 L1440,100 L0,100 Z"
+            fill="url(#wave-gradient-2)"
+            opacity="0.3"
+          />
+          <path
+            d="M0,70 Q360,40 720,70 T1440,70 L1440,100 L0,100 Z"
+            fill="url(#wave-gradient-3)"
+            opacity="0.2"
+          />
+          <defs>
+            <linearGradient id="wave-gradient-1" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="rgba(16, 185, 129, 0.3)" />
+              <stop offset="100%" stopColor="rgba(16, 185, 129, 0.1)" />
+            </linearGradient>
+            <linearGradient id="wave-gradient-2" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="rgba(20, 184, 166, 0.3)" />
+              <stop offset="100%" stopColor="rgba(20, 184, 166, 0.1)" />
+            </linearGradient>
+            <linearGradient id="wave-gradient-3" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="rgba(5, 150, 105, 0.3)" />
+              <stop offset="100%" stopColor="rgba(5, 150, 105, 0.1)" />
+            </linearGradient>
+          </defs>
+        </svg>
       </div>
 
       <style jsx>{`
@@ -365,61 +358,94 @@ export default function HowItWorksSection() {
           animation-delay: 2s;
         }
 
-        @keyframes grass-sway {
+        @keyframes float-particle {
           0%, 100% {
-            transform: rotate(0deg) translateX(0);
+            transform: translateY(0) translateX(0);
+            opacity: 0.3;
           }
           25% {
-            transform: rotate(2deg) translateX(2px);
+            transform: translateY(-30px) translateX(20px);
+            opacity: 0.6;
+          }
+          50% {
+            transform: translateY(-60px) translateX(-10px);
+            opacity: 0.8;
           }
           75% {
-            transform: rotate(-2deg) translateX(-2px);
+            transform: translateY(-30px) translateX(-20px);
+            opacity: 0.6;
           }
         }
 
-        @keyframes grass-sway-strong {
+        @keyframes wave-motion-1 {
           0%, 100% {
-            transform: rotate(0deg) translateX(0);
+            transform: translateX(0) translateY(0);
           }
-          25% {
-            transform: rotate(4deg) translateX(3px);
-          }
-          75% {
-            transform: rotate(-4deg) translateX(-3px);
+          50% {
+            transform: translateX(-25px) translateY(-5px);
           }
         }
 
-        :global(.grass-blade-bg) {
-          position: absolute;
-          bottom: 0;
-          width: 8px;
-          background: linear-gradient(to top, #065f46, #10b981);
-          border-radius: 50% 50% 0 0;
-          transform-origin: bottom center;
-          animation: grass-sway 3s ease-in-out infinite;
-          filter: blur(0.5px);
+        @keyframes wave-motion-2 {
+          0%, 100% {
+            transform: translateX(0) translateY(0);
+          }
+          50% {
+            transform: translateX(25px) translateY(-3px);
+          }
         }
 
-        :global(.grass-blade-fg) {
-          position: absolute;
-          bottom: 0;
-          width: 6px;
-          background: linear-gradient(to top, #047857, #34d399);
-          border-radius: 60% 60% 0 0;
-          transform-origin: bottom center;
-          animation: grass-sway-strong 2.5s ease-in-out infinite;
-          box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+        @keyframes wave-motion-3 {
+          0%, 100% {
+            transform: translateX(0) translateY(0);
+          }
+          50% {
+            transform: translateX(-15px) translateY(-2px);
+          }
         }
 
-        :global(.grass-blade-small) {
-          position: absolute;
-          bottom: 0;
-          width: 4px;
-          background: linear-gradient(to top, #064e3b, #059669);
-          border-radius: 50% 50% 0 0;
-          transform-origin: bottom center;
-          animation: grass-sway 4s ease-in-out infinite;
-          opacity: 0.8;
+        @keyframes spin-very-slow {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes bounce-slow {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
+        }
+
+        :global(.animate-float-particle) {
+          animation: float-particle 5s ease-in-out infinite;
+        }
+
+        :global(.animate-wave-1) {
+          animation: wave-motion-1 8s ease-in-out infinite;
+        }
+
+        :global(.animate-wave-2) {
+          animation: wave-motion-2 7s ease-in-out infinite;
+          animation-delay: 0.5s;
+        }
+
+        :global(.animate-wave-3) {
+          animation: wave-motion-3 9s ease-in-out infinite;
+          animation-delay: 1s;
+        }
+
+        :global(.animate-spin-very-slow) {
+          animation: spin-very-slow 20s linear infinite;
+        }
+
+        :global(.animate-bounce-slow) {
+          animation: bounce-slow 3s ease-in-out infinite;
         }
 
         .blob-1 {

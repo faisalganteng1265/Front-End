@@ -197,6 +197,82 @@ export default function FeaturesSection() {
       <div className="absolute bottom-60 right-1/4 w-68 h-68 bg-emerald-900 blob-4 opacity-18"></div>
       <div className="absolute top-1/3 right-10 w-60 h-60 bg-emerald-900 blob-5 opacity-20"></div>
 
+      {/* AI Theme - Floating Binary Code */}
+      <div className="absolute top-20 left-1/4 text-emerald-500/10 text-xs font-mono animate-float-up" style={{ animationDelay: '0s' }}>01010011</div>
+      <div className="absolute top-40 right-1/3 text-emerald-500/10 text-xs font-mono animate-float-up" style={{ animationDelay: '1s' }}>11001010</div>
+      <div className="absolute bottom-40 left-1/3 text-emerald-500/10 text-xs font-mono animate-float-up" style={{ animationDelay: '2s' }}>10101100</div>
+      <div className="absolute bottom-20 right-1/4 text-emerald-500/10 text-xs font-mono animate-float-up" style={{ animationDelay: '3s' }}>01110010</div>
+      <div className="absolute top-1/2 left-1/5 text-teal-500/10 text-sm font-mono animate-float-up" style={{ animationDelay: '1.5s' }}>AI</div>
+      <div className="absolute top-1/3 right-1/5 text-teal-500/10 text-sm font-mono animate-float-up" style={{ animationDelay: '2.5s' }}>&lt;/&gt;</div>
+
+      {/* AI Theme - Circuit Board Lines */}
+      <svg className="absolute inset-0 w-full h-full opacity-5 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="circuit" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <path d="M 10 10 L 30 10 L 30 30 M 50 10 L 70 10 L 70 30 M 10 50 L 30 50 L 30 70 M 50 50 L 70 50 L 70 70"
+                  stroke="rgba(16, 185, 129, 0.4)"
+                  strokeWidth="0.5"
+                  fill="none"/>
+            <circle cx="30" cy="30" r="2" fill="rgba(16, 185, 129, 0.6)"/>
+            <circle cx="70" cy="30" r="2" fill="rgba(16, 185, 129, 0.6)"/>
+            <circle cx="30" cy="70" r="2" fill="rgba(16, 185, 129, 0.6)"/>
+            <circle cx="70" cy="70" r="2" fill="rgba(16, 185, 129, 0.6)"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#circuit)"/>
+      </svg>
+
+      {/* AI Theme - Neural Network Connections */}
+      <svg className="absolute top-20 left-10 w-64 h-64 opacity-10 pointer-events-none animate-pulse-slow" xmlns="http://www.w3.org/2000/svg">
+        <g>
+          {/* Nodes */}
+          <circle cx="32" cy="32" r="4" fill="rgba(16, 185, 129, 0.6)"/>
+          <circle cx="128" cy="32" r="4" fill="rgba(16, 185, 129, 0.6)"/>
+          <circle cx="224" cy="32" r="4" fill="rgba(16, 185, 129, 0.6)"/>
+          <circle cx="80" cy="128" r="4" fill="rgba(20, 184, 166, 0.6)"/>
+          <circle cx="176" cy="128" r="4" fill="rgba(20, 184, 166, 0.6)"/>
+          <circle cx="128" cy="224" r="4" fill="rgba(5, 150, 105, 0.6)"/>
+
+          {/* Connections */}
+          <line x1="32" y1="32" x2="80" y2="128" stroke="rgba(16, 185, 129, 0.3)" strokeWidth="1"/>
+          <line x1="128" y1="32" x2="80" y2="128" stroke="rgba(16, 185, 129, 0.3)" strokeWidth="1"/>
+          <line x1="128" y1="32" x2="176" y2="128" stroke="rgba(16, 185, 129, 0.3)" strokeWidth="1"/>
+          <line x1="224" y1="32" x2="176" y2="128" stroke="rgba(16, 185, 129, 0.3)" strokeWidth="1"/>
+          <line x1="80" y1="128" x2="128" y2="224" stroke="rgba(20, 184, 166, 0.3)" strokeWidth="1"/>
+          <line x1="176" y1="128" x2="128" y2="224" stroke="rgba(20, 184, 166, 0.3)" strokeWidth="1"/>
+        </g>
+      </svg>
+
+      <svg className="absolute bottom-20 right-16 w-56 h-56 opacity-10 pointer-events-none animate-pulse-slow" style={{ animationDelay: '2s' }} xmlns="http://www.w3.org/2000/svg">
+        <g>
+          <circle cx="28" cy="28" r="3" fill="rgba(16, 185, 129, 0.6)"/>
+          <circle cx="112" cy="28" r="3" fill="rgba(16, 185, 129, 0.6)"/>
+          <circle cx="196" cy="28" r="3" fill="rgba(16, 185, 129, 0.6)"/>
+          <circle cx="70" cy="112" r="3" fill="rgba(20, 184, 166, 0.6)"/>
+          <circle cx="154" cy="112" r="3" fill="rgba(20, 184, 166, 0.6)"/>
+          <circle cx="112" cy="196" r="3" fill="rgba(5, 150, 105, 0.6)"/>
+
+          <line x1="28" y1="28" x2="70" y2="112" stroke="rgba(16, 185, 129, 0.3)" strokeWidth="1"/>
+          <line x1="112" y1="28" x2="70" y2="112" stroke="rgba(16, 185, 129, 0.3)" strokeWidth="1"/>
+          <line x1="112" y1="28" x2="154" y2="112" stroke="rgba(16, 185, 129, 0.3)" strokeWidth="1"/>
+          <line x1="196" y1="28" x2="154" y2="112" stroke="rgba(16, 185, 129, 0.3)" strokeWidth="1"/>
+          <line x1="70" y1="112" x2="112" y2="196" stroke="rgba(20, 184, 166, 0.3)" strokeWidth="1"/>
+          <line x1="154" y1="112" x2="112" y2="196" stroke="rgba(20, 184, 166, 0.3)" strokeWidth="1"/>
+        </g>
+      </svg>
+
+      {/* AI Theme - Data Flow Lines */}
+      <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-emerald-500/10 to-transparent animate-data-flow"></div>
+      <div className="absolute top-0 right-1/3 w-px h-full bg-gradient-to-b from-transparent via-teal-500/10 to-transparent animate-data-flow" style={{ animationDelay: '2s' }}></div>
+
+      {/* AI Theme - Glowing Dots Moving Along Paths */}
+      <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/10 to-transparent">
+        <div className="w-2 h-2 bg-emerald-400 rounded-full blur-sm animate-move-right"></div>
+      </div>
+      <div className="absolute top-2/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-500/10 to-transparent">
+        <div className="w-2 h-2 bg-teal-400 rounded-full blur-sm animate-move-right" style={{ animationDelay: '3s' }}></div>
+      </div>
+
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-start mb-16">
           <h2 className=" text-5xl md:text-6xl mb-4 text-emerald-400" style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif', letterSpacing: '0.02em' }}>
@@ -569,6 +645,96 @@ export default function FeaturesSection() {
             transform: translateY(100vh);
             opacity: 0.3;
           }
+        }
+
+        @keyframes float-up {
+          0%, 100% {
+            transform: translateY(0);
+            opacity: 0.1;
+          }
+          50% {
+            transform: translateY(-30px);
+            opacity: 0.15;
+          }
+        }
+
+        @keyframes float-slow {
+          0%, 100% {
+            transform: translateY(0) translateX(0) rotate(0deg);
+            opacity: 0.1;
+          }
+          25% {
+            transform: translateY(-20px) translateX(10px) rotate(5deg);
+            opacity: 0.15;
+          }
+          50% {
+            transform: translateY(-30px) translateX(-5px) rotate(-3deg);
+            opacity: 0.12;
+          }
+          75% {
+            transform: translateY(-15px) translateX(-10px) rotate(3deg);
+            opacity: 0.14;
+          }
+        }
+
+        @keyframes data-flow {
+          0% {
+            opacity: 0.05;
+            transform: translateY(-100%);
+          }
+          50% {
+            opacity: 0.15;
+          }
+          100% {
+            opacity: 0.05;
+            transform: translateY(100%);
+          }
+        }
+
+        @keyframes move-right {
+          0% {
+            transform: translateX(-100%);
+            opacity: 0;
+          }
+          10% {
+            opacity: 1;
+          }
+          90% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateX(calc(100vw + 100%));
+            opacity: 0;
+          }
+        }
+
+        @keyframes pulse-slow {
+          0%, 100% {
+            opacity: 0.05;
+          }
+          50% {
+            opacity: 0.15;
+          }
+        }
+
+        :global(.animate-float-up) {
+          animation: float-up 6s ease-in-out infinite;
+        }
+
+        :global(.animate-float-slow) {
+          animation: float-slow 8s ease-in-out infinite;
+        }
+
+        :global(.animate-data-flow) {
+          animation: data-flow 4s linear infinite;
+        }
+
+        :global(.animate-move-right) {
+          animation: move-right 8s linear infinite;
+        }
+
+        :global(.animate-pulse-slow) {
+          animation: pulse-slow 3s ease-in-out infinite;
         }
 
         @keyframes drop-fall {

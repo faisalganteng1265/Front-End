@@ -1,10 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface FAQItem {
   question: string;
   answer: string;
+}
+
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
 }
 
 const faqs: FAQItem[] = [
@@ -34,83 +39,346 @@ const faqs: FAQItem[] = [
   },
 ];
 
+const quickQuestions = [
+  'Bagaimana cara mengisi KRS?',
+  'Dimana lokasi perpustakaan?',
+  'Apa saja UKM yang tersedia?',
+  'Bagaimana cara mendaftar beasiswa?',
+];
+
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      role: 'assistant',
+      content: 'Halo! Saya AI Campus Navigator UNS. Saya siap membantu menjawab pertanyaan seputar kampus. Silakan pilih pertanyaan cepat di bawah atau ketik pertanyaan Anda sendiri!',
+    },
+  ]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Detect when this section becomes visible
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Delay animation slightly for smoother effect
+          setTimeout(() => setIsVisible(true), 200);
+        } else {
+          setIsVisible(false);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
+  const sendMessage = async (messageText?: string) => {
+    const textToSend = messageText || input;
+    if (!textToSend.trim() || isLoading) return;
+
+    const userMessage: Message = { role: 'user', content: textToSend };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: textToSend,
+          history: messages,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      const assistantMessage: Message = {
+        role: 'assistant',
+        content: data.response,
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error('Error:', error);
+      const errorMessage: Message = {
+        role: 'assistant',
+        content: 'Maaf, terjadi kesalahan. Silakan coba lagi.',
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleQuickQuestion = (question: string) => {
+    sendMessage(question);
+  };
+
   return (
-    <section className="py-20 px-8 md:px-16 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
-      <div className="max-w-6xl mx-auto relative z-10">
+    <section ref={sectionRef} id="faq-section" className="py-20 px-0 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
+      <div className="w-full relative z-10">
         {/* Title */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 px-8">
           <h2
             className="text-5xl md:text-6xl mb-8 text-white"
             style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif', letterSpacing: '0.02em' }}
           >
-            FAQs
+            FAQs & AI Assistant
           </h2>
         </div>
 
-        {/* FAQ Items */}
-        <div className="space-y-0">
-          {faqs.map((faq, index) => (
+        {/* Two Column Layout */}
+        <div className="grid lg:grid-cols-[60%_40%] gap-0">
+          {/* Left Column - FAQ */}
+          <div className="px-8 md:px-16">
+            <div className="space-y-0">
+              {faqs.map((faq, index) => (
+                <div
+                  key={index}
+                  className="group border-t border-gray-700 last:border-b last:border-gray-700 transition-all duration-300"
+                >
+                  {/* Question Button */}
+                  <button
+                    onClick={() => toggleFAQ(index)}
+                    className="w-full px-0 py-6 flex items-center justify-between text-left relative z-10 group"
+                  >
+                    <span
+                      className="text-lg md:text-xl font-normal text-white pr-4"
+                      style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif' }}
+                    >
+                      {faq.question}
+                    </span>
+
+                    {/* Chevron Icon */}
+                    <div className={`flex-shrink-0 transition-all duration-300 ${openIndex === index ? 'rotate-180' : ''}`}>
+                      <svg
+                        className="w-5 h-5 text-emerald-400 transition-transform duration-300"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
+                  </button>
+
+                  {/* Answer */}
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                      openIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                    }`}
+                  >
+                    <div className="px-0 pb-6 relative z-10">
+                      <p
+                        className="text-gray-300 leading-relaxed text-base"
+                        style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif' }}
+                      >
+                        {faq.answer}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Column - Chatbot */}
+          <div className="lg:sticky lg:top-24 h-fit px-8 md:px-16">
             <div
-              key={index}
-              className="group border-t border-gray-700 last:border-b last:border-gray-700 transition-all duration-300"
+              className={`bg-gray-900/50 backdrop-blur-sm border-l border-emerald-500/20 overflow-hidden flex flex-col ${
+                isVisible
+                  ? 'animate-slide-in-faq'
+                  : 'opacity-0'
+              }`}
+              style={{
+                height: '600px',
+                transform: isVisible ? 'none' : 'translate(20vw, 15vh) scale(0.3) rotate(-35deg)'
+              }}
             >
-              {/* Question Button */}
-              <button
-                onClick={() => toggleFAQ(index)}
-                className="w-full px-0 py-6 flex items-center justify-between text-left relative z-10 group"
-              >
-                <span
-                  className="text-lg md:text-xl font-normal text-white pr-4"
+              {/* Chat Header */}
+              <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-4">
+                <h3
+                  className="text-xl text-white font-semibold flex items-center gap-2"
                   style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif' }}
                 >
-                  {faq.question}
-                </span>
+                  <span className="text-2xl">🤖</span>
+                  AI Campus Navigator
+                </h3>
+              </div>
 
-                {/* Chevron Icon */}
-                <div className={`flex-shrink-0 transition-all duration-300 ${openIndex === index ? 'rotate-180' : ''}`}>
-                  <svg
-                    className="w-5 h-5 text-emerald-400 transition-transform duration-300"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+              {/* Messages Area */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-custom">
+                {messages.map((msg, idx) => (
+                  <div
+                    key={idx}
+                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </button>
+                    <div
+                      className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                        msg.role === 'user'
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-gray-800/80 text-gray-100 border border-gray-700'
+                      }`}
+                      style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif' }}
+                    >
+                      <p className="text-base leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                    </div>
+                  </div>
+                ))}
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-gray-800/80 border border-gray-700 rounded-2xl px-4 py-3">
+                      <div className="flex gap-1">
+                        <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
 
-              {/* Answer */}
-              <div
-                className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                  openIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                }`}
-              >
-                <div className="px-0 pb-6 relative z-10">
-                  <p
-                    className="text-gray-300 leading-relaxed text-base"
+              {/* Quick Questions */}
+              {messages.length === 1 && (
+                <div className="px-4 pb-2">
+                  <div className="flex flex-wrap gap-2">
+                    {quickQuestions.map((q, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleQuickQuestion(q)}
+                        className="px-3 py-1.5 bg-gray-800/60 hover:bg-emerald-600/20 border border-emerald-500/30 rounded-full text-sm text-gray-300 hover:text-emerald-400 transition-all duration-200"
+                        style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif' }}
+                      >
+                        {q}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Input Area */}
+              <div className="p-4 border-t border-gray-700/50 bg-gray-900/30">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    sendMessage();
+                  }}
+                  className="flex gap-2"
+                >
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Ketik pertanyaan Anda..."
+                    className="flex-1 bg-gray-800/80 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                    style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif' }}
+                    disabled={isLoading}
+                  />
+                  <button
+                    type="submit"
+                    disabled={isLoading || !input.trim()}
+                    className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:from-gray-600 disabled:to-gray-600 text-white rounded-xl px-6 py-3 font-semibold transition-all duration-200 disabled:cursor-not-allowed"
                     style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif' }}
                   >
-                    {faq.answer}
-                  </p>
-                </div>
+                    Kirim
+                  </button>
+                </form>
               </div>
             </div>
-          ))}
+          </div>
         </div>
-
       </div>
+
+      <style jsx global>{`
+        .scrollbar-custom::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-track {
+          background: rgba(31, 41, 55, 0.5);
+          border-radius: 10px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-thumb {
+          background: linear-gradient(to bottom, rgba(16, 185, 129, 0.6), rgba(20, 184, 166, 0.6));
+          border-radius: 10px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(to bottom, rgba(16, 185, 129, 0.8), rgba(20, 184, 166, 0.8));
+        }
+
+        /* Firefox */
+        .scrollbar-custom {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(16, 185, 129, 0.6) rgba(31, 41, 55, 0.5);
+        }
+
+        /* Chatbot entrance animation - From jumping trajectory */
+        @keyframes slideInFromBottomRight {
+          0% {
+            opacity: 0;
+            transform: translate(20vw, 15vh) scale(0.3) rotate(-35deg);
+          }
+          20% {
+            opacity: 0.3;
+            transform: translate(15vw, 10vh) scale(0.5) rotate(-25deg);
+          }
+          40% {
+            opacity: 0.6;
+            transform: translate(10vw, 5vh) scale(0.7) rotate(-15deg);
+          }
+          65% {
+            opacity: 0.9;
+            transform: translate(2vw, 1vh) scale(0.95) rotate(-5deg);
+          }
+          80% {
+            opacity: 1;
+            transform: translate(-0.5rem, -0.5rem) scale(1.05) rotate(0deg);
+          }
+          100% {
+            opacity: 1;
+            transform: translate(0, 0) scale(1) rotate(0deg);
+          }
+        }
+
+        .animate-slide-in-faq {
+          animation: slideInFromBottomRight 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+      `}</style>
     </section>
   );
 }

@@ -19,7 +19,27 @@ export default function Chatbot() {
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Detect when FAQ section is visible
+  useEffect(() => {
+    const faqSection = document.querySelector('#faq-section');
+    if (!faqSection) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsHidden(entry.isIntersecting);
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(faqSection);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -84,11 +104,12 @@ export default function Chatbot() {
 
   return (
     <>
-      {/* Chatbot Toggle Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all flex items-center justify-center group"
-      >
+      {/* Chatbot Toggle Button - Hide when FAQ section is visible */}
+      {!isHidden && (
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full shadow-lg hover:shadow-xl hover:scale-110 flex items-center justify-center group transition-all duration-300"
+        >
         {isOpen ? (
           <svg
             className="w-6 h-6 text-white"
@@ -118,12 +139,13 @@ export default function Chatbot() {
             />
           </svg>
         )}
-        {/* Pulse Effect */}
-        <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-20"></span>
-      </button>
+          {/* Pulse Effect */}
+          <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-20"></span>
+        </button>
+      )}
 
       {/* Chatbot Window */}
-      {isOpen && (
+      {isOpen && !isHidden && (
         <div className="fixed bottom-24 right-6 z-50 w-96 h-[600px] bg-gray-900 rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-emerald-500/30">
           {/* Header */}
           <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-4 flex items-center justify-between">
@@ -240,6 +262,7 @@ export default function Chatbot() {
           </form>
         </div>
       )}
+
     </>
   );
 }
