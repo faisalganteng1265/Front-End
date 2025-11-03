@@ -355,22 +355,17 @@ export default function FeaturesSection() {
             onSwapTrigger={handleSwapTrigger}
             onPauseResume={handlePauseResume}
           >
-            {/* Feature 1: AI Campus Guide - Premium Design with Advanced Effects */}
+            {/* Feature 1: AI Campus Guide - Modern Dark Design */}
             <Card className={`relative overflow-hidden ${activeCardIndex === 0 ? 'card-active' : ''}`}>
-              {/* Gradient Background with Multiple Layers */}
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-900"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+              {/* Dark Background */}
+              <div className="absolute inset-0 bg-black"></div>
 
               {/* Animated Gradient Orbs */}
-              <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-400/30 rounded-full blur-3xl animate-pulse"></div>
-              <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-teal-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-emerald-300/10 rounded-full blur-2xl"></div>
+              <div className="absolute top-20 right-20 w-96 h-96 bg-gradient-to-br from-purple-500/40 via-pink-500/30 to-blue-500/40 rounded-full blur-3xl animate-pulse"></div>
+              <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-gradient-to-tr from-teal-500/30 to-emerald-500/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
 
-              {/* Mesh Pattern Overlay */}
-              <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
-
-              {/* Glass Card Content */}
-              <div className="relative p-8 flex flex-col justify-between h-full backdrop-blur-sm bg-white/5 border border-white/20 rounded-2xl shadow-2xl">
+              {/* Dark Card Content with Border */}
+              <div className="relative p-8 flex flex-col justify-between h-full bg-gray-950/80 backdrop-blur-md border border-gray-800/50 rounded-3xl shadow-2xl">
                 {/* Shine Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-50 rounded-2xl"></div>
 
@@ -416,26 +411,17 @@ export default function FeaturesSection() {
               </div>
             </Card>
 
-            {/* Feature 2: Event Recommender - Premium Design with Target Pattern */}
+            {/* Feature 2: Event Recommender - Modern Dark Design */}
             <Card className={`relative overflow-hidden ${activeCardIndex === 1 ? 'card-active' : ''}`}>
-              {/* Gradient Background - Same as Card 1 */}
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-900"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+              {/* Dark Background */}
+              <div className="absolute inset-0 bg-black"></div>
 
-              {/* Animated Target Circles */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 border-2 border-white/10 rounded-full animate-ping" style={{ animationDuration: '3s' }}></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 border-2 border-white/15 rounded-full"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 border-2 border-white/20 rounded-full"></div>
+              {/* Animated Gradient Orbs */}
+              <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-br from-orange-500/40 via-yellow-500/30 to-red-500/40 rounded-full blur-3xl animate-pulse"></div>
+              <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-gradient-to-tl from-emerald-500/30 to-teal-500/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
 
-              {/* Glowing Orbs */}
-              <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-400/30 rounded-full blur-3xl animate-pulse"></div>
-              <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-teal-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
-
-              {/* Dot Pattern Overlay */}
-              <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '30px 30px' }}></div>
-
-              {/* Glass Card Content */}
-              <div className="relative p-8 flex flex-col justify-between h-full backdrop-blur-sm bg-white/5 border border-white/20 rounded-2xl shadow-2xl">
+              {/* Dark Card Content with Border */}
+              <div className="relative p-8 flex flex-col justify-between h-full bg-gray-950/80 backdrop-blur-md border border-gray-800/50 rounded-3xl shadow-2xl">
                 {/* Shine Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-50 rounded-2xl"></div>
 
@@ -481,32 +467,17 @@ export default function FeaturesSection() {
               </div>
             </Card>
 
-            {/* Feature 3: Smart Schedule Builder - Premium Design with Grid Pattern */}
+            {/* Feature 3: Smart Schedule Builder - Modern Dark Design */}
             <Card className={`relative overflow-hidden ${activeCardIndex === 2 ? 'card-active' : ''}`}>
-              {/* Gradient Background - Same as Card 1 */}
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-900"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+              {/* Dark Background */}
+              <div className="absolute inset-0 bg-black"></div>
 
-              {/* Animated Grid Lines */}
-              <div className="absolute inset-0 opacity-20">
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse"></div>
-                <div className="absolute top-1/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-                <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse" style={{ animationDelay: '1s' }}></div>
-                <div className="absolute top-3/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse" style={{ animationDelay: '1.5s' }}></div>
-                <div className="absolute top-0 bottom-0 left-1/4 w-px bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
-                <div className="absolute top-0 bottom-0 left-1/2 w-px bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
-                <div className="absolute top-0 bottom-0 left-3/4 w-px bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
-              </div>
+              {/* Animated Gradient Orbs */}
+              <div className="absolute -top-20 right-1/3 w-96 h-96 bg-gradient-to-br from-cyan-500/40 via-blue-500/30 to-indigo-500/40 rounded-full blur-3xl animate-pulse"></div>
+              <div className="absolute bottom-10 -left-20 w-80 h-80 bg-gradient-to-tr from-teal-500/30 to-emerald-500/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
 
-              {/* Glowing Orbs */}
-              <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-400/30 rounded-full blur-3xl animate-pulse"></div>
-              <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-teal-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
-
-              {/* Diagonal Lines Pattern */}
-              <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(45deg, white 1px, transparent 1px), linear-gradient(-45deg, white 1px, transparent 1px)', backgroundSize: '60px 60px' }}></div>
-
-              {/* Glass Card Content */}
-              <div className="relative p-8 flex flex-col justify-between h-full backdrop-blur-sm bg-white/5 border border-white/20 rounded-2xl shadow-2xl">
+              {/* Dark Card Content with Border */}
+              <div className="relative p-8 flex flex-col justify-between h-full bg-gray-950/80 backdrop-blur-md border border-gray-800/50 rounded-3xl shadow-2xl">
                 {/* Shine Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-50 rounded-2xl"></div>
 
@@ -551,33 +522,17 @@ export default function FeaturesSection() {
               </div>
             </Card>
 
-            {/* Feature 4: Peer Connect AI - Premium Design with Network Pattern */}
+            {/* Feature 4: Peer Connect AI - Modern Dark Design */}
             <Card className={`relative overflow-hidden ${activeCardIndex === 3 ? 'card-active' : ''}`}>
-              {/* Gradient Background - Same as Card 1 */}
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-900"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+              {/* Dark Background */}
+              <div className="absolute inset-0 bg-black"></div>
 
-              {/* Animated Network Nodes with Connecting Lines */}
-              <div className="absolute top-8 left-8 w-3 h-3 bg-white/60 rounded-full animate-ping" style={{ animationDuration: '2s' }}></div>
-              <div className="absolute top-16 right-12 w-3 h-3 bg-white/60 rounded-full animate-ping" style={{ animationDuration: '2.5s', animationDelay: '0.5s' }}></div>
-              <div className="absolute bottom-20 left-16 w-3 h-3 bg-white/60 rounded-full animate-ping" style={{ animationDuration: '3s', animationDelay: '1s' }}></div>
-              <div className="absolute bottom-12 right-20 w-3 h-3 bg-white/60 rounded-full animate-ping" style={{ animationDuration: '2s', animationDelay: '1.5s' }}></div>
-              <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-white/40 rounded-full"></div>
-              <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-white/40 rounded-full"></div>
+              {/* Animated Gradient Orbs */}
+              <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-gradient-to-br from-green-500/40 via-emerald-500/30 to-teal-500/40 rounded-full blur-3xl animate-pulse"></div>
+              <div className="absolute -bottom-20 right-10 w-80 h-80 bg-gradient-to-tl from-lime-500/30 to-green-500/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
 
-              {/* Connection Lines */}
-              <div className="absolute top-8 left-8 w-32 h-px bg-gradient-to-r from-white/30 to-transparent rotate-45 origin-left"></div>
-              <div className="absolute bottom-12 right-20 w-28 h-px bg-gradient-to-l from-white/30 to-transparent -rotate-45 origin-right"></div>
-
-              {/* Glowing Orbs */}
-              <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-400/30 rounded-full blur-3xl animate-pulse"></div>
-              <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-teal-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
-
-              {/* Hexagon Pattern Overlay */}
-              <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at center, white 1px, transparent 1px)', backgroundSize: '25px 25px' }}></div>
-
-              {/* Glass Card Content */}
-              <div className="relative p-8 flex flex-col justify-between h-full backdrop-blur-sm bg-white/5 border border-white/20 rounded-2xl shadow-2xl">
+              {/* Dark Card Content with Border */}
+              <div className="relative p-8 flex flex-col justify-between h-full bg-gray-950/80 backdrop-blur-md border border-gray-800/50 rounded-3xl shadow-2xl">
                 {/* Shine Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-50 rounded-2xl"></div>
 
