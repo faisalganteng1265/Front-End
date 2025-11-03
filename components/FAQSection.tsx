@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import TextType from './TextType';
 
 interface FAQItem {
   question: string;
@@ -146,12 +147,18 @@ export default function FAQSection() {
       <div className="w-full relative z-10">
         {/* Title */}
         <div className="text-center mb-16 px-8">
-          <h2
+          <TextType
+            text="FAQs & AI Assistant"
+            as="h2"
             className="text-5xl md:text-6xl mb-8 text-white"
             style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif', letterSpacing: '0.02em' }}
-          >
-            FAQs & AI Assistant
-          </h2>
+            typingSpeed={80}
+            loop={false}
+            showCursor={true}
+            cursorCharacter="|"
+            cursorClassName="text-emerald-400"
+            startOnVisible={true}
+          />
         </div>
 
         {/* Two Column Layout */}
