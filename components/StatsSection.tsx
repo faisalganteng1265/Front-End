@@ -36,9 +36,11 @@ function StatItem({ end, label, suffix = '', icon }: StatItemProps) {
 
   useEffect(() => {
     if (!isVisible) {
-      setCount(0);
       return;
     }
+
+    // Reset count to 0 when animation starts
+    setCount(0);
 
     const duration = 2000; // 2 seconds
     const steps = 60;
