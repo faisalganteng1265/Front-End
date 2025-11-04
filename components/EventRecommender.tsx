@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { Atom } from 'react-loading-indicators';
+import StaggeredMenu from './StaggeredMenu';
 
 interface Event {
   id: number;
@@ -49,6 +51,7 @@ export default function EventRecommender() {
   const [summary, setSummary] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests(prev =>
@@ -104,177 +107,293 @@ export default function EventRecommender() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-black relative">
+      {/* Staggered Menu Navigation */}
+      <StaggeredMenu
+        position="right"
+        colors={['#0a0a0a', '#1a1a1a', '#2a2a2a']}
+        items={[
+          { label: 'HOME', ariaLabel: 'Go to home page', link: '/' },
+          { label: 'AI Campus Chatbot', ariaLabel: 'Go to feature 1', link: '/fitur-1' },
+          { label: 'Smart Schedule', ariaLabel: 'Go to feature 3', link: '/fitur-3' }
+        ]}
+        displaySocials={false}
+        displayItemNumbering={true}
+        logoUrl="/logo.png"
+        menuButtonColor="#fff"
+        openMenuButtonColor="#fff"
+        accentColor="#ffffff"
+        changeMenuColorOnOpen={true}
+        isFixed={true}
+      />
+
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700 py-8 px-6">
-        <div className="max-w-6xl mx-auto">
+      <div className="bg-black py-8 px-3 relative z-10">
+        <div className="max-w-full mx-auto">
           <div className="text-center mb-6">
             <div className="text-6xl mb-4">🎯</div>
-            <h1 className="text-4xl font-bold text-white mb-2">Event Recommender</h1>
-            <p className="text-purple-100 text-lg">
+            <h1 className="text-5xl font-bold text-white mb-3" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.4)' }}>
+              EVENT RECOMMENDER
+            </h1>
+            <p className="text-gray-400 text-lg">
               Temukan event kampus yang sesuai dengan minatmu!
             </p>
-          </div>
-
-          {/* Interest Selection */}
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
-            <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-              <span>✨</span>
-              Pilih Minat Kamu (bisa lebih dari 1):
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-              {interestOptions.map((interest) => (
-                <button
-                  key={interest.value}
-                  onClick={() => toggleInterest(interest.value)}
-                  className={`flex items-center gap-2 p-3 rounded-xl transition-all border-2 ${
-                    selectedInterests.includes(interest.value)
-                      ? 'bg-white text-purple-600 border-white shadow-lg scale-105'
-                      : 'bg-white/10 text-white border-white/30 hover:bg-white/20'
-                  }`}
-                >
-                  <span className="text-2xl">{interest.icon}</span>
-                  <span className="text-sm font-medium">{interest.label}</span>
-                </button>
-              ))}
-            </div>
-
-            <button
-              onClick={getRecommendations}
-              disabled={isLoading || selectedInterests.length === 0}
-              className="w-full bg-white text-purple-600 font-bold py-4 rounded-xl hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {isLoading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
-                  <span>Mencari Event Terbaik...</span>
-                </>
-              ) : (
-                <>
-                  <span>🔍</span>
-                  <span>Cari Event Rekomendasi</span>
-                </>
-              )}
-            </button>
           </div>
         </div>
       </div>
 
-      {/* Results */}
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        {isLoading && (
-          <div className="text-center py-12">
-            <div className="inline-block w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-gray-400">AI sedang menganalisis event yang cocok untukmu...</p>
-          </div>
-        )}
+      {/* Main Content - Sidebar Layout */}
+      <div className="max-w-7xl mx-auto px-3 pb-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          {/* LEFT SIDEBAR - Filter */}
+          <div className="lg:col-span-1">
+            <div className="bg-gray-800/40 rounded-2xl p-6 border border-gray-700/50 shadow-md sticky top-6">
+              <h3 className="text-white font-semibold mb-4 text-lg">
+                <span>✨</span> Filter Minat
+              </h3>
 
-        {!isLoading && hasSearched && recommendations.length === 0 && (
-          <div className="text-center py-12 bg-gray-800 rounded-2xl">
-            <div className="text-6xl mb-4">😕</div>
-            <h3 className="text-2xl font-bold text-white mb-2">Tidak Ada Event yang Cocok</h3>
-            <p className="text-gray-400">Coba pilih minat yang berbeda atau tunggu event baru!</p>
-          </div>
-        )}
+              <div className="space-y-3 mb-6">
+                {interestOptions.map((interest) => (
+                  <button
+                    key={interest.value}
+                    onClick={() => toggleInterest(interest.value)}
+                    className={`w-full flex items-center gap-2 p-3 rounded-xl transition-all border ${
+                      selectedInterests.includes(interest.value)
+                        ? 'bg-white/95 text-gray-800 border-white shadow-lg'
+                        : 'bg-gray-700/30 text-gray-200 border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white'
+                    }`}
+                  >
+                    <span className="text-xl">{interest.icon}</span>
+                    <span className="text-xs font-medium">{interest.label}</span>
+                  </button>
+                ))}
+              </div>
 
-        {!isLoading && recommendations.length > 0 && (
-          <>
-            {/* Summary */}
-            {summary && (
-              <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-2xl p-6 mb-8">
-                <div className="flex items-start gap-3">
-                  <div className="text-3xl">🤖</div>
-                  <div>
-                    <h3 className="text-white font-semibold mb-2">Rekomendasi AI:</h3>
-                    <p className="text-gray-300">{summary}</p>
-                  </div>
+              <button
+                onClick={getRecommendations}
+                disabled={isLoading || selectedInterests.length === 0}
+                className="w-full bg-gray-700/30 border border-gray-600/50 hover:bg-white/95 hover:border-white text-gray-200 hover:text-gray-800 font-bold py-3 rounded-xl hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isLoading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-sm">Mencari...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>🔍</span>
+                    <span className="text-sm">Cari Event</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* RIGHT CONTENT - Results */}
+          <div className="lg:col-span-3">
+            {isLoading && (
+              <div className="text-center py-12">
+                <div className="flex justify-center mb-6">
+                  <Atom color="#ffffff" size="medium" text="" textColor="#ffffff" />
                 </div>
+                <p className="text-gray-400 text-xl">AI sedang menganalisis event yang cocok untukmu...</p>
               </div>
             )}
 
-            {/* Event Cards */}
-            <div className="space-y-4">
-              {recommendations.map((event, index) => (
-                <div
-                  key={event.id}
-                  className="bg-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-purple-500 transition-all hover:shadow-xl hover:shadow-purple-500/20"
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="text-3xl">#{index + 1}</span>
-                        <span className={`${categoryColors[event.category] || 'bg-gray-500'} text-white px-3 py-1 rounded-full text-sm font-medium`}>
+            {!isLoading && hasSearched && recommendations.length === 0 && (
+              <div className="text-center py-12 bg-neutral-800 rounded-2xl border border-gray-600 shadow-md">
+                <div className="text-6xl mb-4">😕</div>
+                <h3 className="text-2xl font-bold text-white mb-2">Tidak Ada Event yang Cocok</h3>
+                <p className="text-gray-400">Coba pilih minat yang berbeda atau tunggu event baru!</p>
+              </div>
+            )}
+
+            {!isLoading && recommendations.length > 0 && (
+              <>
+                {/* Summary */}
+                {summary && (
+                  <div className="bg-neutral-800 border border-gray-600 rounded-2xl p-6 mb-8 shadow-md">
+                    <div className="flex items-start gap-3">
+                      <div className="text-3xl">🤖</div>
+                      <div>
+                        <h3 className="text-white font-semibold mb-2" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' }}>REKOMENDASI AI:</h3>
+                        <p className="text-gray-300">{summary}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Event Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {recommendations.map((event, index) => (
+                    <div
+                      key={event.id}
+                      onClick={() => setSelectedEvent(event)}
+                      className="bg-neutral-800 rounded-2xl p-6 border border-gray-600 hover:border-white transition-all hover:shadow-lg shadow-md cursor-pointer flex flex-col h-full"
+                    >
+                      {/* Header: Number & Organizer */}
+                      <div className="flex items-start justify-between mb-3">
+                        <span className="text-3xl font-bold text-white">#{index + 1}</span>
+                        <div className="text-right flex-shrink-0 ml-2">
+                          <p className="text-xs text-gray-500">Penyelenggara</p>
+                          <p className="text-xs font-bold text-white">{event.organizer}</p>
+                        </div>
+                      </div>
+
+                      {/* Badge & Match */}
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className={`${categoryColors[event.category] || 'bg-gray-500'} text-white px-3 py-1 rounded-full text-xs font-medium`}>
                           {event.category}
                         </span>
                         {event.relevanceScore && (
-                          <span className="bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-bold">
+                          <span className="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold">
                             {event.relevanceScore}% Match
                           </span>
                         )}
                       </div>
-                      <h3 className="text-2xl font-bold text-white mb-2">{event.title}</h3>
-                      <p className="text-gray-400 text-sm mb-3">📅 {formatDate(event.date)} • 📍 {event.location}</p>
-                    </div>
-                  </div>
 
-                  {event.recommendationReason && (
-                    <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 mb-4">
-                      <p className="text-purple-200 text-sm">
-                        <span className="font-semibold">💡 Kenapa cocok untuk kamu: </span>
-                        {event.recommendationReason}
-                      </p>
-                    </div>
-                  )}
+                      {/* Title */}
+                      <h3 className="text-xl font-bold text-white mb-3 line-clamp-1">{event.title}</h3>
 
-                  <p className="text-gray-300 mb-4">{event.description}</p>
-
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {event.tags.map((tag, i) => (
-                      <span
-                        key={i}
-                        className="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-xs"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center justify-between border-t border-gray-700 pt-4">
-                    <div className="flex gap-6 text-sm text-gray-400">
-                      <div>
-                        <span className="font-semibold">Penyelenggara:</span> {event.organizer}
+                      {/* Event Image */}
+                      <div className="w-full h-40 bg-gray-700 rounded-lg overflow-hidden mb-4 flex-grow">
+                        <img
+                          src="/FOTO3.jpg"
+                          alt={event.title}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <div>
-                        <span className="font-semibold">Kuota:</span> {event.quota} orang
+
+                      {/* Kuota Progress Bar */}
+                      <div className="mt-auto">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-semibold text-gray-400">Kuota Peserta</span>
+                          <span className="text-xs text-white font-bold">
+                            {Math.floor(event.quota * 0.5)} / {event.quota} orang
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
+                          <div
+                            className="bg-[#00d9ff] h-full rounded-full transition-all"
+                            style={{ width: `${(Math.floor(event.quota * 0.5) / event.quota) * 100}%` }}
+                          ></div>
+                        </div>
                       </div>
-                      <div>
-                        <span className="font-semibold">Biaya:</span> {event.fee}
-                      </div>
+
                     </div>
-                    <a
-                      href={event.registrationLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-6 py-2 rounded-full font-medium hover:shadow-lg transition-all flex items-center gap-2"
-                    >
-                      <span>Daftar Sekarang</span>
-                      <span>→</span>
-                    </a>
-                  </div>
+                  ))}
                 </div>
+              </>
+            )}
+
+            {!hasSearched && (
+              <div className="text-center py-12">
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Modal Popup */}
+      {selectedEvent && (
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6"
+          onClick={() => setSelectedEvent(null)}
+        >
+          <div
+            className="bg-neutral-800 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-600 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedEvent(null)}
+              className="float-right text-gray-400 hover:text-white text-2xl font-bold"
+            >
+              ×
+            </button>
+
+            {/* Event Title & Organizer */}
+            <div className="mb-6">
+              <div className="flex items-center gap-3 mb-3">
+                <span className={`${categoryColors[selectedEvent.category] || 'bg-gray-500'} text-white px-3 py-1 rounded-full text-sm font-medium`}>
+                  {selectedEvent.category}
+                </span>
+                {selectedEvent.relevanceScore && (
+                  <span className="bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-bold">
+                    {selectedEvent.relevanceScore}% Match
+                  </span>
+                )}
+              </div>
+              <h2 className="text-3xl font-bold text-white mb-2">{selectedEvent.title}</h2>
+              <p className="text-gray-400 text-sm mb-2">📅 {formatDate(selectedEvent.date)} • 📍 {selectedEvent.location}</p>
+              <p className="text-sm text-gray-500">
+                <span className="font-semibold text-white">Penyelenggara:</span> {selectedEvent.organizer}
+              </p>
+            </div>
+
+            {/* Recommendation Reason */}
+            {selectedEvent.recommendationReason && (
+              <div className="bg-neutral-700 border border-gray-600 rounded-xl p-4 mb-6">
+                <p className="text-gray-300 text-sm">
+                  <span className="font-semibold text-white">💡 Kenapa cocok untuk kamu: </span>
+                  {selectedEvent.recommendationReason}
+                </p>
+              </div>
+            )}
+
+            {/* Description */}
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-white mb-2">Deskripsi Event</h3>
+              <p className="text-gray-300">{selectedEvent.description}</p>
+            </div>
+
+            {/* Tags */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {selectedEvent.tags.map((tag, i) => (
+                <span
+                  key={i}
+                  className="bg-white/10 text-white border border-white/20 px-3 py-1 rounded-full text-xs font-semibold"
+                >
+                  {tag}
+                </span>
               ))}
             </div>
-          </>
-        )}
 
-        {!hasSearched && (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">🎯</div>
-            <h3 className="text-2xl font-bold text-white mb-2">Pilih Minatmu di Atas</h3>
-            <p className="text-gray-400">AI akan merekomendasikan event yang paling sesuai untukmu!</p>
+            {/* Kuota Progress Bar */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-semibold text-gray-400">Kuota Peserta</span>
+                <span className="text-sm text-white font-bold">
+                  {Math.floor(selectedEvent.quota * 0.5)} / {selectedEvent.quota} orang
+                </span>
+              </div>
+              <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+                <div
+                  className="bg-[#00d9ff] h-full rounded-full transition-all"
+                  style={{ width: `${(Math.floor(selectedEvent.quota * 0.5) / selectedEvent.quota) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+
+            {/* Fee */}
+            <div className="mb-6 pb-6 border-b border-gray-700">
+              <span className="text-gray-400">Biaya Pendaftaran: </span>
+              <span className="font-bold text-white text-xl">{selectedEvent.fee}</span>
+            </div>
+
+            {/* Daftar Sekarang Button */}
+            <a
+              href={selectedEvent.registrationLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full bg-[#00d9ff] hover:bg-[#00b8d9] text-black font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+            >
+              <span>Daftar Sekarang</span>
+              <span>→</span>
+            </a>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

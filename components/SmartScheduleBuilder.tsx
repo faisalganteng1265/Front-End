@@ -277,7 +277,7 @@ export default function SmartScheduleBuilder() {
         items={[
           { label: 'HOME', ariaLabel: 'Go to home page', link: '/' },
           { label: 'AI Campus Chatbot', ariaLabel: 'Go to feature 1', link: '/fitur-1' },
-          { label: 'Smart Schedule', ariaLabel: 'Go to feature 2', link: '/fitur-2' }
+          { label: 'Event Recomend', ariaLabel: 'Go to feature 2', link: '/fitur-2' }
         ]}
         displaySocials={false}
         displayItemNumbering={true}
