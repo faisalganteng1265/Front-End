@@ -59,8 +59,12 @@ const TextType = ({
   const getRandomSpeed = useCallback(() => {
     if (!variableSpeed) return typingSpeed;
     const { min, max } = variableSpeed;
-    return Math.random() * (max - min) + min;
-  }, [variableSpeed, typingSpeed]);
+    // Use deterministic values based on current character index and text index
+    const seed = currentCharIndex + currentTextIndex * 1000;
+    const x = Math.sin(seed) * 10000;
+    const random = x - Math.floor(x);
+    return random * (max - min) + min;
+  }, [variableSpeed, typingSpeed, currentCharIndex, currentTextIndex]);
 
   const getCurrentTextColor = () => {
     if (textColors.length === 0) return;
