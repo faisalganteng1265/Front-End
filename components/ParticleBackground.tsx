@@ -29,17 +29,26 @@ export default function ParticleBackground() {
       speedY: number;
       opacity: number;
       color: string;
+      seed: number;
 
-      constructor(canvasWidth: number, canvasHeight: number) {
-        this.x = Math.random() * canvasWidth;
-        this.y = Math.random() * canvasHeight;
-        this.size = Math.random() * 2 + 0.5;
-        this.speedX = Math.random() * 0.5 - 0.25;
-        this.speedY = Math.random() * 0.5 - 0.25;
-        this.opacity = Math.random() * 0.5 + 0.2;
+      constructor(canvasWidth: number, canvasHeight: number, seed: number) {
+        this.seed = seed;
+        
+        // Seeded random function to ensure consistent values between server and client
+        const seededRandom = (seed: number) => {
+          const x = Math.sin(seed) * 10000;
+          return x - Math.floor(x);
+        };
+
+        this.x = seededRandom(seed) * canvasWidth;
+        this.y = seededRandom(seed + 1) * canvasHeight;
+        this.size = seededRandom(seed + 2) * 2 + 0.5;
+        this.speedX = seededRandom(seed + 3) * 0.5 - 0.25;
+        this.speedY = seededRandom(seed + 4) * 0.5 - 0.25;
+        this.opacity = seededRandom(seed + 5) * 0.5 + 0.2;
 
         // Mix of white and teal particles
-        this.color = Math.random() > 0.7 ? 'rgba(255, 255, 255,' : 'rgba(16, 185, 129,';
+        this.color = seededRandom(seed + 6) > 0.7 ? 'rgba(255, 255, 255,' : 'rgba(16, 185, 129,';
       }
 
       update(canvasWidth: number, canvasHeight: number) {
@@ -52,8 +61,12 @@ export default function ParticleBackground() {
         if (this.y > canvasHeight) this.y = 0;
         if (this.y < 0) this.y = canvasHeight;
 
-        // Twinkle effect
-        this.opacity += (Math.random() - 0.5) * 0.03;
+        // Twinkle effect with deterministic values
+        const seededRandom = (seed: number) => {
+          const x = Math.sin(seed) * 10000;
+          return x - Math.floor(x);
+        };
+        this.opacity += (seededRandom(this.seed + Date.now() / 1000) - 0.5) * 0.03;
         this.opacity = Math.max(0.1, Math.min(0.8, this.opacity));
       }
 
@@ -70,7 +83,7 @@ export default function ParticleBackground() {
     const particleCount = 150;
 
     for (let i = 0; i < particleCount; i++) {
-      particles.push(new Particle(canvas.width, canvas.height));
+      particles.push(new Particle(canvas.width, canvas.height, i));
     }
 
     // Animation loop

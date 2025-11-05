@@ -71,14 +71,20 @@ export default function HeroSection() {
     const starsPositions = new Float32Array(starsCount * 3);
     const starsSizes = new Float32Array(starsCount);
 
-    for (let i = 0; i < starsCount; i++) {
-      // Position stars across the sky
-      starsPositions[i * 3] = (Math.random() - 0.5) * 50;
-      starsPositions[i * 3 + 1] = (Math.random() - 0.5) * 30;
-      starsPositions[i * 3 + 2] = -15 - Math.random() * 20;
+    // Seeded random function to ensure consistent values between server and client
+    const seededRandom = (seed: number) => {
+      const x = Math.sin(seed) * 10000;
+      return x - Math.floor(x);
+    };
 
-      // Random star sizes
-      starsSizes[i] = Math.random() * 2 + 0.5;
+    for (let i = 0; i < starsCount; i++) {
+      // Position stars across the sky using deterministic values
+      starsPositions[i * 3] = (seededRandom(i) - 0.5) * 50;
+      starsPositions[i * 3 + 1] = (seededRandom(i + starsCount) - 0.5) * 30;
+      starsPositions[i * 3 + 2] = -15 - seededRandom(i + starsCount * 2) * 20;
+
+      // Deterministic star sizes
+      starsSizes[i] = seededRandom(i + starsCount * 3) * 2 + 0.5;
     }
 
     starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
@@ -102,9 +108,10 @@ export default function HeroSection() {
     const particlesPositions = new Float32Array(particlesCount * 3);
 
     for (let i = 0; i < particlesCount; i++) {
-      particlesPositions[i * 3] = (Math.random() - 0.5) * 25;
-      particlesPositions[i * 3 + 1] = (Math.random() - 0.5) * 15;
-      particlesPositions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+      // Use deterministic values for particle positions
+      particlesPositions[i * 3] = (seededRandom(i + starsCount * 4) - 0.5) * 25;
+      particlesPositions[i * 3 + 1] = (seededRandom(i + starsCount * 5) - 0.5) * 15;
+      particlesPositions[i * 3 + 2] = (seededRandom(i + starsCount * 6) - 0.5) * 10;
     }
 
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlesPositions, 3));
@@ -133,11 +140,13 @@ export default function HeroSection() {
     const shootingStars: ShootingStar[] = [];
     let shootingStarTimer = 0;
 
+    let shootingStarCounter = 0;
     const createShootingStar = () => {
-      // Random starting position (top corners or sides)
-      const startX = Math.random() > 0.5 ? 20 + Math.random() * 10 : -20 - Math.random() * 10;
-      const startY = 8 + Math.random() * 4;
-      const startZ = -5 - Math.random() * 5;
+      // Deterministic starting position (top corners or sides)
+      const seed = shootingStarCounter++;
+      const startX = seededRandom(seed) > 0.5 ? 20 + seededRandom(seed + 1) * 10 : -20 - seededRandom(seed + 2) * 10;
+      const startY = 8 + seededRandom(seed + 3) * 4;
+      const startZ = -5 - seededRandom(seed + 4) * 5;
 
       // Create longer trail for meteor effect
       const trailLength = 15;
@@ -145,7 +154,7 @@ export default function HeroSection() {
 
       // Direction vector for the trail
       const direction = new THREE.Vector3(
-        Math.random() > 0.5 ? -1 : 1,
+        seededRandom(seed + 5) > 0.5 ? -1 : 1,
         -0.3,
         -0.2
       ).normalize();
@@ -206,7 +215,7 @@ export default function HeroSection() {
         mesh: line,
         velocity: velocity,
         lifetime: 0,
-        maxLifetime: 60 + Math.random() * 40,
+        maxLifetime: 60 + seededRandom(seed + 6) * 40,
         head: head,
         glow: glow,
       } as ShootingStar & { head: THREE.Mesh; glow: THREE.Mesh });
@@ -254,8 +263,8 @@ export default function HeroSection() {
       // Shooting stars animation
       shootingStarTimer++;
 
-      // Create new shooting star randomly (every 2-4 seconds at 60fps)
-      if (shootingStarTimer > 120 + Math.random() * 120) {
+      // Create new shooting star deterministically (every 3 seconds at 60fps)
+      if (shootingStarTimer > 180) {
         createShootingStar();
         shootingStarTimer = 0;
       }

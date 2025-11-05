@@ -65,9 +65,18 @@ function StatItem({ end, label, suffix = '', icon }: StatItemProps) {
 
   // Rain drop effect on box - synchronized with background rain
   useEffect(() => {
+    // Seeded random function to ensure consistent values between server and client
+    const seededRandom = (seed: number) => {
+      const x = Math.sin(seed) * 10000;
+      return x - Math.floor(x);
+    };
+
+    let dropCounter = 0;
     const addRainDrop = () => {
       const id = Date.now();
-      const x = Math.random() * 100;
+      // Use deterministic position based on counter
+      const x = (seededRandom(dropCounter) * 100);
+      dropCounter++;
       setRainDrops((prev) => [...prev, { id, x }]);
 
       setTimeout(() => {
@@ -76,7 +85,8 @@ function StatItem({ end, label, suffix = '', icon }: StatItemProps) {
     };
 
     // More frequent drops to match background rain (every 0.5-1.5 seconds)
-    const interval = setInterval(addRainDrop, 500 + Math.random() * 1000);
+    // Use deterministic interval
+    const interval = setInterval(addRainDrop, 1000); // Fixed interval instead of random
     return () => clearInterval(interval);
   }, []);
 

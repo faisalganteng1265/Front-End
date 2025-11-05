@@ -475,15 +475,12 @@ const PixelBlast: React.FC<PixelBlastProps> = ({
       setSize();
       const ro = new ResizeObserver(setSize);
       ro.observe(container);
-      const randomFloat = () => {
-        if (typeof window !== 'undefined' && (window as any).crypto?.getRandomValues) {
-          const u32 = new Uint32Array(1);
-          window.crypto.getRandomValues(u32);
-          return u32[0] / 0xffffffff;
-        }
-        return Math.random();
+      // Seeded random function to ensure consistent values between server and client
+      const seededRandom = (seed: number) => {
+        const x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
       };
-      const timeOffset = randomFloat() * 1000;
+      const timeOffset = seededRandom(12345) * 1000; // Fixed seed for deterministic value
       let composer: EffectComposer | undefined;
       let touch: ReturnType<typeof createTouchTexture> | undefined;
       let liquidEffect: Effect | undefined;

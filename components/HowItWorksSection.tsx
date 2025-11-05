@@ -3,18 +3,27 @@
 import { useState, useEffect } from 'react';
 
 export default function HowItWorksSection() {
-  // Generate floating particles
+  // Seeded random function to ensure consistent values between server and client
+  const seededRandom = (seed: number) => {
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+  };
+
+  // Generate floating particles with deterministic values
   const [particles, setParticles] = useState<Array<{ id: number; left: number; top: number; size: number; delay: number; duration: number }>>([]);
 
   useEffect(() => {
-    setParticles(Array.from({ length: 30 }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      top: Math.random() * 100,
-      size: Math.random() * 4 + 2,
-      delay: Math.random() * 5,
-      duration: 3 + Math.random() * 4,
-    })));
+    setParticles(Array.from({ length: 30 }, (_, i) => {
+      const seed = i * 7; // Use index as seed for deterministic values
+      return {
+        id: i,
+        left: seededRandom(seed) * 100,
+        top: seededRandom(seed + 1) * 100,
+        size: seededRandom(seed + 2) * 4 + 2,
+        delay: seededRandom(seed + 3) * 5,
+        duration: 3 + seededRandom(seed + 4) * 4,
+      };
+    }));
   }, []);
 
   return (

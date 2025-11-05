@@ -64,8 +64,8 @@ function StatItem({ end, label, suffix = '', icon }: StatItemProps) {
     <div ref={ref} className="group hover:-translate-y-1 transition-all duration-300">
       <ElectricBorder
         color="#10b981"
-        speed={1}
-        chaos={0.8}
+        speed={0.01}
+        chaos={0}
         thickness={2}
         className="h-full"
         style={{ borderRadius: '1rem' }}
