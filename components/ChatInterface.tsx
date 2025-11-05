@@ -157,7 +157,7 @@ export default function ChatInterface() {
       console.error('Error:', error);
       const errorMessage: Message = {
         role: 'assistant',
-        content: `Maaf, terjadi kesalahan: ${error.message}. Silakan coba lagi.`,
+        content: `Maaf, terjadi kesalahan. Silakan coba lagi.`,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -211,32 +211,31 @@ export default function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-full w-full">
+    <div className="flex flex-col h-full w-full bg-transparent">
       {showInitialForm ? (
         // Initial Form - University Selection and Questions
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-4xl mx-auto space-y-6">
+        <div className="flex-1 overflow-y-auto bg-transparent">
+          <div className="max-w-4xl mx-auto space-y-6 py-6">
             {/* Welcome Section */}
             <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full mb-4 overflow-hidden">
-                <Image
-                  src="/GEMINIICON.png"
-                  alt="AI Assistant"
-                  width={60}
-                  height={60}
-                  className="object-contain"
-                />
+              <div className="mb-3 flex justify-center">
+                <div className="relative">
+                  <div className="absolute inset-0 blur-2xl bg-green-500/60 rounded-full"></div>
+                  <div className="relative bg-white/10 backdrop-blur-md rounded-full p-4 border border-white/20">
+                    <span className="text-5xl">💬</span>
+                  </div>
+                </div>
               </div>
-              <h2 className="text-3xl font-bold text-white mb-2" style={{ textShadow: '0 0 10px rgba(34, 197, 94, 0.8)' }}>
-                Selamat Datang!
-              </h2>
-              <p className="text-gray-400 text-lg">
-                Mulai percakapan dengan AI Campus Assistant
+              <h1 className="text-3xl font-bold text-white mb-2" style={{ textShadow: '0 0 20px rgba(34, 197, 94, 0.8), 0 0 40px rgba(34, 197, 94, 0.5), 0 0 60px rgba(34, 197, 94, 0.3)' }}>
+                AI CAMPUS CHATBOT
+              </h1>
+              <p className="text-gray-300 text-sm mb-6" style={{ textShadow: '0 0 10px rgba(0, 0, 0, 0.8)' }}>
+                Asisten virtual cerdas untuk membantu menjawab semua pertanyaan seputar kampus
               </p>
             </div>
 
             {/* Mode Selection */}
-            <div className="bg-gray-800/40 rounded-2xl p-6 border border-gray-700/50 backdrop-blur-sm">
+            <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
               <h3 className="text-white font-semibold mb-4">
                 Pilih Mode Chat
               </h3>
@@ -279,7 +278,7 @@ export default function ChatInterface() {
 
             {/* University Selection - Hanya tampil jika mode campus */}
             {selectedMode === 'campus' && (
-              <div className="bg-gray-800/40 rounded-2xl p-6 border border-gray-700/50 backdrop-blur-sm">
+              <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
                 <label className="block text-white font-semibold mb-3 flex items-center gap-2">
                   <span className="text-2xl">🏫</span>
                   Pilih Universitas
@@ -301,7 +300,7 @@ export default function ChatInterface() {
 
             {/* Question Selection - Campus Mode */}
             {selectedMode === 'campus' && (
-              <div className="bg-gray-800/40 rounded-2xl p-6 border border-gray-700/50 backdrop-blur-sm">
+              <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
                 <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
                   <span className="text-2xl">❓</span>
                   Pilih Pertanyaan
@@ -342,7 +341,7 @@ export default function ChatInterface() {
 
             {/* General Question Input - Untuk Mode Umum */}
             {selectedMode === 'general' && (
-              <div className="bg-gray-800/40 rounded-2xl p-6 border border-gray-700/50 backdrop-blur-sm">
+              <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
                 <label className="block text-white font-semibold mb-2 flex items-center gap-2">
                   <span className="text-xl">✏️</span>
                   Ketik Pertanyaan Apapun
@@ -387,7 +386,7 @@ export default function ChatInterface() {
             
             {/* Direct Answer Display - Only for Campus Mode */}
             {selectedMode === 'campus' && selectedQuestion && selectedUniversity && (
-              <div className="bg-gray-800/40 rounded-2xl p-6 border border-gray-700/50 backdrop-blur-sm">
+              <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
                 <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
                   <span className="text-xl">💡</span>
                   Jawaban
@@ -420,7 +419,7 @@ export default function ChatInterface() {
         // Chat Interface
         <>
           {/* Header */}
-          <div className="bg-gray-800/40 backdrop-blur-sm p-4 border-b border-gray-700/50">
+          <div className="bg-transparent backdrop-blur-sm p-4">
             <div className="max-w-4xl mx-auto">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -463,7 +462,7 @@ export default function ChatInterface() {
           </div>
 
           {/* Messages Container */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <div className="flex-1 overflow-y-auto p-2 space-y-6 bg-transparent">
             <div className="max-w-4xl mx-auto space-y-6">
               {messages.map((message, index) => (
                 <div
@@ -493,10 +492,10 @@ export default function ChatInterface() {
                     {/* Message Bubble */}
                     <div className={`flex flex-col ${message.role === 'user' ? 'items-end' : 'items-start'}`}>
                       <div
-                        className={`rounded-2xl px-5 py-3 shadow-md ${
+                        className={`rounded-2xl px-5 py-3  shadow-md ${
                           message.role === 'user'
                             ? 'bg-green-500 text-white'
-                            : 'bg-gray-800 text-gray-100 border border-gray-700'
+                            : 'bg-gray-800/95 text-gray-100 border border-gray-700/50'
                         }`}
                       >
                         <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
@@ -527,7 +526,7 @@ export default function ChatInterface() {
                         className="object-contain"
                       />
                     </div>
-                    <div className="bg-gray-800 text-gray-100 rounded-2xl px-5 py-3 border border-gray-700">
+                    <div className="bg-gray-800/95 text-gray-100 rounded-2xl px-5 py-3 border border-gray-700/50">
                       <div className="flex gap-2">
                         <span className="w-2 h-2 bg-green-400 rounded-full animate-bounce"></span>
                         <span
@@ -549,7 +548,7 @@ export default function ChatInterface() {
           </div>
 
           {/* Input Area */}
-          <div className="border-t border-gray-800 p-6">
+          <div className="p-6 bg-transparent">
             <div className="max-w-4xl mx-auto">
               <form
                 onSubmit={(e) => {
