@@ -6,9 +6,10 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('API route called');
-    const { message, history } = await request.json();
+    console.log('Campus API route called');
+    const { message, history, university } = await request.json();
     console.log('Message received:', message);
+    console.log('University:', university);
 
     if (!message) {
       console.error('No message provided');
@@ -26,10 +27,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('API key found, initializing Gemini...');
+    console.log('API key found, initializing Gemini for campus mode...');
 
-    // System prompt untuk konteks kampus - Ini akan digunakan di setiap pesan
-    const systemPrompt = `Kamu adalah AI Campus Navigator untuk Universitas Sebelas Maret (UNS) Surakarta.
+    // System prompt untuk mode kampus
+    const campusSystemPrompt = `Kamu adalah AI Campus Navigator untuk ${university || 'universitas'}.
 
 INFORMASI KAMPUS UNS:
 
@@ -74,29 +75,26 @@ INFORMASI KAMPUS UNS:
 - Masjid Nurul Iman
 
 Tugasmu:
-- Jawab pertanyaan tentang UNS dengan informasi di atas
+- Jawab pertanyaan tentang ${university || 'kampus'} dengan informasi di atas
 - Berikan panduan step-by-step jika diperlukan
-- Jika ditanya hal spesifik yang tidak ada di data, sarankan untuk cek ke website resmi UNS (uns.ac.id) atau hubungi fakultas
+- Jika ditanya hal spesifik yang tidak ada di data, sarankan untuk cek ke website resmi atau hubungi fakultas
 - Gunakan bahasa Indonesia yang ramah, santai tapi profesional
 - Selalu helpful dan informatif
 
-Jika ada pertanyaan di luar konteks UNS/kampus, arahkan kembali ke topik kampus dengan sopan.`;
+Jika ada pertanyaan di luar konteks kampus, arahkan kembali ke topik kampus dengan sopan.`;
 
     // Get the Gemini model with system instruction
     const model = genAI.getGenerativeModel({
       model: 'gemini-2.0-flash-thinking-exp-1219',
-      systemInstruction: systemPrompt, // System prompt akan selalu aktif di setiap pesan
+      systemInstruction: campusSystemPrompt,
     });
 
-    // Build conversation history - filter welcome messages dan pastikan format benar
+    // Build conversation history - filter welcome messages
     let chatHistory = (history || [])
       .filter((msg: any) => {
-        // Filter welcome messages
-        const welcomeMessages = [
-          'Halo! Saya AI Campus Navigator. Ada yang bisa saya bantu tentang kampus?',
-          'Halo! Saya AI Campus Navigator UNS. Saya siap membantu menjawab pertanyaan seputar kampus. Silakan pilih pertanyaan cepat di bawah atau ketik pertanyaan Anda sendiri!'
-        ];
-        return !welcomeMessages.includes(msg.content);
+        const content = msg.content || '';
+        // Filter welcome message untuk mode kampus
+        return !content.includes('Halo! Saya AI Campus Navigator');
       })
       .slice(-10) // Only keep last 10 messages for context
       .map((msg: any) => ({
@@ -105,7 +103,6 @@ Jika ada pertanyaan di luar konteks UNS/kampus, arahkan kembali ke topik kampus 
       }));
 
     // Gemini requires history to start with 'user' role
-    // If first message is 'model', remove it or ensure proper pairing
     if (chatHistory.length > 0 && chatHistory[0].role === 'model') {
       chatHistory = chatHistory.slice(1);
     }
@@ -119,16 +116,15 @@ Jika ada pertanyaan di luar konteks UNS/kampus, arahkan kembali ke topik kampus 
       },
     });
 
-    // Send message (system prompt sudah di-set di model config)
+    // Send message
     const result = await chat.sendMessage(message);
-
     const response = await result.response;
     const text = response.text();
 
-    console.log('Response generated successfully');
+    console.log('Campus mode response generated successfully');
     return NextResponse.json({ response: text });
   } catch (error: any) {
-    console.error('Error in chat API:', error);
+    console.error('Error in campus chat API:', error);
     console.error('Error details:', error.message);
     return NextResponse.json(
       { error: error.message || 'Failed to process request' },

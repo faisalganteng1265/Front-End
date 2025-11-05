@@ -147,33 +147,6 @@ export default function Fitur1() {
           </div>
         </div>
       </div>
-
-      {/* Footer Info */}
-      <div className="bg-black/50 backdrop-blur-md border-t border-green-500/20 py-8">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="flex flex-wrap items-center justify-center gap-8 text-sm">
-            <div className="flex items-center gap-3 group cursor-pointer">
-              <div className="relative">
-                <span className="absolute w-3 h-3 bg-green-400 rounded-full animate-ping opacity-75"></span>
-                <span className="relative w-3 h-3 bg-green-400 rounded-full block"></span>
-              </div>
-              <span className="text-gray-300 group-hover:text-white transition-colors font-medium">Online 24/7</span>
-            </div>
-            <div className="flex items-center gap-3 group cursor-pointer">
-              <span className="text-2xl group-hover:scale-110 transition-transform">⚡</span>
-              <span className="text-gray-300 group-hover:text-white transition-colors font-medium">Respons Instan</span>
-            </div>
-            <div className="flex items-center gap-3 group cursor-pointer">
-              <span className="text-2xl group-hover:scale-110 transition-transform">🎯</span>
-              <span className="text-gray-300 group-hover:text-white transition-colors font-medium">Akurat & Terpercaya</span>
-            </div>
-            <div className="flex items-center gap-3 group cursor-pointer">
-              <span className="text-2xl group-hover:scale-110 transition-transform">🔒</span>
-              <span className="text-gray-300 group-hover:text-white transition-colors font-medium">Aman & Privat</span>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
