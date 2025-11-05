@@ -211,10 +211,10 @@ export default function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-black">
+    <div className="flex flex-col h-full w-full">
       {showInitialForm ? (
         // Initial Form - University Selection and Questions
-        <div className="flex-1 overflow-y-auto p-6 bg-black">
+        <div className="flex-1 overflow-y-auto p-6">
           <div className="max-w-4xl mx-auto space-y-6">
             {/* Welcome Section */}
             <div className="text-center mb-8">
@@ -464,7 +464,7 @@ export default function ChatInterface() {
           </div>
 
           {/* Messages Container */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-black">
+          <div className="flex-1 overflow-y-auto p-6 space-y-6">
             <div className="max-w-4xl mx-auto space-y-6">
               {messages.map((message, index) => (
                 <div
@@ -550,7 +550,7 @@ export default function ChatInterface() {
           </div>
 
           {/* Input Area */}
-          <div className="bg-black border-t border-gray-800 p-6">
+          <div className="border-t border-gray-800 p-6">
             <div className="max-w-4xl mx-auto">
               <form
                 onSubmit={(e) => {
