@@ -2,25 +2,25 @@
 
 import ChatInterface from '@/components/ChatInterface';
 import StaggeredMenu from '@/components/StaggeredMenu';
-import PixelBlast from '@/components/PixelBlast';
+import Particles from '@/components/Particles';
 
 export default function Fitur1() {
   return (
     <div className="min-h-screen bg-black relative">
-      {/* PixelBlast Background */}
+      {/* Particles Background */}
       <div className="fixed inset-0 z-0">
-        <PixelBlast
-          variant="square"
-          pixelSize={4}
-          color="#22c55e"
-          patternScale={2}
-          patternDensity={0.8}
-          enableRipples={true}
-          rippleIntensityScale={2}
-          rippleSpeed={0.4}
-          speed={0.3}
-          transparent={false}
-          edgeFade={0.3}
+        <Particles
+          particleCount={1500}
+          particleSpread={15}
+          speed={0.15}
+          particleColors={['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#e5e5e5', '#d4d4d4', '#22c55e']}
+          moveParticlesOnHover={true}
+          particleHoverFactor={2}
+          alphaParticles={true}
+          particleBaseSize={150}
+          sizeRandomness={1.5}
+          cameraDistance={25}
+          disableRotation={false}
         />
       </div>
 
