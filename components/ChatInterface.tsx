@@ -16,12 +16,12 @@ interface QuickQuestion {
 }
 
 const quickQuestions: QuickQuestion[] = [
-  { icon: '📚', question: 'Bagaimana cara mengisi KRS?', category: 'KRS' },
-  { icon: '🏛️', question: 'Di mana lokasi perpustakaan pusat?', category: 'Gedung' },
-  { icon: '👨‍🏫', question: 'Bagaimana cara mencari info dosen?', category: 'Dosen' },
-  { icon: '💰', question: 'Beasiswa apa saja yang tersedia?', category: 'Beasiswa' },
-  { icon: '📅', question: 'Kapan jadwal UTS dan UAS?', category: 'Akademik' },
-  { icon: '🎯', question: 'UKM apa saja yang ada?', category: 'UKM' },
+  { icon: '/KRSICON.png', question: 'Bagaimana cara mengisi KRS?', category: 'KRS' },
+  { icon: '/GEDUNGICON.png', question: 'Di mana lokasi perpustakaan pusat?', category: 'Gedung' },
+  { icon: '/DOSENICON.png', question: 'Bagaimana cara mencari info dosen?', category: 'Dosen' },
+  { icon: '/BEASISWAICON.png', question: 'Beasiswa apa saja yang tersedia?', category: 'Beasiswa' },
+  { icon: '/JADWALICON.png', question: 'Kapan jadwal UTS dan UAS?', category: 'Akademik' },
+  { icon: '/ORGANISASIICON.png', question: 'UKM apa saja yang ada?', category: 'UKM' },
 ];
 
 const universities = [
@@ -222,7 +222,13 @@ export default function ChatInterface() {
                 <div className="relative">
                   <div className="absolute inset-0 blur-2xl bg-green-500/60 rounded-full"></div>
                   <div className="relative bg-white/10 backdrop-blur-md rounded-full p-4 border border-white/20">
-                    <span className="text-5xl">💬</span>
+                    <Image
+                      src="/GEMINIICON.png"
+                      alt="AI Campus Chatbot"
+                      width={64}
+                      height={64}
+                      className="object-contain"
+                    />
                   </div>
                 </div>
               </div>
@@ -280,7 +286,7 @@ export default function ChatInterface() {
             {selectedMode === 'campus' && (
               <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
                 <label className="block text-white font-semibold mb-3 flex items-center gap-2">
-                  <span className="text-2xl">🏫</span>
+                  <Image src="/KAMPUSICON.png" alt="Kampus" width={32} height={32} className="object-contain" />
                   Pilih Universitas
                 </label>
                 <select
@@ -302,7 +308,7 @@ export default function ChatInterface() {
             {selectedMode === 'campus' && (
               <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
                 <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                  <span className="text-2xl">❓</span>
+                  <Image src="/TANDATANYAICON.png" alt="Pertanyaan" width={12} height={12} className="object-contain" />
                   Pilih Pertanyaan
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -316,7 +322,7 @@ export default function ChatInterface() {
                           : 'bg-gray-900/50 border-gray-700 hover:bg-white/95 hover:border-white'
                       } group`}
                     >
-                      <span className="text-2xl flex-shrink-0">{item.icon}</span>
+                      <Image src={item.icon} alt={item.category} width={32} height={32} className="object-contain flex-shrink-0" />
                       <div className="flex-1">
                         <p className={`text-sm transition-colors ${
                           selectedQuestion === item.question
@@ -425,7 +431,7 @@ export default function ChatInterface() {
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg border border-white/20 overflow-hidden p-1">
                     <Image
-                      src="/AICAMPUS.png"
+                      src="/GEMINIICON.png"
                       alt="AI Assistant"
                       width={36}
                       height={36}
