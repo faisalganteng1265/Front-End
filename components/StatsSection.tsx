@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import Image from 'next/image';
 import ElectricBorder from './ElectricBorder';
 
 interface StatItemProps {
@@ -77,7 +78,7 @@ function StatItem({ end, label, suffix = '', icon }: StatItemProps) {
           <div className="relative z-10 text-center space-y-4">
             {/* Icon */}
             <div className="w-16 h-16 mx-auto bg-emerald-500/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-emerald-500/20">
-              <span className="text-4xl">{icon}</span>
+              <Image src={icon} alt={label} width={40} height={40} className="object-contain" />
             </div>
 
             {/* Counter */}
@@ -111,10 +112,10 @@ export default function StatsSection() {
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="grid md:grid-cols-4 gap-6">
-          <StatItem end={1000} label="Mahasiswa Aktif" suffix="+" icon="👥" />
-          <StatItem end={50} label="Event per Bulan" suffix="+" icon="📅" />
-          <StatItem end={95} label="Kepuasan Pengguna" suffix="%" icon="⭐" />
-          <StatItem end={24} label="AI Support" suffix="/7" icon="🤖" />
+          <StatItem end={1000} label="Mahasiswa Aktif" suffix="+" icon="/AKADEMIKICON.png" />
+          <StatItem end={50} label="Event per Bulan" suffix="+" icon="/JADWALICON.png" />
+          <StatItem end={95} label="Kepuasan Pengguna" suffix="%" icon="/BINTANGICON.png" />
+          <StatItem end={24} label="AI Support" suffix="/7" icon="/GEMINIICON.png" />
         </div>
       </div>
 
