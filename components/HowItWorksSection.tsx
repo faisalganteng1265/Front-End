@@ -126,7 +126,7 @@ export default function HowItWorksSection() {
             </div>
             {/* "Mudah Digunakan," Text (no box) - Below box, right aligned */}
             <div className="mt-6">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white text-right" style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif', letterSpacing: '0.02em' }}>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white text-right" style={{ fontFamily: '"DM Sans", "Inter", "Helvetica Neue", "Arial", sans-serif', letterSpacing: '0.01em' }}>
                 MUDAH DIGUNAKAN
               </h2>
             </div>
@@ -136,10 +136,10 @@ export default function HowItWorksSection() {
           <div className="w-full md:mt-0">
             {/* "Cara Kerja" Text (no box) */}
             <div className="mb-20 flex justify-center">
-              <p className="text-3xl md:text-4xl lg:text-5xl font-bold bg-white bg-clip-text text-transparent" style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif' }}>
-                CARA
+              <p className="text-3xl md:text-4xl lg:text-5xl font-bold bg-white bg-clip-text text-transparent" style={{ fontFamily: '"DM Sans", "Inter", "Helvetica Neue", "Arial", sans-serif', letterSpacing: '0.01em' }}>
+                CARA&nbsp;
               </p>
-              <p className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 bg-clip-text text-transparent" style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif' }}>
+              <p className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 bg-clip-text text-transparent" style={{ fontFamily: '"DM Sans", "Inter", "Helvetica Neue", "Arial", sans-serif', letterSpacing: '0.01em' }}>
                 KERJA
               </p>
             </div>
@@ -183,7 +183,7 @@ export default function HowItWorksSection() {
           <div className="w-full md:mt-48">
             {/* "Langsung Efektif" Text (no box) */}
             <div className="mb-6 flex justify-end">
-              <p className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 bg-clip-text text-transparent" style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif' }}>
+              <p className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 bg-clip-text text-transparent" style={{ fontFamily: '"DM Sans", "Inter", "Helvetica Neue", "Arial", sans-serif', letterSpacing: '0.01em' }}>
                 LANGSUNG EFEKTIF
               </p>
             </div>
