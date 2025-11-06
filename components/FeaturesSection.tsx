@@ -3,6 +3,7 @@
 import CardSwap, { Card } from './CardSwap';
 import { useState, useRef, useEffect } from 'react';
 import ElectricBorder from './ElectricBorder';
+import Image from 'next/image';
 
 interface StatItemProps {
   end: number;
@@ -371,7 +372,7 @@ export default function FeaturesSection() {
                   <div className="relative w-20 h-20 mb-6 group">
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/30 to-teal-500/30 rounded-2xl blur-xl group-hover:blur-2xl transition-all"></div>
                     <div className="relative w-full h-full bg-gradient-to-br from-white/25 to-white/5 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/30 shadow-2xl">
-                      <span className="text-5xl drop-shadow-lg">💬</span>
+                      <Image src="/GEMINIICON.png" alt="AI Campus Guide" width={50} height={50} className="object-contain drop-shadow-lg" />
                     </div>
                   </div>
 
@@ -427,7 +428,7 @@ export default function FeaturesSection() {
                   <div className="relative w-20 h-20 mb-6 group">
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/30 to-teal-500/30 rounded-2xl blur-xl group-hover:blur-2xl transition-all"></div>
                     <div className="relative w-full h-full bg-gradient-to-br from-white/25 to-white/5 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/30 shadow-2xl">
-                      <span className="text-5xl drop-shadow-lg">🎯</span>
+                      <Image src="/ICONLAMPU.png" alt="Event Recommender" width={50} height={50} className="object-contain drop-shadow-lg" />
                     </div>
                   </div>
 
@@ -483,7 +484,7 @@ export default function FeaturesSection() {
                   <div className="relative w-20 h-20 mb-6 group">
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/30 to-teal-500/30 rounded-2xl blur-xl group-hover:blur-2xl transition-all"></div>
                     <div className="relative w-full h-full bg-gradient-to-br from-white/25 to-white/5 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/30 shadow-2xl">
-                      <span className="text-5xl drop-shadow-lg">📅</span>
+                      <Image src="/JADWALICON.png" alt="Smart Schedule" width={50} height={50} className="object-contain drop-shadow-lg" />
                     </div>
                   </div>
 
@@ -538,7 +539,7 @@ export default function FeaturesSection() {
                   <div className="relative w-20 h-20 mb-6 group">
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/30 to-teal-500/30 rounded-2xl blur-xl group-hover:blur-2xl transition-all"></div>
                     <div className="relative w-full h-full bg-gradient-to-br from-white/25 to-white/5 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/30 shadow-2xl">
-                      <span className="text-5xl drop-shadow-lg">🤝</span>
+                      <Image src="/SOSIALICON.png" alt="Peer Connect" width={50} height={50} className="object-contain drop-shadow-lg" />
                     </div>
                   </div>
 
