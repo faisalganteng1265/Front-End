@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function HowItWorksSection() {
   // Seeded random function to ensure consistent values between server and client
@@ -108,7 +109,7 @@ export default function HowItWorksSection() {
                 {/* Icon */}
                 <div className="relative mb-4">
                   <div className="w-14 h-14 mx-auto bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20">
-                    <span className="text-4xl">📝</span>
+                    <Image src="/DAFTARICON.png" alt="Daftar" width={35} height={50} className="object-contain" />
                   </div>
                 </div>
 
@@ -161,7 +162,7 @@ export default function HowItWorksSection() {
                 {/* Icon */}
                 <div className="relative mb-4">
                   <div className="w-14 h-14 mx-auto bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20">
-                    <span className="text-4xl">🚀</span>
+                    <Image src="/ROKETICON.png" alt="Eksplorasi" width={32} height={32} className="object-contain" />
                   </div>
                 </div>
 
@@ -203,7 +204,7 @@ export default function HowItWorksSection() {
                 {/* Icon */}
                 <div className="relative mb-4">
                   <div className="w-14 h-14 mx-auto bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20">
-                    <span className="text-4xl">🎉</span>
+                    <Image src="/SELAMATICON.png" alt="Nikmati Hasilnya" width={38} height={32} className="object-contain" />
                   </div>
                 </div>
 
