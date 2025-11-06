@@ -423,9 +423,9 @@ export default function ChatInterface() {
             <div className="max-w-4xl mx-auto">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg border border-white/20 overflow-hidden">
+                  <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg border border-white/20 overflow-hidden p-1">
                     <Image
-                      src="/GEMINIICON.png"
+                      src="/AICAMPUS.png"
                       alt="AI Assistant"
                       width={36}
                       height={36}
@@ -474,13 +474,13 @@ export default function ChatInterface() {
                     <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
                       message.role === 'user'
                         ? 'bg-gradient-to-br from-green-500 to-green-600'
-                        : 'bg-gray-700 overflow-hidden'
+                        : 'bg-gray-700 overflow-hidden p-1'
                     }`}>
                       {message.role === 'user' ? (
                         <span className="text-xl">👤</span>
                       ) : (
                         <Image
-                          src="/GEMINIICON.png"
+                          src="/AICAMPUS.png"
                           alt="AI"
                           width={28}
                           height={28}
@@ -517,9 +517,9 @@ export default function ChatInterface() {
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="flex gap-3 max-w-[80%]">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center bg-gray-700 border border-gray-700 overflow-hidden">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center bg-gray-700 border border-gray-700 overflow-hidden p-1">
                       <Image
-                        src="/GEMINIICON.png"
+                        src="/AICAMPUS.png"
                         alt="AI"
                         width={28}
                         height={28}

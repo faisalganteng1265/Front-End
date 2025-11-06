@@ -235,8 +235,8 @@ export default function FAQSection() {
               <div className="bg-gradient-to-r from-gray-900 to-black p-5 rounded-t-3xl shadow-lg border-b border-gray-800/50">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gray-800/50 rounded-full flex items-center justify-center backdrop-blur-sm border border-gray-700/50">
-                      <span className="text-2xl">🤖</span>
+                    <div className="w-10 h-10 bg-gray-800/50 rounded-full flex items-center justify-center backdrop-blur-sm border border-gray-700/50 p-1">
+                      <img src="/AICAMPUS.png" alt="AI Campus" className="w-full h-full object-contain" />
                     </div>
                     <div>
                       <h3
@@ -265,8 +265,8 @@ export default function FAQSection() {
                     style={{ animationDelay: `${idx * 50}ms` }}
                   >
                     {msg.role === 'assistant' && (
-                      <div className="w-8 h-8 bg-gray-800/80 rounded-full flex items-center justify-center mr-2 flex-shrink-0 shadow-lg border border-gray-700/50">
-                        <span className="text-gray-300 text-sm">🤖</span>
+                      <div className="w-8 h-8 bg-gray-800/80 rounded-full flex items-center justify-center mr-2 flex-shrink-0 shadow-lg border border-gray-700/50 p-1">
+                        <img src="/AICAMPUS.png" alt="AI Campus" className="w-full h-full object-contain" />
                       </div>
                     )}
                     <div
@@ -288,8 +288,8 @@ export default function FAQSection() {
                 ))}
                 {isLoading && (
                   <div className="flex justify-start">
-                    <div className="w-8 h-8 bg-gray-800/80 rounded-full flex items-center justify-center mr-2 flex-shrink-0 shadow-lg border border-gray-700/50">
-                      <span className="text-gray-300 text-sm">🤖</span>
+                    <div className="w-8 h-8 bg-gray-800/80 rounded-full flex items-center justify-center mr-2 flex-shrink-0 shadow-lg border border-gray-700/50 p-1">
+                      <img src="/AICAMPUS.png" alt="AI Campus" className="w-full h-full object-contain" />
                     </div>
                     <div className="bg-gray-900/90 border border-gray-800/50 rounded-2xl rounded-bl-sm px-4 py-3 backdrop-blur-sm shadow-lg">
                       <div className="flex gap-1">
