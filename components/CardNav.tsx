@@ -206,13 +206,16 @@ const CardNav = ({
             />
           </div>
 
-          <div className="logo-container flex items-center md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 order-1 md:order-none">
+          <div className="logo-container flex items-center gap-3 md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 order-1 md:order-none">
             <img src={logo} alt={logoAlt} className="logo h-[28px]" />
+            <span className="text-white font-extrabold text-xl tracking-tight uppercase" style={{ letterSpacing: '0.05em' }}>
+              AICAMPUS
+            </span>
           </div>
 
           <button
             type="button"
-            className="card-nav-cta-button hidden md:inline-flex border-0 rounded-[calc(0.75rem-0.2rem)] px-4 items-center h-full font-medium cursor-pointer transition-colors duration-300 relative z-[20] pointer-events-auto"
+            className="card-nav-cta-button hidden md:inline-flex border-0 rounded-xl px-6 py-2.5 items-center justify-center font-semibold text-sm cursor-pointer transition-all duration-300 relative z-[20] pointer-events-auto hover:scale-105 hover:shadow-lg hover:shadow-lime-500/50"
             style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
           >
             Get Started

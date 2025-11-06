@@ -117,8 +117,8 @@ export default function Navbar() {
         items={navItems}
         baseColor={isScrolled ? '#rgba(152, 47, 47, 0.8)' : 'rgba(0, 0, 0, 0.8)'} // gray-800 with transparency
         menuColor="#ffffff"
-        buttonBgColor="#08300f" // green-500
-        buttonTextColor="#ffffff"
+        buttonBgColor="#84cc16" // lime-500
+        buttonTextColor="#000000"
       />
     </nav>
   );
