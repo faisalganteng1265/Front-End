@@ -379,28 +379,31 @@ export default function PeerConnect() {
 
     try {
       if (chatMode === 'private' && selectedPeer) {
-        // Private chat - balasan dari peer yang dipilih
-        const response = await fetch('/api/peer-chat', {
+        // Private chat - balasan dari peer yang dipilih menggunakan AI Campus
+        const response = await fetch('/api/chat/campus', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            peerId: selectedPeer.id,
             message: currentMessage,
-            chatHistory: currentMessages.slice(-10),
+            history: currentMessages.slice(-10).map(msg => ({
+              role: msg.isMe ? 'user' : 'assistant',
+              content: msg.text
+            })),
+            university: 'UNS'
           }),
         });
 
         const data = await response.json();
 
-        if (data.success && data.reply) {
+        if (data.response) {
           const aiMessage: Message = {
             id: currentMessages.length + 1,
             senderId: selectedPeer.id,
             senderName: selectedPeer.name,
             senderAvatar: selectedPeer.avatar,
-            text: data.reply,
+            text: data.response,
             timestamp: new Date(),
             isMe: false,
           };
@@ -413,10 +416,10 @@ export default function PeerConnect() {
             [selectedPeer.id]: updatedMessages,
           }));
         } else {
-          throw new Error('Failed to get response');
+          throw new Error(data.error || 'Failed to get response');
         }
       } else if (chatMode === 'group' && selectedGroup) {
-        // Group chat - balasan acak dari member grup
+        // Group chat - balasan acak dari member grup menggunakan AI Campus
         const onlineMembers = selectedGroup.members.filter(m => m.online);
         if (onlineMembers.length === 0) {
           throw new Error('No online members');
@@ -425,29 +428,30 @@ export default function PeerConnect() {
         // Pilih random member untuk balas
         const randomMember = onlineMembers[Math.floor(Math.random() * onlineMembers.length)];
 
-        const response = await fetch('/api/peer-chat', {
+        const response = await fetch('/api/chat/campus', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            peerId: randomMember.id,
             message: currentMessage,
-            chatHistory: currentMessages.slice(-10),
-            isGroupChat: true,
-            groupTopic: selectedGroup.interest,
+            history: currentMessages.slice(-10).map(msg => ({
+              role: msg.isMe ? 'user' : 'assistant',
+              content: msg.text
+            })),
+            university: 'UNS'
           }),
         });
 
         const data = await response.json();
 
-        if (data.success && data.reply) {
+        if (data.response) {
           const aiMessage: Message = {
             id: currentMessages.length + 1,
             senderId: randomMember.id,
             senderName: randomMember.name,
             senderAvatar: randomMember.avatar,
-            text: data.reply,
+            text: data.response,
             timestamp: new Date(),
             isMe: false,
           };
@@ -457,11 +461,11 @@ export default function PeerConnect() {
           // Update group messages
           setGroups(prev => prev.map(g =>
             g.id === selectedGroup.id
-              ? { ...g, messages: updatedMessages, lastMessage: data.reply, lastMessageTime: new Date() }
+              ? { ...g, messages: updatedMessages, lastMessage: data.response, lastMessageTime: new Date() }
               : g
           ));
         } else {
-          throw new Error('Failed to get response');
+          throw new Error(data.error || 'Failed to get response');
         }
       }
     } catch (error) {

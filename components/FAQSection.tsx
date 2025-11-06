@@ -41,10 +41,10 @@ const faqs: FAQItem[] = [
 ];
 
 const quickQuestions = [
-  'Bagaimana cara mengisi KRS?',
-  'Dimana lokasi perpustakaan?',
-  'Apa saja UKM yang tersedia?',
-  'Bagaimana cara mendaftar beasiswa?',
+  'Apa itu AICAMPUS?',
+  'Bagaimana cara menggunakan Event Recommender?',
+  'Apa saja fitur utama AICAMPUS?',
+  'Bagaimana cara kerja Smart Schedule Builder?',
 ];
 
 export default function FAQSection() {
@@ -52,7 +52,7 @@ export default function FAQSection() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Halo! Saya AI Campus Navigator UNS. Saya siap membantu menjawab pertanyaan seputar kampus. Silakan pilih pertanyaan cepat di bawah atau ketik pertanyaan Anda sendiri!',
+      content: 'Halo! Saya AI Assistant untuk aplikasi web AICAMPUS. Saya siap membantu menjawab pertanyaan seputar aplikasi AICAMPUS. Silakan pilih pertanyaan cepat di bawah atau ketik pertanyaan Anda sendiri!',
     },
   ]);
   const [input, setInput] = useState('');
@@ -106,7 +106,7 @@ export default function FAQSection() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await fetch('/api/chat/aicampus', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -243,7 +243,7 @@ export default function FAQSection() {
                         className="text-xl text-gray-100 font-semibold"
                         style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif' }}
                       >
-                        AI Campus Navigator
+                        AI Assistant AICAMPUS
                       </h3>
                       <p className="text-gray-500 text-xs opacity-90">Online • Ready to help</p>
                     </div>

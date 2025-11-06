@@ -27,6 +27,7 @@ interface CardNavProps {
   menuColor?: string;
   buttonBgColor?: string;
   buttonTextColor?: string;
+  onMenuToggle?: (isOpen: boolean) => void;
 }
 
 const CardNav = ({
@@ -38,7 +39,8 @@ const CardNav = ({
   baseColor = '#fff',
   menuColor,
   buttonBgColor,
-  buttonTextColor
+  buttonTextColor,
+  onMenuToggle
 }: CardNavProps) => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -83,10 +85,16 @@ const CardNav = ({
 
   const createTimeline = () => {
     const navEl = navRef.current;
-    if (!navEl) return null;
+    if (!navEl) {
+      console.log('createTimeline: No navEl');
+      return null;
+    }
+
+    const cards = cardsRef.current.filter(Boolean);
+    console.log('Creating timeline, cards:', cards.length);
 
     gsap.set(navEl, { height: 60, overflow: 'hidden' });
-    gsap.set(cardsRef.current, { y: 50, opacity: 0 });
+    gsap.set(cards, { y: 50, opacity: 0 });
 
     const tl = gsap.timeline({ paused: true });
 
@@ -96,8 +104,9 @@ const CardNav = ({
       ease
     });
 
-    tl.to(cardsRef.current, { y: 0, opacity: 1, duration: 0.4, ease, stagger: 0.08 }, '-=0.1');
+    tl.to(cards, { y: 0, opacity: 1, duration: 0.4, ease, stagger: 0.08 }, '-=0.1');
 
+    console.log('Timeline created successfully');
     return tl;
   };
 
@@ -110,56 +119,54 @@ const CardNav = ({
       tlRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ease, items]);
+  }, []); // Only create once on mount
 
   useLayoutEffect(() => {
+    let resizeTimer: NodeJS.Timeout;
     const handleResize = () => {
-      if (!tlRef.current) return;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (!tlRef.current || !navRef.current) return;
 
-      if (isExpanded) {
-        const newHeight = calculateHeight();
-        gsap.set(navRef.current, { height: newHeight });
-
-        tlRef.current.kill();
-        const newTl = createTimeline();
-        if (newTl) {
-          newTl.progress(1);
-          tlRef.current = newTl;
+        if (isExpanded) {
+          const newHeight = calculateHeight();
+          gsap.to(navRef.current, { height: newHeight, duration: 0 });
         }
-      } else {
-        tlRef.current.kill();
-        const newTl = createTimeline();
-        if (newTl) {
-          tlRef.current = newTl;
-        }
-      }
+      }, 100);
     };
 
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimer);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isExpanded]);
 
   const toggleMenu = () => {
     const tl = tlRef.current;
-    if (!tl) return;
+    console.log('toggleMenu clicked', { tl: !!tl, isExpanded, navEl: !!navRef.current });
 
-    // Remove any existing callbacks to prevent them from stacking
-    tl.eventCallback('onComplete', null);
-    tl.eventCallback('onReverseComplete', null);
+    if (!tl) {
+      console.log('No timeline found!');
+      return;
+    }
 
     if (!isExpanded) {
       // Opening
+      console.log('Opening menu');
       setIsHamburgerOpen(true);
       setIsExpanded(true);
-      tl.restart();
+      onMenuToggle?.(true);
+      tl.play(0);
     } else {
       // Closing
+      console.log('Closing menu');
       setIsHamburgerOpen(false);
-      tl.reverse(0);
+      onMenuToggle?.(false);
+      tl.reverse();
       tl.eventCallback('onReverseComplete', () => {
         setIsExpanded(false);
-        tl.eventCallback('onReverseComplete', null);
       });
     }
   };
@@ -186,7 +193,7 @@ const CardNav = ({
       >
         <div className="card-nav-top absolute inset-x-0 top-0 h-[60px] flex items-center justify-between p-2 pl-[1.1rem] z-[10] pointer-events-auto">
           <div
-            className={`hamburger-menu ${isHamburgerOpen ? 'open' : ''} group h-full flex flex-col items-center justify-center cursor-pointer gap-[6px] order-2 md:order-none relative z-[20] pointer-events-auto`}
+            className={`hamburger-menu ${isHamburgerOpen ? 'open' : ''} group h-full flex flex-col items-center justify-center cursor-pointer gap-[6px] relative z-[20] pointer-events-auto`}
             onClick={toggleMenu}
             onKeyDown={handleKeyDown}
             role="button"

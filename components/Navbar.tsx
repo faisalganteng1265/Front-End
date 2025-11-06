@@ -7,6 +7,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Navigation items for CardNav - matching GallerySection features
@@ -68,33 +69,8 @@ export default function Navbar() {
       // Set threshold sekitar 50px dari top untuk transisi lebih cepat
       setIsScrolled(currentScrollY > 50);
 
-      // If at top of page, always show
-      if (currentScrollY <= 50) {
-        setIsVisible(true);
-        if (hideTimerRef.current) {
-          clearTimeout(hideTimerRef.current);
-        }
-        setLastScrollY(currentScrollY);
-        return;
-      }
-
-      // Clear existing timer
-      if (hideTimerRef.current) {
-        clearTimeout(hideTimerRef.current);
-      }
-
-      // Detect scroll direction
-      if (currentScrollY > lastScrollY) {
-        // Scrolling down - hide navbar (don't show)
-        setIsVisible(false);
-      } else if (currentScrollY < lastScrollY) {
-        // Scrolling up - show navbar, then hide after 3 seconds
-        setIsVisible(true);
-        hideTimerRef.current = setTimeout(() => {
-          setIsVisible(false);
-        }, 3000);
-      }
-
+      // Navbar always visible - no auto-hide
+      setIsVisible(true);
       setLastScrollY(currentScrollY);
     };
 
@@ -105,7 +81,7 @@ export default function Navbar() {
         clearTimeout(hideTimerRef.current);
       }
     };
-  }, [lastScrollY]);
+  }, [lastScrollY, isMenuOpen]);
 
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
@@ -115,10 +91,11 @@ export default function Navbar() {
         logo="/AICAMPUS.png"
         logoAlt="AICampus"
         items={navItems}
-        baseColor={isScrolled ? '#rgba(152, 47, 47, 0.8)' : 'rgba(0, 0, 0, 0.8)'} // gray-800 with transparency
+        baseColor={isScrolled ? 'rgba(17, 24, 39, 0.95)' : 'rgba(31, 41, 55, 0.9)'} // gray-900/gray-800 with transparency
         menuColor="#ffffff"
         buttonBgColor="#84cc16" // lime-500
         buttonTextColor="#000000"
+        onMenuToggle={setIsMenuOpen}
       />
     </nav>
   );
