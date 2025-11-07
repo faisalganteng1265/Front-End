@@ -933,17 +933,24 @@ export default function PeerConnect() {
       {showChat && (
         <div className="relative z-10 h-screen flex flex-col">
           {/* Top Header */}
-          <div className="bg-gradient-to-r from-lime-500/10 to-green-500/10 backdrop-blur-md border-b border-lime-500/30 p-4">
-            <h1 className="text-3xl font-bold text-white text-center">
-              Peer Connect - Real Group Chat
+          <div className="bg-gray-800 backdrop-blur-md border-b border-gray-700 p-4">
+            <h1 className="text-3xl font-bold text-white text-center flex items-center justify-center">
+              <Image
+                src="/SOSIALICON.png"
+                alt="Peer Connect Icon"
+                width={40}
+                height={40}
+                className="mr-3"
+              />
+              <span>Peer Connect - Real Group Chat</span>
             </h1>
           </div>
 
           <div className="flex-1 flex overflow-hidden">
             {/* Left Sidebar - Group & Private Chat List */}
-            <div className="w-80 bg-gradient-to-b from-gray-900/90 to-black/90 backdrop-blur-md border-r border-lime-500/20 overflow-y-auto custom-scrollbar">
+            <div className="w-80 bg-gray-900 backdrop-blur-md border-r border-gray-700 overflow-y-auto custom-scrollbar">
               {/* Group Chats Section */}
-              <div className="p-4 border-b border-lime-500/20">
+              <div className="p-4 border-b border-gray-700">
                 <h2 className="text-white font-bold mb-3 flex items-center gap-2">
                   <span className="text-lime-400">●</span>
                   Group Chats ({groups.length})
@@ -1039,7 +1046,7 @@ export default function PeerConnect() {
             <div className="flex-1 flex flex-col">
               {/* Chat Header */}
               {(selectedGroup || selectedPeer) && (
-                <div className="bg-gradient-to-r from-gray-900/90 to-black/90 backdrop-blur-md border-b border-lime-500/20 p-4">
+                <div className="bg-gray-800 backdrop-blur-md border-b border-gray-700 p-4">
                   {chatMode === 'group' && selectedGroup && (
                     <div className="flex items-center gap-4">
                       <Image
@@ -1162,7 +1169,7 @@ export default function PeerConnect() {
 
               {/* Input Area */}
               {(selectedGroup || selectedPeer) && (
-                <div className="bg-gradient-to-r from-gray-900/90 to-black/90 backdrop-blur-md border-t border-lime-500/20 p-4">
+                <div className="bg-gray-800 backdrop-blur-md border-t border-gray-700 p-4">
                   <div className="flex gap-3">
                     <input
                       type="text"
@@ -1174,7 +1181,7 @@ export default function PeerConnect() {
                           ? `Send a message to ${selectedGroup?.name}...`
                           : `Send a private message to ${selectedPeer?.name}...`
                       }
-                      className="flex-1 bg-gray-800/50 text-white rounded-full px-6 py-3 border border-gray-700/50 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-transparent transition-all"
+                      className="flex-1 bg-gray-700/50 text-white rounded-full px-6 py-3 border border-gray-600/50 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-transparent transition-all"
                       disabled={isSending}
                     />
                     <button
@@ -1182,7 +1189,7 @@ export default function PeerConnect() {
                       disabled={!inputMessage.trim() || isSending}
                       className="bg-gradient-to-r from-lime-500 to-green-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-lime-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {isSending ? 'Sending...' : 'Send'}
+                      {isSending ? 'Sending...' : 'send'}
                     </button>
                   </div>
                 </div>
@@ -1191,7 +1198,7 @@ export default function PeerConnect() {
 
             {/* Right Sidebar - Members List */}
             {selectedGroup && (
-              <div className="w-64 bg-gradient-to-b from-gray-900/90 to-black/90 backdrop-blur-md border-l border-lime-500/20 overflow-y-auto custom-scrollbar">
+              <div className="w-64 bg-gray-900 backdrop-blur-md border-l border-gray-700 overflow-y-auto custom-scrollbar">
                 <div className="p-4">
                   <h2 className="text-white font-bold mb-4">
                     Members ({selectedGroup.memberCount})
@@ -1253,18 +1260,18 @@ export default function PeerConnect() {
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(132, 204, 22, 0.3);
+          background: rgba(107, 114, 128, 0.5);
           border-radius: 10px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(132, 204, 22, 0.5);
+          background: rgba(107, 114, 128, 0.7);
         }
 
         /* Firefox */
         .custom-scrollbar {
           scrollbar-width: thin;
-          scrollbar-color: rgba(132, 204, 22, 0.3) rgba(0, 0, 0, 0.2);
+          scrollbar-color: rgba(107, 114, 128, 0.5) rgba(0, 0, 0, 0.2);
         }
       `}</style>
 
