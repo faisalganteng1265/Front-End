@@ -123,6 +123,8 @@ export default function PeerConnect() {
   const [loadingMessage, setLoadingMessage] = useState('Memuat data autentikasi...');
   const [hasInitialized, setHasInitialized] = useState(false);
   const [isVideoCallOpen, setIsVideoCallOpen] = useState(false);
+  const [showGroupChats, setShowGroupChats] = useState(true); // State for group chat dropdown
+  const [showPrivateChats, setShowPrivateChats] = useState(true); // State for private chat dropdown
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when messages change
@@ -949,106 +951,154 @@ export default function PeerConnect() {
 
           <div className="flex-1 flex overflow-hidden">
             {/* Left Sidebar - Group & Private Chat List */}
-            <div className="w-80 bg-black/50 backdrop-blur-md border-r border-gray-700 overflow-y-auto custom-scrollbar">
+            <div className="w-80 bg-black/30 backdrop-blur-md overflow-y-auto custom-scrollbar">
               {/* Group Chats Section */}
               <div className="p-4 border-b border-black/50">
-                <h2 className="text-white font-bold mb-3 flex items-center gap-2">
-                  <Image
-                    src="/TEXTICON.png"
-                    alt="Group Chat Icon"
-                    width={15}
-                    height={15}
-                  />
-                  Group Chats ({groups.length})
-                </h2>
-                <div className="space-y-2">
-                  {groups.map(group => (
-                    <button
-                      key={group.id}
-                      onClick={() => handleGroupSelect(group)}
-                      className={`w-full text-left p-3 rounded-lg transition-all ${
-                        selectedGroup?.id === group.id
-                          ? 'bg-lime-500/20 border border-lime-500/50'
-                          : 'bg-gray-800/50 hover:bg-gray-800/80 border border-transparent'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Image
-                          src={group.icon}
-                          alt={group.name}
-                          width={40}
-                          height={40}
-                          className="rounded-full"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-white font-semibold truncate">{group.name}</p>
-                          <p className="text-gray-400 text-xs truncate">
-                            {group.memberCount} members
-                          </p>
+                <button
+                  className="w-full flex items-center justify-between text-white font-bold mb-3"
+                  onClick={() => setShowGroupChats(!showGroupChats)}
+                >
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src="/TEXTICON.png"
+                      alt="Group Chat Icon"
+                      width={15}
+                      height={15}
+                    />
+                    <h2>Group Chats ({groups.length})</h2>
+                  </div>
+                  <svg
+                    className={`w-4 h-4 transform transition-transform ${
+                      showGroupChats ? 'rotate-0' : '-rotate-90'
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </button>
+                {showGroupChats && (
+                  <div className="space-y-2">
+                    {groups.map(group => (
+                      <button
+                        key={group.id}
+                        onClick={() => handleGroupSelect(group)}
+                        className={`w-full text-left p-3 rounded-lg transition-all ${
+                          selectedGroup?.id === group.id
+                            ? 'bg-lime-500/20 border border-lime-500/50'
+                            : 'bg-gray-800/50 hover:bg-gray-800/80 border border-transparent'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <Image
+                            src={group.icon}
+                            alt={group.name}
+                            width={40}
+                            height={40}
+                            className="rounded-full"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-white font-semibold truncate">{group.name}</p>
+                            <p className="text-gray-400 text-xs truncate">
+                              {group.memberCount} members
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                      {group.lastMessage && (
-                        <p className="text-gray-500 text-xs mt-2 truncate">{group.lastMessage}</p>
-                      )}
-                    </button>
-                  ))}
-                </div>
+                        {group.lastMessage && (
+                          <p className="text-gray-500 text-xs mt-2 truncate">{group.lastMessage}</p>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Private Chats Section */}
               {activePrivateChats.length > 0 && (
-                <div className="p-4">
-                  <h2 className="text-white font-bold mb-3 flex items-center gap-2">
+               <div className="p-4 border-b border-black/50">
+                  <button
+                    className="w-full flex items-center justify-between text-white font-bold mb-3"
+                    onClick={() => setShowPrivateChats(!showPrivateChats)}
+                  >
+                    <div className="flex items-center gap-2">
                     <Image
                       src="/ORGICON.png"
                       alt="Private Chat Icon"
                       width={15}
                       height={15}
                     />
-                    Private Chats ({activePrivateChats.length})
+                                         <h2>Private Chats ({activePrivateChats.length})</h2>
+                    </div>
+                    <svg
+                      className={`w-4 h-4 transform transition-transform ${
+                        showPrivateChats ? 'rotate-0' : '-rotate-90'
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      ></path>
+                    </svg>
+                  </button>
+                  <h2 className="text-white font-bold mb-3">
                   </h2>
-                  <div className="space-y-2">
-                    {activePrivateChats.map(peer => (
-                      <button
-                        key={peer.id}
-                        onClick={() => handlePeerSelect(peer)}
-                        className={`w-full text-left p-3 rounded-lg transition-all ${
-                          selectedPeer?.id === peer.id
-                            ? 'bg-blue-500/20 border border-blue-500/50'
-                            : 'bg-gray-800/50 hover:bg-gray-800/80 border border-transparent'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          {peer.avatar ? (
-                            <Image
-                              src={peer.avatar}
-                              alt={peer.name}
-                              width={40}
-                              height={40}
-                              className="rounded-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
-                              {peer.name.charAt(0).toUpperCase()}
-                            </div>
-                          )}
-                          <div className="flex-1">
-                            <p className="text-white font-semibold">{peer.name}</p>
-                            <div className="flex items-center gap-1">
-                              <span
-                                className={`w-2 h-2 rounded-full ${
-                                  peer.online ? 'bg-green-400' : 'bg-gray-500'
-                                }`}
-                              ></span>
-                              <p className="text-gray-400 text-xs">
-                                {peer.online ? 'Online' : 'Offline'}
-                              </p>
+                  {showPrivateChats && (
+                    <div className="space-y-2">
+                      {activePrivateChats.map(peer => (
+                        <button
+                          key={peer.id}
+                          onClick={() => handlePeerSelect(peer)}
+                          className={`w-full text-left p-3 rounded-lg transition-all ${
+                            selectedPeer?.id === peer.id
+                              ? 'bg-blue-500/20 border border-blue-500/50'
+                              : 'bg-gray-800/50 hover:bg-gray-800/80 border border-transparent'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            {peer.avatar ? (
+                              <Image
+                                src={peer.avatar}
+                                alt={peer.name}
+                                width={40}
+                                height={40}
+                                className="rounded-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                                {peer.name.charAt(0).toUpperCase()}
+                              </div>
+                            )}
+                            <div className="flex-1">
+                              <p className="text-white font-semibold">{peer.name}</p>
+                              <div className="flex items-center gap-1">
+                                <span
+                                  className={`w-2 h-2 rounded-full ${
+                                    peer.online ? 'bg-green-400' : 'bg-gray-500'
+                                  }`}
+                                ></span>
+                                <p className="text-gray-400 text-xs">
+                                  {peer.online ? 'Online' : 'Offline'}
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
