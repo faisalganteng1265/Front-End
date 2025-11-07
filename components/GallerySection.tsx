@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect, useRef, useMemo, memo } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 // Memoize the image card component to prevent unnecessary re-renders
 const ImageCard = memo(({ image, index, isVisible, onClick }: {
@@ -11,46 +12,30 @@ const ImageCard = memo(({ image, index, isVisible, onClick }: {
   isVisible: boolean;
   onClick?: () => void;
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
     <motion.div
-      className={`relative overflow-hidden rounded-2xl ${onClick ? 'cursor-pointer' : ''}`}
+      className={`group relative overflow-hidden rounded-2xl ${onClick ? 'cursor-pointer' : ''}`}
       initial={{ opacity: 0, y: 20 }}
       animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
-      whileHover={{ y: -4 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
       onClick={onClick}
-      style={{
-        boxShadow: isHovered ? "0 20px 25px -5px rgba(16, 185, 129, 0.2)" : "none"
-      }}
     >
       {/* Image */}
       <div className="relative aspect-[3/4] overflow-hidden">
-        <motion.img
+        <Image
           src={image.src}
           alt={image.alt}
-          className="w-full h-full object-cover"
-          loading="lazy"
-          animate={{ scale: isHovered ? 1.05 : 1 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+          priority={index < 2}
         />
 
         {/* Dark overlay on hover */}
-        <motion.div
-          className="absolute inset-0 bg-black/70 z-10 pointer-events-none"
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
-        />
+        <div className="absolute inset-0 bg-black/70 z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         {/* Text overlay on hover */}
-        <motion.div
-          className="absolute inset-0 flex flex-col items-center justify-center p-6 z-20 pointer-events-none"
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
-        >
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <h3
             className="text-xl font-bold text-white mb-2 text-center"
             style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif' }}
@@ -63,15 +48,14 @@ const ImageCard = memo(({ image, index, isVisible, onClick }: {
           >
             {image.description}
           </p>
-        </motion.div>
+        </div>
       </div>
 
       {/* Border effect */}
-      <motion.div
-        className="absolute inset-0 border-2 rounded-2xl pointer-events-none"
-        animate={{ borderColor: isHovered ? "rgba(16, 185, 129, 0.4)" : "rgba(16, 185, 129, 0)" }}
-        transition={{ duration: 0.3 }}
-      />
+      <div className="absolute inset-0 border-2 border-transparent rounded-2xl pointer-events-none group-hover:border-emerald-400/40 transition-colors duration-300" />
+
+      {/* Shadow on hover */}
+      <div className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ boxShadow: "0 20px 25px -5px rgba(16, 185, 129, 0.2)" }} />
     </motion.div>
   );
 });
@@ -204,17 +188,47 @@ export default function GallerySection() {
       <div className="absolute bottom-0 right-0 w-24 h-24 border-r-2 border-b-2 border-emerald-500/15"></div>
 
       <div className="max-w-7xl mx-auto relative z-10" ref={sectionRef}>
-        {/* Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {images.map((image, index) => (
+        {/* Gallery Grid - Custom Layout: 2 center (top-bottom), 2 sides (left-right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          {/* Left Box */}
+          <div className="lg:row-span-2 lg:self-center">
             <ImageCard
-              key={index}
-              image={image}
-              index={index}
+              key={0}
+              image={images[0]}
+              index={0}
               isVisible={isVisible}
-              onClick={() => handleCardClick(index)}
+              onClick={() => handleCardClick(0)}
             />
-          ))}
+          </div>
+
+          {/* Center Column - 2 boxes stacked */}
+          <div className="flex flex-col gap-6 lg:gap-8">
+            <ImageCard
+              key={1}
+              image={images[1]}
+              index={1}
+              isVisible={isVisible}
+              onClick={() => handleCardClick(1)}
+            />
+            <ImageCard
+              key={2}
+              image={images[2]}
+              index={2}
+              isVisible={isVisible}
+              onClick={() => handleCardClick(2)}
+            />
+          </div>
+
+          {/* Right Box */}
+          <div className="lg:row-span-2 lg:self-center">
+            <ImageCard
+              key={3}
+              image={images[3]}
+              index={3}
+              isVisible={isVisible}
+              onClick={() => handleCardClick(3)}
+            />
+          </div>
         </div>
 
         {/* Hover Me text below photos */}
