@@ -104,7 +104,7 @@ export default function VideoCallModal({
           }}
           userInfo={{
             displayName: userName,
-            email: userAvatar || undefined,
+            email: userAvatar || '',
           }}
           onReadyToClose={onClose}
           getIFrameRef={(iframeRef) => {
