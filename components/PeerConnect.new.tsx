@@ -208,69 +208,45 @@ export default function PeerConnect() {
   // Fetch members of a group
   const fetchGroupMembers = async (groupId: string): Promise<Peer[]> => {
     try {
-      console.log('[fetchGroupMembers] Fetching for group:', groupId);
-
-      // Step 1: Get user IDs from group_members
-      const { data: memberData, error: memberError } = await supabase
+      const { data, error } = await supabase
         .from('group_members')
-        .select('user_id')
+        .select(`
+          user_id,
+          profiles!inner (
+            id,
+            username,
+            avatar_url,
+            email
+          )
+        `)
         .eq('group_id', groupId);
 
-      if (memberError) {
-        console.error('[fetchGroupMembers] Error fetching group_members:', memberError);
-        throw memberError;
-      }
+      if (error) throw error;
 
-      if (!memberData || memberData.length === 0) {
-        console.log('[fetchGroupMembers] No members in group');
-        return [];
-      }
+      if (!data) return [];
 
-      const userIds = memberData.map((m: any) => m.user_id);
-      console.log('[fetchGroupMembers] User IDs:', userIds);
-
-      // Step 2: Fetch profiles
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('id, username, avatar_url, email')
-        .in('id', userIds);
-
-      if (profileError) {
-        console.error('[fetchGroupMembers] Error fetching profiles:', profileError);
-      }
-
-      // Step 3: Fetch user_data for interests
+      // Also fetch user_data for interests
+      const userIds = data.map((m: any) => m.user_id);
       const { data: userData, error: userDataError } = await supabase
         .from('user_data')
         .select('user_id, minat')
         .in('user_id', userIds);
 
-      if (userDataError) {
-        console.error('[fetchGroupMembers] Error fetching user_data:', userDataError);
-      }
+      const userDataMap = new Map(
+        (userData || []).map((ud: any) => [ud.user_id, ud.minat || ''])
+      );
 
-      // Create maps
-      const profileMap = new Map((profileData || []).map((p: any) => [p.id, p]));
-      const userDataMap = new Map((userData || []).map((ud: any) => [ud.user_id, ud.minat || '']));
+      const peers: Peer[] = data.map((member: any) => ({
+        id: member.profiles.id,
+        name: member.profiles.username || member.profiles.email?.split('@')[0] || 'Anonymous',
+        avatar: member.profiles.avatar_url,
+        interests: parseInterests(userDataMap.get(member.user_id) || ''),
+        online: true,
+      }));
 
-      // Build peers
-      const peers: Peer[] = userIds.map((userId: string) => {
-        const profile = profileMap.get(userId);
-        const minat = userDataMap.get(userId) || '';
-
-        return {
-          id: userId,
-          name: profile?.username || profile?.email?.split('@')[0] || 'User',
-          avatar: profile?.avatar_url || null,
-          interests: parseInterests(minat),
-          online: true,
-        };
-      });
-
-      console.log('[fetchGroupMembers] Built peers:', peers.length);
       return peers;
-    } catch (error: any) {
-      console.error('[fetchGroupMembers] Error:', error);
+    } catch (error) {
+      console.error('Error fetching group members:', error);
       return [];
     }
   };
@@ -278,62 +254,40 @@ export default function PeerConnect() {
   // Fetch messages from a group
   const fetchGroupMessages = async (groupId: string, limit = 50): Promise<Message[]> => {
     try {
-      console.log('[fetchGroupMessages] Fetching for group:', groupId);
-
-      // Step 1: Get messages
-      const { data: messagesData, error: messagesError } = await supabase
+      const { data, error } = await supabase
         .from('group_messages')
-        .select('id, content, created_at, user_id')
+        .select(`
+          id,
+          content,
+          created_at,
+          user_id,
+          profiles!inner (
+            username,
+            avatar_url,
+            email
+          )
+        `)
         .eq('group_id', groupId)
         .order('created_at', { ascending: true })
         .limit(limit);
 
-      if (messagesError) {
-        console.error('[fetchGroupMessages] Error:', messagesError);
-        throw messagesError;
-      }
+      if (error) throw error;
 
-      if (!messagesData || messagesData.length === 0) {
-        console.log('[fetchGroupMessages] No messages in group');
-        return [];
-      }
+      if (!data) return [];
 
-      // Step 2: Get unique user IDs
-      const userIds = [...new Set(messagesData.map((m: any) => m.user_id))];
-      console.log('[fetchGroupMessages] Fetching profiles for:', userIds);
+      const messages: Message[] = data.map((msg: any) => ({
+        id: msg.id,
+        senderId: msg.user_id,
+        senderName: msg.profiles.username || msg.profiles.email?.split('@')[0] || 'Anonymous',
+        senderAvatar: msg.profiles.avatar_url,
+        text: msg.content,
+        timestamp: new Date(msg.created_at),
+        isMe: msg.user_id === user?.id,
+      }));
 
-      // Step 3: Fetch profiles
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('id, username, avatar_url, email')
-        .in('id', userIds);
-
-      if (profileError) {
-        console.error('[fetchGroupMessages] Error fetching profiles:', profileError);
-      }
-
-      // Create profile map
-      const profileMap = new Map((profileData || []).map((p: any) => [p.id, p]));
-
-      // Build messages
-      const messages: Message[] = messagesData.map((msg: any) => {
-        const profile = profileMap.get(msg.user_id);
-
-        return {
-          id: msg.id,
-          senderId: msg.user_id,
-          senderName: profile?.username || profile?.email?.split('@')[0] || 'User',
-          senderAvatar: profile?.avatar_url || null,
-          text: msg.content,
-          timestamp: new Date(msg.created_at),
-          isMe: msg.user_id === user?.id,
-        };
-      });
-
-      console.log('[fetchGroupMessages] Fetched messages:', messages.length);
       return messages;
-    } catch (error: any) {
-      console.error('[fetchGroupMessages] Error:', error);
+    } catch (error) {
+      console.error('Error fetching group messages:', error);
       return [];
     }
   };
@@ -419,55 +373,49 @@ export default function PeerConnect() {
           filter: `group_id=eq.${selectedGroup.id}`,
         },
         async (payload) => {
-          console.log('[Realtime] New message received:', payload);
+          console.log('New message received:', payload);
 
-          // Fetch message data
-          const { data: msgData, error: msgError } = await supabase
+          // Fetch full message data with user profile
+          const { data, error } = await supabase
             .from('group_messages')
-            .select('id, content, created_at, user_id')
+            .select(`
+              id,
+              content,
+              created_at,
+              user_id,
+              profiles!inner (
+                username,
+                avatar_url,
+                email
+              )
+            `)
             .eq('id', payload.new.id)
             .single();
 
-          if (msgError) {
-            console.error('[Realtime] Error fetching message:', msgError);
-            return;
-          }
+          if (!error && data) {
+            const newMessage: Message = {
+              id: data.id,
+              senderId: data.user_id,
+              senderName: data.profiles.username || data.profiles.email?.split('@')[0] || 'Anonymous',
+              senderAvatar: data.profiles.avatar_url,
+              text: data.content,
+              timestamp: new Date(data.created_at),
+              isMe: data.user_id === user.id,
+            };
 
-          // Fetch sender profile
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('id, username, avatar_url, email')
-            .eq('id', msgData.user_id)
-            .single();
+            // Only add if not from current user (already added optimistically)
+            if (!newMessage.isMe) {
+              setMessages(prev => [...prev, newMessage]);
 
-          if (profileError) {
-            console.error('[Realtime] Error fetching profile:', profileError);
-          }
-
-          const newMessage: Message = {
-            id: msgData.id,
-            senderId: msgData.user_id,
-            senderName: profileData?.username || profileData?.email?.split('@')[0] || 'User',
-            senderAvatar: profileData?.avatar_url || null,
-            text: msgData.content,
-            timestamp: new Date(msgData.created_at),
-            isMe: msgData.user_id === user.id,
-          };
-
-          console.log('[Realtime] Processed message:', newMessage);
-
-          // Only add if not from current user (already added optimistically)
-          if (!newMessage.isMe) {
-            setMessages(prev => [...prev, newMessage]);
-
-            // Update group's last message
-            setGroups(prevGroups =>
-              prevGroups.map(g =>
-                g.id === selectedGroup.id
-                  ? { ...g, lastMessage: newMessage.text, lastMessageTime: newMessage.timestamp }
-                  : g
-              )
-            );
+              // Update group's last message
+              setGroups(prevGroups =>
+                prevGroups.map(g =>
+                  g.id === selectedGroup.id
+                    ? { ...g, lastMessage: newMessage.text, lastMessageTime: newMessage.timestamp }
+                    : g
+                )
+              );
+            }
           }
         }
       )

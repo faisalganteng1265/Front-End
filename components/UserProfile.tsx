@@ -4,12 +4,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import ProfileModal from './ProfileModal';
+import { supabase } from '@/lib/supabase';
 
 export default function UserProfile() {
   const { user, signOut } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [username, setUsername] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -19,6 +21,29 @@ export default function UserProfile() {
     } else if (user?.email) {
       // Fallback to email username part
       setUsername(user.email.split('@')[0]);
+    }
+
+    // Load avatar from profiles table
+    const loadAvatar = async () => {
+      if (!user) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('avatar_url')
+          .eq('id', user.id)
+          .single();
+
+        if (!error && data?.avatar_url) {
+          setAvatarUrl(data.avatar_url);
+        }
+      } catch (err) {
+        console.error('Error loading avatar:', err);
+      }
+    };
+
+    if (user) {
+      loadAvatar();
     }
   }, [user]);
 
@@ -60,9 +85,21 @@ export default function UserProfile() {
           className="flex items-center gap-3 bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-md px-4 py-3 rounded-xl border border-gray-700/50 hover:border-green-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/20 group"
         >
           {/* Avatar */}
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-lime-500 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform">
-            {initial}
-          </div>
+          {avatarUrl ? (
+            <div className="w-10 h-10 rounded-full overflow-hidden shadow-lg group-hover:scale-110 transition-transform border-2 border-green-500">
+              <Image
+                src={avatarUrl}
+                alt="Avatar"
+                width={40}
+                height={40}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-lime-500 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform">
+              {initial}
+            </div>
+          )}
 
           {/* User Info */}
           <div className="flex flex-col items-start">
@@ -89,9 +126,21 @@ export default function UserProfile() {
             {/* User Info Section */}
             <div className="p-4 border-b border-gray-700/50">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-lime-500 flex items-center justify-center text-white font-bold text-xl shadow-lg">
-                  {initial}
-                </div>
+                {avatarUrl ? (
+                  <div className="w-12 h-12 rounded-full overflow-hidden shadow-lg border-2 border-green-500">
+                    <Image
+                      src={avatarUrl}
+                      alt="Avatar"
+                      width={48}
+                      height={48}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-lime-500 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                    {initial}
+                  </div>
+                )}
                 <div className="flex-1">
                   <p className="text-white font-semibold">{username}</p>
                   <p className="text-gray-400 text-xs truncate">{user.email}</p>
