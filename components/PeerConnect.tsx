@@ -640,6 +640,11 @@ export default function PeerConnect() {
 
         setGroups(userGroups);
 
+        // Fetch active private chats
+        setLoadingMessage('Memuat riwayat chat pribadi...');
+        const privateChats = await fetchActivePrivateChats(user.id);
+        setActivePrivateChats(privateChats);
+
         // Auto-select first group
         if (userGroups.length > 0) {
           handleGroupSelect(userGroups[0]);
@@ -669,6 +674,75 @@ export default function PeerConnect() {
     setChatMode('group');
     setSelectedPeer(null);
     setMessages(group.messages);
+  };
+
+  // Fetch list of users who have private chat history with current user
+  const fetchActivePrivateChats = async (userId: string): Promise<Peer[]> => {
+    try {
+      console.log('[fetchActivePrivateChats] Fetching for user:', userId);
+
+      // Get all private messages where user is sender or receiver
+      const { data: messages, error } = await supabase
+        .from('private_messages')
+        .select('sender_id, receiver_id')
+        .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`);
+
+      if (error) {
+        console.error('[fetchActivePrivateChats] Error:', error);
+        return [];
+      }
+
+      if (!messages || messages.length === 0) {
+        console.log('[fetchActivePrivateChats] No private messages found');
+        return [];
+      }
+
+      // Get unique user IDs (excluding current user)
+      const otherUserIds = new Set<string>();
+      messages.forEach(msg => {
+        if (msg.sender_id !== userId) otherUserIds.add(msg.sender_id);
+        if (msg.receiver_id !== userId) otherUserIds.add(msg.receiver_id);
+      });
+
+      const userIds = Array.from(otherUserIds);
+      console.log('[fetchActivePrivateChats] Found chat partners:', userIds);
+
+      if (userIds.length === 0) return [];
+
+      // Fetch profiles
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('id, username, avatar_url, email')
+        .in('id', userIds);
+
+      // Fetch user_data for interests
+      const { data: userData } = await supabase
+        .from('user_data')
+        .select('user_id, minat')
+        .in('user_id', userIds);
+
+      const profileMap = new Map((profileData || []).map(p => [p.id, p]));
+      const userDataMap = new Map((userData || []).map(ud => [ud.user_id, ud.minat || '']));
+
+      const peers: Peer[] = userIds.map(id => {
+        const profile = profileMap.get(id);
+        const minat = userDataMap.get(id) || '';
+
+        return {
+          id,
+          name: profile?.username || profile?.email?.split('@')[0] || 'User',
+          avatar: profile?.avatar_url || null,
+          interests: parseInterests(minat),
+          online: true,
+        };
+      });
+
+      console.log('[fetchActivePrivateChats] Built peers:', peers.length);
+      return peers;
+    } catch (error) {
+      console.error('[fetchActivePrivateChats] Error:', error);
+      return [];
+    }
   };
 
   // Fetch private messages between current user and another user
