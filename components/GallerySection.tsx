@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { useState, useEffect, useRef, useMemo, memo } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -10,30 +11,46 @@ const ImageCard = memo(({ image, index, isVisible, onClick }: {
   isVisible: boolean;
   onClick?: () => void;
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <div
-      className={`group relative overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-400/20 ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-      } ${onClick ? 'hover:cursor-pointer' : ''}`}
-      style={{
-        transitionDelay: `${index * 0.1}s`,
-      }}
+    <motion.div
+      className={`relative overflow-hidden rounded-2xl ${onClick ? 'cursor-pointer' : ''}`}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
+      whileHover={{ y: -4 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
       onClick={onClick}
+      style={{
+        boxShadow: isHovered ? "0 20px 25px -5px rgba(16, 185, 129, 0.2)" : "none"
+      }}
     >
       {/* Image */}
       <div className="relative aspect-[3/4] overflow-hidden">
-        <img
+        <motion.img
           src={image.src}
           alt={image.alt}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-full object-cover"
           loading="lazy"
+          animate={{ scale: isHovered ? 1.05 : 1 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
         />
 
         {/* Dark overlay on hover */}
-        <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
+        <motion.div
+          className="absolute inset-0 bg-black/70 z-10 pointer-events-none"
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+        />
 
         {/* Text overlay on hover */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
+        <motion.div
+          className="absolute inset-0 flex flex-col items-center justify-center p-6 z-20 pointer-events-none"
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+        >
           <h3
             className="text-xl font-bold text-white mb-2 text-center"
             style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif' }}
@@ -46,12 +63,16 @@ const ImageCard = memo(({ image, index, isVisible, onClick }: {
           >
             {image.description}
           </p>
-        </div>
+        </motion.div>
       </div>
 
       {/* Border effect */}
-      <div className="absolute inset-0 border-2 border-emerald-400/0 group-hover:border-emerald-400/40 rounded-2xl transition-all duration-300"></div>
-    </div>
+      <motion.div
+        className="absolute inset-0 border-2 rounded-2xl pointer-events-none"
+        animate={{ borderColor: isHovered ? "rgba(16, 185, 129, 0.4)" : "rgba(16, 185, 129, 0)" }}
+        transition={{ duration: 0.3 }}
+      />
+    </motion.div>
   );
 });
 
@@ -196,15 +217,19 @@ export default function GallerySection() {
           ))}
         </div>
 
-        {/* Hover Me text below photos - removed animation */}
-        <div className="text-center mt-8">
+        {/* Hover Me text below photos */}
+        <motion.div
+          className="text-center mt-8"
+          animate={{ opacity: [0.4, 0.8, 0.4] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        >
           <p
             className="text-sm text-emerald-400/60"
             style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif' }}
           >
             Hover Me
           </p>
-        </div>
+        </motion.div>
       </div>
 
       <style jsx>{`

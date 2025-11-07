@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import Galaxy from './Galaxy';
 
 export default function HeroSection() {
@@ -23,20 +24,53 @@ export default function HeroSection() {
       </div>
 
       {/* Main Content - AICAMPUS Text */}
-      <div className="relative z-10 text-center px-6">
-        <h1
-          className="text-[15vw] md:text-[12vw] lg:text-[10vw] font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 leading-none tracking-tighter animate-pulse"
+      <motion.div
+        className="relative z-10 text-center px-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        <motion.h1
+          className="text-[15vw] md:text-[12vw] lg:text-[10vw] font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 leading-none tracking-tighter"
           style={{ fontFamily: 'Agency FB, sans-serif' }}
+          animate={{
+            opacity: [0.9, 1, 0.9]
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         >
           AICAMPUS
-        </h1>
+        </motion.h1>
 
         {/* Subtle glow effect */}
-        <div className="absolute inset-0 blur-3xl opacity-20 bg-gradient-to-r from-emerald-500 to-teal-500 -z-10 animate-pulse"></div>
-      </div>
+        <motion.div
+          className="absolute inset-0 blur-3xl opacity-20 bg-gradient-to-r from-emerald-500 to-teal-500 -z-10"
+          animate={{
+            opacity: [0.15, 0.25, 0.15]
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+      </motion.div>
 
       {/* Scroll Down Arrow */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+      <motion.div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
+        animate={{
+          y: [0, 10, 0]
+        }}
+        transition={{
+          duration: 1.5,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      >
         <svg
           className="w-6 h-6 text-emerald-400/60"
           fill="none"
@@ -50,7 +84,7 @@ export default function HeroSection() {
             d="M19 14l-7 7m0 0l-7-7m7 7V3"
           />
         </svg>
-      </div>
+      </motion.div>
     </section>
   );
 }

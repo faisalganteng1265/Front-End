@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
@@ -39,28 +40,57 @@ export default function HowItWorksSection() {
       {/* Floating Particles */}
       <div className="absolute inset-0 pointer-events-none">
         {particles.map((particle) => (
-          <div
+          <motion.div
             key={particle.id}
-            className="absolute rounded-full bg-emerald-400/30 animate-float-particle"
+            className="absolute rounded-full bg-emerald-400/30"
             style={{
               left: `${particle.left}%`,
               top: `${particle.top}%`,
               width: `${particle.size}px`,
               height: `${particle.size}px`,
-              animationDelay: `${particle.delay}s`,
-              animationDuration: `${particle.duration}s`,
+            }}
+            animate={{
+              y: [0, -30, -60, -30, 0],
+              x: [0, 20, -10, -20, 0],
+              opacity: [0.3, 0.6, 0.8, 0.6, 0.3]
+            }}
+            transition={{
+              duration: particle.duration,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: particle.delay
             }}
           />
         ))}
       </div>
 
       {/* Decorative Geometric Shapes */}
-      <div className="absolute top-20 left-10 w-20 h-20 border-2 border-emerald-500/20 rotate-45 animate-spin-very-slow"></div>
-      <div className="absolute top-40 right-16 w-16 h-16 border-2 border-teal-500/20 rounded-full animate-pulse-slow"></div>
-      <div className="absolute bottom-32 left-20 w-24 h-24 border-2 border-emerald-500/15 animate-spin-very-slow" style={{ animationDelay: '2s' }}></div>
-      <div className="absolute bottom-40 right-24 w-12 h-12 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-full animate-bounce-slow"></div>
+      <motion.div
+        className="absolute top-20 left-10 w-20 h-20 border-2 border-emerald-500/20 rotate-45"
+        animate={{ rotate: [45, 405] }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      />
+      <motion.div
+        className="absolute top-40 right-16 w-16 h-16 border-2 border-teal-500/20 rounded-full"
+        animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute bottom-32 left-20 w-24 h-24 border-2 border-emerald-500/15"
+        animate={{ rotate: [0, 360] }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear", delay: 2 }}
+      />
+      <motion.div
+        className="absolute bottom-40 right-24 w-12 h-12 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-full"
+        animate={{ y: [0, -20, 0] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      />
       <div className="absolute top-1/3 left-1/4 w-8 h-8 border-2 border-emerald-400/25 rotate-12"></div>
-      <div className="absolute top-2/3 right-1/3 w-14 h-14 border-2 border-teal-400/20 rounded-lg rotate-45 animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
+      <motion.div
+        className="absolute top-2/3 right-1/3 w-14 h-14 border-2 border-teal-400/20 rounded-lg rotate-45"
+        animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      />
 
       {/* Decorative Vertical Lines on sides */}
       <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-emerald-500/30 to-transparent hidden md:block" style={{ left: '5%' }}></div>
@@ -73,10 +103,26 @@ export default function HowItWorksSection() {
       <div className="absolute left-0 right-0 top-3/4 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent"></div>
 
       {/* Glowing orbs on sides - More vibrant */}
-      <div className="absolute left-8 top-1/4 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl animate-pulse-slow hidden md:block"></div>
-      <div className="absolute left-12 top-3/4 w-32 h-32 bg-teal-500/20 rounded-full blur-3xl animate-pulse-slow hidden md:block" style={{ animationDelay: '2s' }}></div>
-      <div className="absolute right-8 top-1/3 w-36 h-36 bg-emerald-500/20 rounded-full blur-3xl animate-pulse-slow hidden md:block" style={{ animationDelay: '1s' }}></div>
-      <div className="absolute right-12 top-2/3 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl animate-pulse-slow hidden md:block" style={{ animationDelay: '3s' }}></div>
+      <motion.div
+        className="absolute left-8 top-1/4 w-40 h-40 bg-emerald-500/20 rounded-full blur-3xl hidden md:block"
+        animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute left-12 top-3/4 w-32 h-32 bg-teal-500/20 rounded-full blur-3xl hidden md:block"
+        animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+      />
+      <motion.div
+        className="absolute right-8 top-1/3 w-36 h-36 bg-emerald-500/20 rounded-full blur-3xl hidden md:block"
+        animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      />
+      <motion.div
+        className="absolute right-12 top-2/3 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl hidden md:block"
+        animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+      />
 
       {/* Corner decorations */}
       <div className="absolute top-0 left-0 w-32 h-32 border-l-2 border-t-2 border-emerald-500/20"></div>
@@ -93,7 +139,18 @@ export default function HowItWorksSection() {
           {/* Step 1 - Top (Small Box) */}
           <div className="w-full md:mt-0">
             <div className="group relative">
-              <div className="relative bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/30 animate-box-pulse-1">
+              <motion.div
+                className="relative bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/30"
+                animate={{
+                  y: [0, -20, 0],
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
                 {/* Number Badge */}
                 <div className="relative mb-4">
                   <div className="w-16 h-16 mx-auto relative">
@@ -122,7 +179,7 @@ export default function HowItWorksSection() {
                     Temukan Minat dan Temanmu disini !
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </div>
             {/* "Mudah Digunakan," Text (no box) - Below box, right aligned */}
             <div className="mt-6">
@@ -144,7 +201,19 @@ export default function HowItWorksSection() {
               </p>
             </div>
             <div className="group relative">
-              <div className="relative bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/30 animate-box-pulse-2">
+              <motion.div
+                className="relative bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/30"
+                animate={{
+                  y: [0, -20, 0],
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1
+                }}
+              >
                 {/* Number Badge */}
                 <div className="relative mb-4">
                   <div className="w-16 h-16 mx-auto relative">
@@ -155,7 +224,11 @@ export default function HowItWorksSection() {
                       <span className="text-3xl font-bold text-white drop-shadow-lg">2</span>
                     </div>
                     {/* Rotating ring */}
-                    <div className="absolute inset-0 border-2 border-emerald-400/30 rounded-full animate-spin-slow"></div>
+                    <motion.div
+                      className="absolute inset-0 border-2 border-emerald-400/30 rounded-full"
+                      animate={{ rotate: [0, 360] }}
+                      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                    />
                   </div>
                 </div>
 
@@ -175,7 +248,7 @@ export default function HowItWorksSection() {
                     Gunakan chatbot, cari event, dan atur jadwalmu dengan AI
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
 
@@ -188,7 +261,19 @@ export default function HowItWorksSection() {
               </p>
             </div>
             <div className="group relative">
-              <div className="relative bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/30 animate-box-pulse-3">
+              <motion.div
+                className="relative bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/30"
+                animate={{
+                  y: [0, -20, 0],
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 2
+                }}
+              >
                 {/* Number Badge */}
                 <div className="relative mb-4">
                   <div className="w-16 h-16 mx-auto relative">
@@ -217,7 +302,7 @@ export default function HowItWorksSection() {
                     Kehidupan kampus jadi lebih teratur dan menyenangkan!
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -259,177 +344,6 @@ export default function HowItWorksSection() {
       </div>
 
       <style jsx>{`
-        @keyframes rain-fall {
-          0% {
-            transform: translateY(-100%);
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(100vh);
-            opacity: 0.3;
-          }
-        }
-
-        @keyframes float-slow {
-          0%, 100% {
-            transform: translateY(0) translateX(0) rotate(0deg);
-          }
-          25% {
-            transform: translateY(-20px) translateX(10px) rotate(5deg);
-          }
-          50% {
-            transform: translateY(-10px) translateX(-10px) rotate(-5deg);
-          }
-          75% {
-            transform: translateY(-30px) translateX(5px) rotate(3deg);
-          }
-        }
-
-        @keyframes pulse-slow {
-          0%, 100% {
-            opacity: 0.3;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 0.6;
-            transform: scale(1.1);
-          }
-        }
-
-        @keyframes spin-slow {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes box-pulse {
-          0%, 100% {
-            transform: translateY(0) scale(1);
-            box-shadow: 0 0 0 rgba(16, 185, 129, 0);
-            border-color: rgba(16, 185, 129, 0.2);
-          }
-          50% {
-            transform: translateY(-20px) scale(1.05);
-            box-shadow: 0 35px 70px -12px rgba(16, 185, 129, 0.6), 0 0 60px rgba(16, 185, 129, 0.4);
-            border-color: rgba(16, 185, 129, 0.8);
-          }
-        }
-
-        :global(.animate-spin-slow) {
-          animation: spin-slow 8s linear infinite;
-        }
-
-        :global(.animate-pulse-slow) {
-          animation: pulse-slow 4s ease-in-out infinite;
-        }
-
-        :global(.animate-box-pulse-1) {
-          animation: box-pulse 3s ease-in-out infinite;
-        }
-
-        :global(.animate-box-pulse-2) {
-          animation: box-pulse 3s ease-in-out infinite;
-          animation-delay: 1s;
-        }
-
-        :global(.animate-box-pulse-3) {
-          animation: box-pulse 3s ease-in-out infinite;
-          animation-delay: 2s;
-        }
-
-        @keyframes float-particle {
-          0%, 100% {
-            transform: translateY(0) translateX(0);
-            opacity: 0.3;
-          }
-          25% {
-            transform: translateY(-30px) translateX(20px);
-            opacity: 0.6;
-          }
-          50% {
-            transform: translateY(-60px) translateX(-10px);
-            opacity: 0.8;
-          }
-          75% {
-            transform: translateY(-30px) translateX(-20px);
-            opacity: 0.6;
-          }
-        }
-
-        @keyframes wave-motion-1 {
-          0%, 100% {
-            transform: translateX(0) translateY(0);
-          }
-          50% {
-            transform: translateX(-25px) translateY(-5px);
-          }
-        }
-
-        @keyframes wave-motion-2 {
-          0%, 100% {
-            transform: translateX(0) translateY(0);
-          }
-          50% {
-            transform: translateX(25px) translateY(-3px);
-          }
-        }
-
-        @keyframes wave-motion-3 {
-          0%, 100% {
-            transform: translateX(0) translateY(0);
-          }
-          50% {
-            transform: translateX(-15px) translateY(-2px);
-          }
-        }
-
-        @keyframes spin-very-slow {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes bounce-slow {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-
-        :global(.animate-float-particle) {
-          animation: float-particle 5s ease-in-out infinite;
-        }
-
-        :global(.animate-wave-1) {
-          animation: wave-motion-1 8s ease-in-out infinite;
-        }
-
-        :global(.animate-wave-2) {
-          animation: wave-motion-2 7s ease-in-out infinite;
-          animation-delay: 0.5s;
-        }
-
-        :global(.animate-wave-3) {
-          animation: wave-motion-3 9s ease-in-out infinite;
-          animation-delay: 1s;
-        }
-
-        :global(.animate-spin-very-slow) {
-          animation: spin-very-slow 20s linear infinite;
-        }
-
-        :global(.animate-bounce-slow) {
-          animation: bounce-slow 3s ease-in-out infinite;
-        }
-
         .blob-1 {
           border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
           filter: blur(60px);

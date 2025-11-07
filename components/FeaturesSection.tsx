@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import CardSwap, { Card } from './CardSwap';
 import { useState, useRef, useEffect } from 'react';
 import ElectricBorder from './ElectricBorder';
@@ -15,7 +16,6 @@ interface StatItemProps {
 function StatItem({ end, label, suffix = '', icon }: StatItemProps) {
   const [count, setCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-  const [rainDrops, setRainDrops] = useState<Array<{ id: number; x: number }>>([]);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -64,33 +64,6 @@ function StatItem({ end, label, suffix = '', icon }: StatItemProps) {
     return () => clearInterval(timer);
   }, [isVisible, end]);
 
-  // Rain drop effect on box - synchronized with background rain
-  useEffect(() => {
-    // Seeded random function to ensure consistent values between server and client
-    const seededRandom = (seed: number) => {
-      const x = Math.sin(seed) * 10000;
-      return x - Math.floor(x);
-    };
-
-    let dropCounter = 0;
-    const addRainDrop = () => {
-      const id = Date.now();
-      // Use deterministic position based on counter
-      const x = (seededRandom(dropCounter) * 100);
-      dropCounter++;
-      setRainDrops((prev) => [...prev, { id, x }]);
-
-      setTimeout(() => {
-        setRainDrops((prev) => prev.filter((drop) => drop.id !== id));
-      }, 1000);
-    };
-
-    // More frequent drops to match background rain (every 0.5-1.5 seconds)
-    // Use deterministic interval
-    const interval = setInterval(addRainDrop, 1000); // Fixed interval instead of random
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div ref={ref} className="group hover:-translate-y-1 transition-all duration-300">
       <ElectricBorder
@@ -102,21 +75,6 @@ function StatItem({ end, label, suffix = '', icon }: StatItemProps) {
         style={{ borderRadius: '1rem' }}
       >
         <div className="relative bg-gray-900/50 backdrop-blur-sm rounded-2xl p-8 h-full overflow-hidden">
-          {/* Rain drops hitting the box */}
-          {rainDrops.map((drop) => (
-            <div key={drop.id} className="absolute top-0" style={{ left: `${drop.x}%` }}>
-              {/* Water drop */}
-              <div className="w-1 h-3 bg-emerald-400 rounded-full animate-drop-fall" />
-
-              {/* Ripple effect on impact */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2">
-                <div className="w-4 h-4 border-2 border-emerald-400/60 rounded-full animate-ripple" />
-                <div className="w-4 h-4 border-2 border-emerald-400/40 rounded-full animate-ripple" style={{ animationDelay: '0.1s' }} />
-                <div className="w-4 h-4 border-2 border-emerald-400/20 rounded-full animate-ripple" style={{ animationDelay: '0.2s' }} />
-              </div>
-            </div>
-          ))}
-
           <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
           <div className="relative z-10 text-center space-y-4">
@@ -180,12 +138,36 @@ export default function FeaturesSection() {
       <div className="absolute top-1/3 right-10 w-60 h-60 bg-emerald-900 blob-5 opacity-20"></div>
 
       {/* AI Theme - Floating Binary Code */}
-      <div className="absolute top-20 left-1/4 text-emerald-500/10 text-xs font-mono animate-float-up" style={{ animationDelay: '0s' }}>01010011</div>
-      <div className="absolute top-40 right-1/3 text-emerald-500/10 text-xs font-mono animate-float-up" style={{ animationDelay: '1s' }}>11001010</div>
-      <div className="absolute bottom-40 left-1/3 text-emerald-500/10 text-xs font-mono animate-float-up" style={{ animationDelay: '2s' }}>10101100</div>
-      <div className="absolute bottom-20 right-1/4 text-emerald-500/10 text-xs font-mono animate-float-up" style={{ animationDelay: '3s' }}>01110010</div>
-      <div className="absolute top-1/2 left-1/5 text-teal-500/10 text-sm font-mono animate-float-up" style={{ animationDelay: '1.5s' }}>AI</div>
-      <div className="absolute top-1/3 right-1/5 text-teal-500/10 text-sm font-mono animate-float-up" style={{ animationDelay: '2.5s' }}>&lt;/&gt;</div>
+      <motion.div
+        className="absolute top-20 left-1/4 text-emerald-500/10 text-xs font-mono"
+        animate={{ y: [0, -30, 0], opacity: [0.1, 0.15, 0.1] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+      >01010011</motion.div>
+      <motion.div
+        className="absolute top-40 right-1/3 text-emerald-500/10 text-xs font-mono"
+        animate={{ y: [0, -30, 0], opacity: [0.1, 0.15, 0.1] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      >11001010</motion.div>
+      <motion.div
+        className="absolute bottom-40 left-1/3 text-emerald-500/10 text-xs font-mono"
+        animate={{ y: [0, -30, 0], opacity: [0.1, 0.15, 0.1] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+      >10101100</motion.div>
+      <motion.div
+        className="absolute bottom-20 right-1/4 text-emerald-500/10 text-xs font-mono"
+        animate={{ y: [0, -30, 0], opacity: [0.1, 0.15, 0.1] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+      >01110010</motion.div>
+      <motion.div
+        className="absolute top-1/2 left-1/5 text-teal-500/10 text-sm font-mono"
+        animate={{ y: [0, -30, 0], opacity: [0.1, 0.15, 0.1] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+      >AI</motion.div>
+      <motion.div
+        className="absolute top-1/3 right-1/5 text-teal-500/10 text-sm font-mono"
+        animate={{ y: [0, -30, 0], opacity: [0.1, 0.15, 0.1] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2.5 }}
+      >&lt;/&gt;</motion.div>
 
       {/* AI Theme - Circuit Board Lines */}
       <svg className="absolute inset-0 w-full h-full opacity-5 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
@@ -205,7 +187,12 @@ export default function FeaturesSection() {
       </svg>
 
       {/* AI Theme - Neural Network Connections */}
-      <svg className="absolute top-20 left-10 w-64 h-64 opacity-10 pointer-events-none animate-pulse-slow" xmlns="http://www.w3.org/2000/svg">
+      <motion.svg
+        className="absolute top-20 left-10 w-64 h-64 opacity-10 pointer-events-none"
+        xmlns="http://www.w3.org/2000/svg"
+        animate={{ opacity: [0.05, 0.15, 0.05] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      >
         <g>
           {/* Nodes */}
           <circle cx="32" cy="32" r="4" fill="rgba(16, 185, 129, 0.6)"/>
@@ -223,9 +210,14 @@ export default function FeaturesSection() {
           <line x1="80" y1="128" x2="128" y2="224" stroke="rgba(20, 184, 166, 0.3)" strokeWidth="1"/>
           <line x1="176" y1="128" x2="128" y2="224" stroke="rgba(20, 184, 166, 0.3)" strokeWidth="1"/>
         </g>
-      </svg>
+      </motion.svg>
 
-      <svg className="absolute bottom-20 right-16 w-56 h-56 opacity-10 pointer-events-none animate-pulse-slow" style={{ animationDelay: '2s' }} xmlns="http://www.w3.org/2000/svg">
+      <motion.svg
+        className="absolute bottom-20 right-16 w-56 h-56 opacity-10 pointer-events-none"
+        xmlns="http://www.w3.org/2000/svg"
+        animate={{ opacity: [0.05, 0.15, 0.05] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+      >
         <g>
           <circle cx="28" cy="28" r="3" fill="rgba(16, 185, 129, 0.6)"/>
           <circle cx="112" cy="28" r="3" fill="rgba(16, 185, 129, 0.6)"/>
@@ -241,18 +233,34 @@ export default function FeaturesSection() {
           <line x1="70" y1="112" x2="112" y2="196" stroke="rgba(20, 184, 166, 0.3)" strokeWidth="1"/>
           <line x1="154" y1="112" x2="112" y2="196" stroke="rgba(20, 184, 166, 0.3)" strokeWidth="1"/>
         </g>
-      </svg>
+      </motion.svg>
 
       {/* AI Theme - Data Flow Lines */}
-      <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-emerald-500/10 to-transparent animate-data-flow"></div>
-      <div className="absolute top-0 right-1/3 w-px h-full bg-gradient-to-b from-transparent via-teal-500/10 to-transparent animate-data-flow" style={{ animationDelay: '2s' }}></div>
+      <motion.div
+        className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-emerald-500/10 to-transparent"
+        animate={{ opacity: [0.05, 0.15, 0.05], y: ['-100%', '100%'] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+      />
+      <motion.div
+        className="absolute top-0 right-1/3 w-px h-full bg-gradient-to-b from-transparent via-teal-500/10 to-transparent"
+        animate={{ opacity: [0.05, 0.15, 0.05], y: ['-100%', '100%'] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "linear", delay: 2 }}
+      />
 
       {/* AI Theme - Glowing Dots Moving Along Paths */}
       <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/10 to-transparent">
-        <div className="w-2 h-2 bg-emerald-400 rounded-full blur-sm animate-move-right"></div>
+        <motion.div
+          className="w-2 h-2 bg-emerald-400 rounded-full blur-sm"
+          animate={{ x: ['-100%', 'calc(100vw + 100%)', '-100%'], opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear", times: [0, 0.1, 0.9, 1] }}
+        />
       </div>
       <div className="absolute top-2/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-500/10 to-transparent">
-        <div className="w-2 h-2 bg-teal-400 rounded-full blur-sm animate-move-right" style={{ animationDelay: '3s' }}></div>
+        <motion.div
+          className="w-2 h-2 bg-teal-400 rounded-full blur-sm"
+          animate={{ x: ['-100%', 'calc(100vw + 100%)', '-100%'], opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear", delay: 3, times: [0, 0.1, 0.9, 1] }}
+        />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -575,129 +583,6 @@ export default function FeaturesSection() {
       </div>
 
       <style jsx>{`
-        @keyframes rain-fall {
-          0% {
-            transform: translateY(-100%);
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(100vh);
-            opacity: 0.3;
-          }
-        }
-
-        @keyframes float-up {
-          0%, 100% {
-            transform: translateY(0);
-            opacity: 0.1;
-          }
-          50% {
-            transform: translateY(-30px);
-            opacity: 0.15;
-          }
-        }
-
-        @keyframes float-slow {
-          0%, 100% {
-            transform: translateY(0) translateX(0) rotate(0deg);
-            opacity: 0.1;
-          }
-          25% {
-            transform: translateY(-20px) translateX(10px) rotate(5deg);
-            opacity: 0.15;
-          }
-          50% {
-            transform: translateY(-30px) translateX(-5px) rotate(-3deg);
-            opacity: 0.12;
-          }
-          75% {
-            transform: translateY(-15px) translateX(-10px) rotate(3deg);
-            opacity: 0.14;
-          }
-        }
-
-        @keyframes data-flow {
-          0% {
-            opacity: 0.05;
-            transform: translateY(-100%);
-          }
-          50% {
-            opacity: 0.15;
-          }
-          100% {
-            opacity: 0.05;
-            transform: translateY(100%);
-          }
-        }
-
-        @keyframes move-right {
-          0% {
-            transform: translateX(-100%);
-            opacity: 0;
-          }
-          10% {
-            opacity: 1;
-          }
-          90% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateX(calc(100vw + 100%));
-            opacity: 0;
-          }
-        }
-
-        @keyframes pulse-slow {
-          0%, 100% {
-            opacity: 0.05;
-          }
-          50% {
-            opacity: 0.15;
-          }
-        }
-
-        :global(.animate-float-up) {
-          animation: float-up 6s ease-in-out infinite;
-        }
-
-        :global(.animate-float-slow) {
-          animation: float-slow 8s ease-in-out infinite;
-        }
-
-        :global(.animate-data-flow) {
-          animation: data-flow 4s linear infinite;
-        }
-
-        :global(.animate-move-right) {
-          animation: move-right 8s linear infinite;
-        }
-
-        :global(.animate-pulse-slow) {
-          animation: pulse-slow 3s ease-in-out infinite;
-        }
-
-        @keyframes drop-fall {
-          0% {
-            transform: translateY(-20px);
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(0);
-            opacity: 0;
-          }
-        }
-
-        @keyframes ripple {
-          0% {
-            transform: scale(0);
-            opacity: 1;
-          }
-          100% {
-            transform: scale(3);
-            opacity: 0;
-          }
-        }
-
         @keyframes spotlight-sweep {
           0%, 100% {
             opacity: 0.3;
@@ -705,14 +590,6 @@ export default function FeaturesSection() {
           50% {
             opacity: 0.5;
           }
-        }
-
-        :global(.animate-drop-fall) {
-          animation: drop-fall 0.3s ease-out forwards;
-        }
-
-        :global(.animate-ripple) {
-          animation: ripple 0.6s ease-out forwards;
         }
 
         :global(.spotlight-beam) {
