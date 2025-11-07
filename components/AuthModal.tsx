@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import Image from 'next/image';
+import { FiUser, FiMail, FiLock } from 'react-icons/fi';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -178,162 +178,140 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
         onClick={handleOverlayClick}
       >
-      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700/50 relative overflow-hidden">
-        {/* Decorative gradient background */}
-        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-green-500 via-lime-500 to-green-500"></div>
+        <div className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl relative overflow-hidden flex flex-col md:flex-row min-h-[600px]">
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition-colors z-10 bg-white/80 backdrop-blur-sm rounded-full p-2 hover:bg-white"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
 
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+          {/* Form Panel - Order changes based on isLogin */}
+          <div
+            className={`w-full md:w-1/2 p-12 flex flex-col justify-center bg-white relative z-10 transition-all duration-700 ease-in-out ${
+              !isLogin ? 'md:order-1' : 'md:order-2'
+            }`}
+          >
+            <div className="w-full max-w-sm mx-auto">
+              <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                {isLogin ? 'Login' : 'Registration'}
+              </h2>
+              <p className="text-gray-500 text-sm mb-8">
+                {isLogin ? 'Welcome back to AICampus!' : 'Join AICampus today'}
+              </p>
 
-        <div className="p-8">
-          {/* Logo and Title */}
-          <div className="text-center mb-8">
-            <div className="flex justify-center mb-4">
-              <div className="relative">
-                <div className="absolute inset-0 blur-xl bg-green-500/40 rounded-full"></div>
-                <div className="relative bg-white/10 backdrop-blur-md rounded-full p-3 border border-white/20">
-                  <Image
-                    src="/AICAMPUS.png"
-                    alt="AICampus"
-                    width={48}
-                    height={48}
-                    className="object-contain"
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {!isLogin && (
+                  <div className="relative animate-in fade-in slide-in-from-top-2 duration-300">
+                    <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+                    <input
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="Username"
+                      required={!isLogin}
+                    />
+                  </div>
+                )}
+
+                <div className="relative">
+                  <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+                  <input
+                    type={isLogin ? 'text' : 'email'}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                    placeholder={isLogin ? 'Email or Username' : 'Email'}
+                    required
                   />
                 </div>
-              </div>
+
+                <div className="relative">
+                  <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                    placeholder="Password"
+                    required
+                    minLength={6}
+                  />
+                </div>
+
+                {isLogin && (
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      className="text-sm text-green-500 hover:text-green-600 font-medium transition-colors"
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
+                )}
+
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                    <p className="text-red-600 text-sm">{error}</p>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-green-500 to-lime-500 hover:from-green-600 hover:to-lime-600 text-white font-bold py-3.5 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:shadow-green-500/30 flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      <span>Processing...</span>
+                    </>
+                  ) : (
+                    <span>{isLogin ? 'Login' : 'Register'}</span>
+                  )}
+                </button>
+              </form>
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">
-              {isLogin ? 'Welcome Back!' : 'Join AICampus'}
-            </h2>
-            <p className="text-gray-400 text-sm">
-              {isLogin ? 'Login to continue your journey' : 'Create an account to get started'}
-            </p>
           </div>
 
-          {/* Tab Switcher */}
-          <div className="flex gap-2 mb-6 p-1 bg-gray-800/50 rounded-lg">
-            <button
-              onClick={() => {
-                setIsLogin(true);
-                setError('');
-              }}
-              className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
-                isLogin
-                  ? 'bg-gradient-to-r from-green-500 to-lime-500 text-white shadow-lg'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Login
-            </button>
-            <button
-              onClick={() => {
-                setIsLogin(false);
-                setError('');
-              }}
-              className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
-                !isLogin
-                  ? 'bg-gradient-to-r from-green-500 to-lime-500 text-white shadow-lg'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              Sign Up
-            </button>
-          </div>
+          {/* Welcome Panel - Order changes based on isLogin with organic curved shape */}
+          <div
+            className={`w-full md:w-1/2 bg-gradient-to-br from-green-500 via-lime-500 to-green-400 p-12 flex flex-col justify-center items-center text-white relative overflow-hidden transition-all duration-700 ease-in-out ${
+              !isLogin ? 'md:order-2 md:rounded-l-[150px]' : 'md:order-1 md:rounded-r-[150px]'
+            }`}
+          >
+            {/* Decorative circles */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 transition-all duration-700"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2 transition-all duration-700"></div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Username
-                </label>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                  placeholder="Enter your username"
-                  required={!isLogin}
-                />
-              </div>
-            )}
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                {isLogin ? 'Email or Username' : 'Email'}
-              </label>
-              <input
-                type={isLogin ? 'text' : 'email'}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                placeholder={isLogin ? 'Enter your email or username' : 'Enter your email'}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                placeholder="Enter your password"
-                required
-                minLength={6}
-              />
-            </div>
-
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-3">
-                <p className="text-red-400 text-sm">{error}</p>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-green-500 to-lime-500 hover:from-green-600 hover:to-lime-600 text-white font-bold py-3 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-green-500/50 hover:scale-105 flex items-center justify-center gap-2"
-            >
-              {loading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  <span>Processing...</span>
-                </>
-              ) : (
-                <span>{isLogin ? 'Login' : 'Sign Up'}</span>
-              )}
-            </button>
-          </form>
-
-          {/* Footer Text */}
-          <div className="mt-6 text-center">
-            <p className="text-gray-400 text-sm">
-              {isLogin ? "Don't have an account? " : 'Already have an account? '}
+            <div className="relative z-10 text-center">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 transition-all duration-500">
+                {isLogin ? 'Hello, Welcome!' : 'Welcome Back!'}
+              </h1>
+              <p className="text-lg mb-8 text-white/90 transition-all duration-500">
+                {isLogin ? 'Don\'t have an account?' : 'Already have an account?'}
+              </p>
               <button
                 onClick={() => {
                   setIsLogin(!isLogin);
                   setError('');
+                  setEmail('');
+                  setPassword('');
+                  setUsername('');
                 }}
-                className="text-green-400 hover:text-green-300 font-medium transition-colors"
+                className="px-8 py-3 border-2 border-white text-white rounded-full hover:bg-white hover:text-green-500 transition-all duration-300 font-medium"
               >
-                {isLogin ? 'Sign Up' : 'Login'}
+                {isLogin ? 'Register' : 'Login'}
               </button>
-            </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </>
   );
 }
