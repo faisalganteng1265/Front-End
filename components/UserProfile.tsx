@@ -10,6 +10,7 @@ export default function UserProfile() {
   const { user, signOut } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [username, setUsername] = useState('');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -68,10 +69,13 @@ export default function UserProfile() {
   if (!user) return null;
 
   const handleLogout = async () => {
-    if (confirm('Are you sure you want to logout?')) {
-      await signOut();
-      setIsDropdownOpen(false);
-    }
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = async () => {
+    await signOut();
+    setIsDropdownOpen(false);
+    setIsLogoutModalOpen(false);
   };
 
   // Get initial from username
@@ -235,6 +239,62 @@ export default function UserProfile() {
       </div>
 
       <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
+
+      {/* Logout Confirmation Modal */}
+      {isLogoutModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+          style={{ zIndex: 99999 }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsLogoutModalOpen(false);
+            }
+          }}
+        >
+          <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700/50 relative overflow-hidden">
+            {/* Decorative gradient background */}
+            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-red-500 to-red-600"></div>
+
+            <div className="p-8">
+              {/* Icon */}
+              <div className="flex justify-center mb-6">
+                <div className="relative">
+                  <div className="absolute inset-0 blur-xl bg-red-500/40 rounded-full"></div>
+                  <div className="relative bg-red-500/10 backdrop-blur-md rounded-full p-4 border border-red-500/20">
+                    <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Title and Description */}
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-white mb-3">Konfirmasi Logout</h2>
+                <p className="text-gray-400">
+                  Apakah Anda yakin ingin keluar dari akun Anda?
+                </p>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setIsLogoutModalOpen(false)}
+                  className="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-all border border-gray-700"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={confirmLogout}
+                  className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium py-3 px-4 rounded-lg transition-all shadow-lg shadow-red-500/50"
+                >
+                  Ya, Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         @keyframes fade-in {

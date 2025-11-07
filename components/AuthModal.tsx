@@ -9,6 +9,48 @@ interface AuthModalProps {
   onClose: () => void;
 }
 
+interface SuccessPopupProps {
+  message: string;
+  onClose: () => void;
+}
+
+function SuccessPopup({ message, onClose }: SuccessPopupProps) {
+  return (
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
+      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-2xl w-full max-w-sm border border-gray-700/50 relative overflow-hidden animate-in fade-in zoom-in duration-200">
+        {/* Success gradient bar */}
+        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-green-500 via-lime-500 to-green-500"></div>
+
+        <div className="p-8 text-center">
+          {/* Success icon */}
+          <div className="flex justify-center mb-4">
+            <div className="relative">
+              <div className="absolute inset-0 blur-xl bg-green-500/40 rounded-full"></div>
+              <div className="relative bg-green-500/20 backdrop-blur-md rounded-full p-4 border border-green-500/50">
+                <svg className="w-12 h-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Message */}
+          <h3 className="text-xl font-bold text-white mb-2">Success!</h3>
+          <p className="text-gray-300 text-sm mb-6">{message}</p>
+
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            className="w-full bg-gradient-to-r from-green-500 to-lime-500 hover:from-green-600 hover:to-lime-600 text-white font-bold py-3 px-4 rounded-lg transition-all hover:shadow-lg hover:shadow-green-500/50 hover:scale-105"
+          >
+            Got it!
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -16,6 +58,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const { signIn, signUp } = useAuth();
 
   if (!isOpen) return null;
@@ -96,8 +140,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           setError(error.message);
         } else {
           setError('');
-          alert('Sign up successful! Please check your email for verification.');
-          setIsLogin(true);
+          setSuccessMessage('Sign up successful! Please check your email for verification.');
+          setShowSuccessPopup(true);
           setEmail('');
           setPassword('');
           setUsername('');
@@ -117,10 +161,23 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
-      onClick={handleOverlayClick}
-    >
+    <>
+      {/* Success Popup */}
+      {showSuccessPopup && (
+        <SuccessPopup
+          message={successMessage}
+          onClose={() => {
+            setShowSuccessPopup(false);
+            setIsLogin(true);
+          }}
+        />
+      )}
+
+      {/* Auth Modal */}
+      <div
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+        onClick={handleOverlayClick}
+      >
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700/50 relative overflow-hidden">
         {/* Decorative gradient background */}
         <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-green-500 via-lime-500 to-green-500"></div>
@@ -277,5 +334,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         </div>
       </div>
     </div>
+    </>
   );
 }
