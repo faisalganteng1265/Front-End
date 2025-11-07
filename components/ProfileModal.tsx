@@ -439,7 +439,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               </div>
 
               <div className="border-t border-gray-700/50 pt-4 mt-4">
-                <h3 className="text-white font-semibold mb-3">Change Password (Optional)</h3>
+                <h3 className="text-white font-semibold mb-3">Change Password</h3>
 
                 <div className="space-y-4">
                   <div>
@@ -536,7 +536,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                   value={userData.jurusan}
                   onChange={(e) => setUserData({ ...userData, jurusan: e.target.value })}
                   className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                  placeholder="Contoh: Teknik Informatika"
+                  placeholder="Contoh : Teknik Informatika"
                   required
                 />
               </div>

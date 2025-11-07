@@ -97,7 +97,7 @@ export default function UserProfile() {
         >
           {/* Avatar */}
           {avatarUrl ? (
-            <div className="w-12 h-12 rounded-full overflow-hidden shadow-lg transition-transform border-2 border-green-500 flex-shrink-0">
+            <div className="w-12 h-12 rounded-full overflow-hidden shadow-lg transition-transform border-2 border-gray-500 flex-shrink-0">
               <Image
                 src={avatarUrl}
                 alt="Avatar"
