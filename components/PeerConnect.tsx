@@ -895,10 +895,6 @@ export default function PeerConnect() {
     );
   }
 
-  // ====================================
-  // Render: Chat Interface
-  // ====================================
-
   return (
     <div className="relative h-screen bg-black overflow-hidden">
       <Particles />
@@ -1069,7 +1065,7 @@ export default function PeerConnect() {
                         <p className="text-gray-400 text-sm flex items-center gap-2">
                           <span
                             className={`w-2 h-2 rounded-full ${
-                              selectedPeer.online ? 'bg-green-400' : 'bg-gray-500'
+                              selectedPeer.online ? 'bg-lime-400' : 'bg-gray-500'
                             }`}
                           ></span>
                           {selectedPeer.online ? 'Online' : 'Offline'}
@@ -1114,14 +1110,14 @@ export default function PeerConnect() {
                       )}
                       <div className={`max-w-lg ${message.isMe ? 'items-end' : 'items-start'}`}>
                         {!message.isMe && (
-                          <p className="text-lime-400 text-sm font-semibold mb-1">
+                          <p className="text-white-400 text-sm font-semibold mb-1">
                             {message.senderName}
                           </p>
                         )}
                         <div
                           className={`rounded-2xl px-4 py-2 ${
                             message.isMe
-                              ? 'bg-gradient-to-r from-lime-500 to-green-500 text-white'
+                              ? 'bg-gray-500 text-white'
                               : 'bg-gray-800/70 text-white border border-gray-700/50'
                           }`}
                         >

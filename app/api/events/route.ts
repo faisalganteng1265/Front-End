@@ -18,7 +18,7 @@ async function fetchEventsFromWeb() {
         location: 'Gedung Informatika Lt. 3',
         description: 'Workshop intensif tentang dasar-dasar Machine Learning dengan TensorFlow',
         tags: ['teknologi', 'AI', 'programming'],
-        registrationLink: 'https://bit.ly/ml-workshop-uns',
+        registrationLink: 'https://www.splunk.com/en_us/form/security-use-case-enhanced-by-ai-and-ml.html?utm_campaign=google_apac_south_idn_en_search_generic_observability_it&utm_source=google&utm_medium=cpc&utm_content=SecUseCaseAIandML_EB&utm_term=machine%20learning&device=c&_bt=693760302146&_bm=p&_bn=g&gad_source=1&gad_campaignid=20847784924&gbraid=0AAAAAD8kDz1-VMhQeorED4w9HfTaacyOc&gclid=Cj0KCQiAq7HIBhDoARIsAOATDxCJvKPjEWQd5HmDBf99tiZVHyaZ0JVNQ957CrkgVD5j56z586gitRcaAgykEALw_wcB',
         quota: 50,
         fee: 'Gratis'
       },

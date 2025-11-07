@@ -12,6 +12,7 @@ export default function UserProfile() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [username, setUsername] = useState('');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -77,44 +78,65 @@ export default function UserProfile() {
   const initial = username.charAt(0).toUpperCase();
 
   return (
-    <div className="fixed top-24 left-6 z-40" ref={dropdownRef}>
+    <div className="fixed top-10 left-20 z-40" ref={dropdownRef}>
       <div className="relative">
         {/* Profile Button */}
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center gap-3 bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-md px-4 py-3 rounded-xl border border-gray-700/50 hover:border-green-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/20 group"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className="flex items-center gap-3 rounded-full transition-all duration-300 group overflow-hidden"
+          style={{
+            padding: isHovered ? '0.75rem 1rem' : '0',
+            width: isHovered ? 'auto' : 'fit-content',
+            background: isHovered ? 'linear-gradient(to bottom right, rgba(17, 24, 39, 0.95), rgba(31, 41, 55, 0.95))' : 'transparent',
+            backdropFilter: isHovered ? 'blur(12px)' : 'none',
+            border: isHovered ? '1px solid rgba(107, 114, 128, 0.5)' : 'none',
+            boxShadow: isHovered ? '0 10px 15px -3px rgba(132, 204, 22, 0.2)' : 'none',
+          }}
         >
           {/* Avatar */}
           {avatarUrl ? (
-            <div className="w-10 h-10 rounded-full overflow-hidden shadow-lg group-hover:scale-110 transition-transform border-2 border-green-500">
+            <div className="w-12 h-12 rounded-full overflow-hidden shadow-lg transition-transform border-2 border-green-500 flex-shrink-0">
               <Image
                 src={avatarUrl}
                 alt="Avatar"
-                width={40}
-                height={40}
+                width={48}
+                height={48}
                 className="w-full h-full object-cover"
               />
             </div>
           ) : (
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-lime-500 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-lime-500 flex items-center justify-center text-white font-bold text-lg shadow-lg transition-transform flex-shrink-0">
               {initial}
             </div>
           )}
 
-          {/* User Info */}
-          <div className="flex flex-col items-start">
+          {/* User Info - Only show on hover */}
+          <div
+            className="flex flex-col items-start whitespace-nowrap transition-all duration-300"
+            style={{
+              opacity: isHovered ? 1 : 0,
+              width: isHovered ? 'auto' : 0,
+              overflow: 'hidden',
+            }}
+          >
             <span className="text-white font-semibold text-sm">{username}</span>
             <span className="text-gray-400 text-xs">{user.email}</span>
           </div>
 
-          {/* Dropdown Arrow */}
+          {/* Dropdown Arrow - Only show on hover */}
           <svg
-            className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
+            className={`w-4 h-4 text-gray-400 transition-all duration-300 flex-shrink-0 ${
               isDropdownOpen ? 'rotate-180' : ''
             }`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            style={{
+              opacity: isHovered ? 1 : 0,
+              width: isHovered ? '1rem' : 0,
+            }}
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
