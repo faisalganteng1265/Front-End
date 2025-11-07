@@ -239,6 +239,8 @@ export default function PeerConnect() {
         console.error('[fetchGroupMembers] Error fetching profiles:', profileError);
       }
 
+      console.log('[fetchGroupMembers] Profile data:', profileData);
+
       // Step 3: Fetch user_data for interests
       const { data: userData, error: userDataError } = await supabase
         .from('user_data')
@@ -249,14 +251,20 @@ export default function PeerConnect() {
         console.error('[fetchGroupMembers] Error fetching user_data:', userDataError);
       }
 
+      console.log('[fetchGroupMembers] User data:', userData);
+
       // Create maps
       const profileMap = new Map((profileData || []).map((p: any) => [p.id, p]));
       const userDataMap = new Map((userData || []).map((ud: any) => [ud.user_id, ud.minat || '']));
+
+      console.log('[fetchGroupMembers] Profile map:', profileMap);
 
       // Build peers
       const peers: Peer[] = userIds.map((userId: string) => {
         const profile = profileMap.get(userId);
         const minat = userDataMap.get(userId) || '';
+
+        console.log(`[fetchGroupMembers] Building peer for ${userId}:`, { profile, minat });
 
         return {
           id: userId,
@@ -421,53 +429,46 @@ export default function PeerConnect() {
         async (payload) => {
           console.log('[Realtime] New message received:', payload);
 
-          // Fetch message data
-          const { data: msgData, error: msgError } = await supabase
-            .from('group_messages')
-            .select('id, content, created_at, user_id')
-            .eq('id', payload.new.id)
-            .single();
+          try {
+            // Use payload.new directly (contains all INSERT data)
+            const msgData = payload.new;
 
-          if (msgError) {
-            console.error('[Realtime] Error fetching message:', msgError);
-            return;
-          }
+            // Fetch sender profile with maybeSingle (won't throw if not found)
+            const { data: profileData } = await supabase
+              .from('profiles')
+              .select('id, username, avatar_url, email')
+              .eq('id', msgData.user_id)
+              .maybeSingle();
 
-          // Fetch sender profile
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('id, username, avatar_url, email')
-            .eq('id', msgData.user_id)
-            .single();
+            console.log('[Realtime] Profile:', profileData);
 
-          if (profileError) {
-            console.error('[Realtime] Error fetching profile:', profileError);
-          }
+            const newMessage: Message = {
+              id: msgData.id,
+              senderId: msgData.user_id,
+              senderName: profileData?.username || profileData?.email?.split('@')[0] || 'User',
+              senderAvatar: profileData?.avatar_url || null,
+              text: msgData.content,
+              timestamp: new Date(msgData.created_at),
+              isMe: msgData.user_id === user.id,
+            };
 
-          const newMessage: Message = {
-            id: msgData.id,
-            senderId: msgData.user_id,
-            senderName: profileData?.username || profileData?.email?.split('@')[0] || 'User',
-            senderAvatar: profileData?.avatar_url || null,
-            text: msgData.content,
-            timestamp: new Date(msgData.created_at),
-            isMe: msgData.user_id === user.id,
-          };
+            console.log('[Realtime] Processed message:', newMessage);
 
-          console.log('[Realtime] Processed message:', newMessage);
+            // Only add if not from current user (already added optimistically)
+            if (!newMessage.isMe) {
+              setMessages(prev => [...prev, newMessage]);
 
-          // Only add if not from current user (already added optimistically)
-          if (!newMessage.isMe) {
-            setMessages(prev => [...prev, newMessage]);
-
-            // Update group's last message
-            setGroups(prevGroups =>
-              prevGroups.map(g =>
-                g.id === selectedGroup.id
-                  ? { ...g, lastMessage: newMessage.text, lastMessageTime: newMessage.timestamp }
-                  : g
-              )
-            );
+              // Update group's last message
+              setGroups(prevGroups =>
+                prevGroups.map(g =>
+                  g.id === selectedGroup.id
+                    ? { ...g, lastMessage: newMessage.text, lastMessageTime: newMessage.timestamp }
+                    : g
+                )
+              );
+            }
+          } catch (error) {
+            console.error('[Realtime] Error:', error);
           }
         }
       )
