@@ -220,13 +220,13 @@ const CardNav = ({
             </span>
           </div>
 
-          <button
-            type="button"
+          <a
+            href="/fitur-1"
             className="card-nav-cta-button hidden md:inline-flex border-0 rounded-xl px-6 py-2.5 items-center justify-center font-semibold text-sm cursor-pointer transition-all duration-300 relative z-[20] pointer-events-auto hover:scale-105 hover:shadow-lg hover:shadow-lime-500/50"
             style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
           >
             Get Started
-          </button>
+          </a>
         </div>
 
         <div

@@ -116,10 +116,10 @@ export default function HowItWorksSection() {
                 {/* Content - Center aligned */}
                 <div className="relative text-center space-y-2">
                   <h3 className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">
-                    Daftar & Setup
+                    Siapkan Dirimu !
                   </h3>
                   <p className="text-emerald-200/80 text-sm leading-relaxed">
-                    Buat akun dan atur preferensi minatmu dalam hitungan menit
+                    Temukan Minat dan Temanmu disini !
                   </p>
                 </div>
               </div>

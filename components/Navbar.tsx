@@ -66,10 +66,8 @@ export default function Navbar() {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // Set threshold sekitar 50px dari top untuk transisi lebih cepat
       setIsScrolled(currentScrollY > 50);
 
-      // Navbar always visible - no auto-hide
       setIsVisible(true);
       setLastScrollY(currentScrollY);
     };
