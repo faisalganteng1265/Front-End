@@ -29,6 +29,29 @@ body {
 /* Optimized animations - now using Framer Motion for better performance */
 /* Kept only essential CSS animations that are still in use */
 
+/* Auth Modal Wipe Animations */
+@keyframes expandFromLeft {
+  0% {
+    left: 0;
+    right: 50%;
+  }
+  100% {
+    left: 0;
+    right: 0;
+  }
+}
+
+@keyframes expandFromRight {
+  0% {
+    left: 50%;
+    right: 0;
+  }
+  100% {
+    left: 0;
+    right: 0;
+  }
+}
+
 /* CardSwap Styles */
 .card-swap-container {
   position: relative;

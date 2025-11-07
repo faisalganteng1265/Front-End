@@ -60,9 +60,38 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [loading, setLoading] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [displayMode, setDisplayMode] = useState(true); // true = login, false = register
+  const [panelOrder, setPanelOrder] = useState<'login' | 'register'>('login'); // Separate state for panel order
+  const [animationDirection, setAnimationDirection] = useState<'left' | 'right'>('left'); // Track animation direction
   const { signIn, signUp } = useAuth();
 
   if (!isOpen) return null;
+
+  const handleModeSwitch = () => {
+    // Set animation direction based on CURRENT panel position (before change)
+    setAnimationDirection(panelOrder === 'login' ? 'left' : 'right');
+
+    setIsTransitioning(true);
+    setError('');
+
+    // Phase 1: Fade out content (200ms)
+    // Phase 2: Panel expands to full width (400ms)
+    setTimeout(() => {
+      // Change content AND panel order while panel is full width
+      setDisplayMode(!isLogin);
+      setIsLogin(!isLogin);
+      setPanelOrder(isLogin ? 'register' : 'login');
+      setEmail('');
+      setPassword('');
+      setUsername('');
+    }, 500); // After expand
+
+    // Phase 3: Panel returns to normal + content fades in (400ms)
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 1000); // Total animation time
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -182,25 +211,25 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition-colors z-10 bg-white/80 backdrop-blur-sm rounded-full p-2 hover:bg-white"
+            className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition-colors z-[60] bg-white/80 backdrop-blur-sm rounded-full p-2 hover:bg-white"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
 
-          {/* Form Panel - Order changes based on isLogin */}
+          {/* Form Panel - Order changes based on panelOrder */}
           <div
-            className={`w-full md:w-1/2 p-12 flex flex-col justify-center bg-white relative z-10 transition-all duration-700 ease-in-out ${
-              !isLogin ? 'md:order-1' : 'md:order-2'
-            }`}
+            className={`w-full p-12 flex flex-col justify-center bg-white relative transition-all duration-500 ease-in-out ${
+              isTransitioning ? 'md:w-0 opacity-0' : 'md:w-1/2 opacity-100'
+            } ${panelOrder === 'register' ? 'md:order-1' : 'md:order-2'}`}
           >
-            <div className="w-full max-w-sm mx-auto">
+            <div className={`w-full max-w-sm mx-auto transition-opacity duration-200 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
               <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                {isLogin ? 'Login' : 'Registration'}
+                {displayMode ? 'Login' : 'Registration'}
               </h2>
               <p className="text-gray-500 text-sm mb-8">
-                {isLogin ? 'Welcome back to AICampus!' : 'Join AICampus today'}
+                {displayMode ? 'Welcome back to AICampus!' : 'Join AICampus today'}
               </p>
 
               {/* Form */}
@@ -279,34 +308,45 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             </div>
           </div>
 
-          {/* Welcome Panel - Order changes based on isLogin with organic curved shape */}
+          {/* Welcome Panel - Order changes based on panelOrder with organic curved shape */}
           <div
-            className={`w-full md:w-1/2 bg-gradient-to-br from-green-500 via-lime-500 to-green-400 p-12 flex flex-col justify-center items-center text-white relative overflow-hidden transition-all duration-700 ease-in-out ${
-              !isLogin ? 'md:order-2 md:rounded-l-[150px]' : 'md:order-1 md:rounded-r-[150px]'
+            className={`w-full bg-gradient-to-br from-green-500 via-lime-500 to-green-400 flex flex-col justify-center items-center text-white overflow-hidden ${
+              panelOrder === 'register' ? 'md:order-2' : 'md:order-1'
+            } ${
+              isTransitioning
+                ? 'md:absolute md:top-0 md:bottom-0 md:z-50 md:rounded-3xl p-12 transition-all duration-500 ease-in-out'
+                : 'md:relative md:z-0 md:w-1/2 p-12 transition-all duration-500 ease-in-out'
+            } ${
+              isTransitioning
+                ? (panelOrder === 'login' ? 'md:left-0 md:right-0' : 'md:left-0 md:right-0')
+                : ''
+            } ${
+              isTransitioning ? '' : (panelOrder === 'register' ? 'md:rounded-l-[150px]' : 'md:rounded-r-[150px]')
             }`}
+            style={
+              isTransitioning
+                ? animationDirection === 'left'
+                  ? { animation: 'expandFromLeft 0.5s ease-in-out' }
+                  : { animation: 'expandFromRight 0.5s ease-in-out' }
+                : undefined
+            }
           >
             {/* Decorative circles */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 transition-all duration-700"></div>
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2 transition-all duration-700"></div>
 
-            <div className="relative z-10 text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 transition-all duration-500">
-                {isLogin ? 'Hello, Welcome!' : 'Welcome Back!'}
+            <div className={`relative z-10 text-center transition-opacity duration-200 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                {displayMode ? 'Hello, Welcome!' : 'Welcome Back!'}
               </h1>
-              <p className="text-lg mb-8 text-white/90 transition-all duration-500">
-                {isLogin ? 'Don\'t have an account?' : 'Already have an account?'}
+              <p className="text-lg mb-8 text-white/90">
+                {displayMode ? 'Don\'t have an account?' : 'Already have an account?'}
               </p>
               <button
-                onClick={() => {
-                  setIsLogin(!isLogin);
-                  setError('');
-                  setEmail('');
-                  setPassword('');
-                  setUsername('');
-                }}
+                onClick={handleModeSwitch}
                 className="px-8 py-3 border-2 border-white text-white rounded-full hover:bg-white hover:text-green-500 transition-all duration-300 font-medium"
               >
-                {isLogin ? 'Register' : 'Login'}
+                {displayMode ? 'Register' : 'Login'}
               </button>
             </div>
           </div>
