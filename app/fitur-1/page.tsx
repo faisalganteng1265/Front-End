@@ -1,8 +1,8 @@
 'use client';
 
-import ChatInterface from '@/components/ChatInterface';
-import StaggeredMenu from '@/components/StaggeredMenu';
-import Particles from '@/components/Particles';
+import ChatInterface from '@/components/features/ChatInterface';
+import StaggeredMenu from '@/components/features/StaggeredMenu';
+import Particles from '@/components/features/Particles';
 
 export default function Fitur1() {
   return (

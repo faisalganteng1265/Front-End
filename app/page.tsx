@@ -1,15 +1,15 @@
 'use client';
 
 import { useEffect } from 'react';
-import Navbar from '@/components/Navbar';
-import HeroSection from '@/components/HeroSection';
-import FeaturesSection from '@/components/FeaturesSection';
-import GallerySection from '@/components/GallerySection';
-import WhyBetterSection from '@/components/WhyBetterSection';
-import HowItWorksSection from '@/components/HowItWorksSection';
-import FAQSection from '@/components/FAQSection';
-import Footer from '@/components/Footer';
-import Chatbot from '@/components/Chatbot';
+import Navbar from '@/components/landing/Navbar';
+import HeroSection from '@/components/landing/HeroSection';
+import FeaturesSection from '@/components/landing/FeaturesSection';
+import GallerySection from '@/components/landing/GallerySection';
+import WhyBetterSection from '@/components/landing/WhyBetterSection';
+import HowItWorksSection from '@/components/landing/HowItWorksSection';
+import FAQSection from '@/components/landing/FAQSection';
+import Footer from '@/components/landing/Footer';
+import Chatbot from '@/components/landing/Chatbot';
 
 export default function Home() {
   useEffect(() => {
