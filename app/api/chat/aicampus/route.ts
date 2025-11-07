@@ -123,7 +123,7 @@ Jika ada pertanyaan di luar konteks AICAMPUS, berikan pesan:
     }
 
     // Also ensure alternating pattern - remove consecutive same roles
-    chatHistory = chatHistory.filter((msg, idx) => {
+    chatHistory = chatHistory.filter((msg: any, idx: number) => {
       if (idx === 0) return true;
       return msg.role !== chatHistory[idx - 1].role;
     });
