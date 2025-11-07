@@ -27,7 +27,57 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
     try {
       if (isLogin) {
-        const { error } = await signIn(email, password);
+        // Check if input is email or username
+        const isEmail = email.includes('@');
+        let loginEmail = email;
+
+        if (!isEmail) {
+          // Input is username, fetch email from profiles table
+          const { supabase } = await import('@/lib/supabase');
+
+          // Try exact match first (case-sensitive)
+          let { data, error: fetchError } = await supabase
+            .from('profiles')
+            .select('email, username')
+            .eq('username', email)
+            .maybeSingle();
+
+          // If not found, try case-insensitive
+          if (!data || fetchError) {
+            const result = await supabase
+              .from('profiles')
+              .select('email, username')
+              .ilike('username', email)
+              .maybeSingle();
+
+            data = result.data;
+            fetchError = result.error;
+          }
+
+          console.log('[AuthModal] Username lookup:', {
+            inputUsername: email,
+            foundData: data,
+            error: fetchError
+          });
+
+          if (fetchError) {
+            console.error('[AuthModal] Database error:', fetchError);
+            setError(`Database error: ${fetchError.message}. Try using email to login.`);
+            setLoading(false);
+            return;
+          }
+
+          if (!data || !data.email) {
+            setError(`Username "${email}" not found. Please use email to login or check your username.`);
+            setLoading(false);
+            return;
+          }
+
+          loginEmail = data.email;
+          console.log('[AuthModal] Found email for username:', loginEmail);
+        }
+
+        const { error } = await signIn(loginEmail, password);
         if (error) {
           setError(error.message);
         } else {
@@ -160,14 +210,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Email
+                {isLogin ? 'Email or Username' : 'Email'}
               </label>
               <input
-                type="email"
+                type={isLogin ? 'text' : 'email'}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                placeholder="Enter your email"
+                placeholder={isLogin ? 'Enter your email or username' : 'Enter your email'}
                 required
               />
             </div>

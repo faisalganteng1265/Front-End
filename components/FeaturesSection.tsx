@@ -565,7 +565,7 @@ export default function FeaturesSection() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 pt-30">
         <div className="grid md:grid-cols-4 gap-6">
           <StatItem end={1000} label="Mahasiswa Aktif" suffix="+" icon="/AKADEMIKICON.png" />
           <StatItem end={50} label="Event per Bulan" suffix="+" icon="/JADWALICON.png" />

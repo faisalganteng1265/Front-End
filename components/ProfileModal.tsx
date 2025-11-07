@@ -307,8 +307,9 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
       onClick={handleOverlayClick}
+      style={{ zIndex: 99999 }}
     >
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl border border-gray-700/50 relative overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Decorative gradient background */}

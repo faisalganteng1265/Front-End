@@ -902,7 +902,25 @@ export default function PeerConnect() {
   return (
     <div className="relative h-screen bg-black overflow-hidden">
       <Particles />
-      <StaggeredMenu />
+      <StaggeredMenu
+        position="right"
+        colors={['#0a0a0a', '#1a1a1a', '#2a2a2a']}
+        items={[
+          { label: 'HOME', ariaLabel: 'Go to home page', link: '/' },
+          { label: 'AI Campus Chatbot', ariaLabel: 'Go to feature 1', link: '/fitur-1'},
+          { label: 'Event Recommender', ariaLabel: 'Go to feature 2', link: '/fitur-2' },
+          { label: 'Smart Schedule', ariaLabel: 'Go to feature 3', link: '/fitur-3' },
+          { label: 'Peer Connect', ariaLabel: 'Go to feature 4', link: '/fitur-4', color: '#22c55e'  }
+        ]}
+        displaySocials={false}
+        displayItemNumbering={true}
+        logoUrl="/AICAMPUS.png"
+        menuButtonColor="#fff"
+        openMenuButtonColor="#fff"
+        accentColor="#ffffff"
+        changeMenuColorOnOpen={true}
+        isFixed={true}
+      />
 
       {showChat && (
         <div className="relative z-10 h-screen flex flex-col">

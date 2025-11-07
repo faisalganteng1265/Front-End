@@ -425,18 +425,8 @@ export default function ChatInterface() {
                       </div>
                       <div>
                         <p className="text-white font-medium">{selectedUniversity}</p>
-                        <p className="text-green-400 text-xs">✨ Auto-fill dari profil kamu</p>
                       </div>
                     </div>
-                    <button
-                      onClick={() => {
-                        setSelectedUniversity('');
-                        setHasInitialized(false);
-                      }}
-                      className="text-gray-400 hover:text-white text-xs underline transition-colors"
-                    >
-                      Ganti
-                    </button>
                   </div>
                 ) : (
                   // Manual selection dropdown
