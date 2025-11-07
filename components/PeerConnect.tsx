@@ -412,6 +412,7 @@ export default function PeerConnect() {
   // Realtime Subscription
   // ====================================
 
+  // Realtime subscription for group messages
   useEffect(() => {
     if (!selectedGroup || !user) return;
 
@@ -478,6 +479,88 @@ export default function PeerConnect() {
       supabase.removeChannel(channel);
     };
   }, [selectedGroup, user]);
+
+  // Realtime subscription for private messages
+  useEffect(() => {
+    if (!user) return;
+
+    // Subscribe to all incoming private messages
+    const channel = supabase
+      .channel('private-messages')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'private_messages',
+          filter: `receiver_id=eq.${user.id}`,
+        },
+        async (payload) => {
+          console.log('[Realtime] New private message received:', payload);
+
+          try {
+            const msgData = payload.new;
+
+            // Fetch sender profile
+            const { data: profileData } = await supabase
+              .from('profiles')
+              .select('id, username, avatar_url, email')
+              .eq('id', msgData.sender_id)
+              .maybeSingle();
+
+            console.log('[Realtime] Sender profile:', profileData);
+
+            const newMessage: Message = {
+              id: msgData.id,
+              senderId: msgData.sender_id,
+              senderName: profileData?.username || profileData?.email?.split('@')[0] || 'User',
+              senderAvatar: profileData?.avatar_url || null,
+              text: msgData.content,
+              timestamp: new Date(msgData.created_at),
+              isMe: false,
+            };
+
+            // Update messages if chat is currently open with this user
+            if (selectedPeer?.id === msgData.sender_id) {
+              setMessages(prev => [...prev, newMessage]);
+            }
+
+            // Update private chat history
+            setPrivateChatHistory(prev => ({
+              ...prev,
+              [msgData.sender_id]: [...(prev[msgData.sender_id] || []), newMessage],
+            }));
+
+            // Add sender to active private chats if not already there
+            if (!activePrivateChats.some(p => p.id === msgData.sender_id)) {
+              // Fetch full peer data
+              const { data: userData } = await supabase
+                .from('user_data')
+                .select('minat')
+                .eq('user_id', msgData.sender_id)
+                .maybeSingle();
+
+              const newPeer: Peer = {
+                id: msgData.sender_id,
+                name: profileData?.username || profileData?.email?.split('@')[0] || 'User',
+                avatar: profileData?.avatar_url || null,
+                interests: parseInterests(userData?.minat || ''),
+                online: true,
+              };
+
+              setActivePrivateChats(prev => [newPeer, ...prev]);
+            }
+          } catch (error) {
+            console.error('[Realtime] Private message error:', error);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, selectedPeer, activePrivateChats]);
 
   // ====================================
   // Initialize: Fetch User Data & Groups
@@ -588,17 +671,62 @@ export default function PeerConnect() {
     setMessages(group.messages);
   };
 
-  const handlePeerSelect = (peer: Peer) => {
+  // Fetch private messages between current user and another user
+  const fetchPrivateMessages = async (otherUserId: string) => {
+    if (!user) return;
+
+    try {
+      console.log('[fetchPrivateMessages] Fetching with:', otherUserId);
+
+      const { data, error } = await supabase
+        .from('private_messages')
+        .select('id, sender_id, receiver_id, content, created_at')
+        .or(`and(sender_id.eq.${user.id},receiver_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},receiver_id.eq.${user.id})`)
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        console.error('[fetchPrivateMessages] Error:', error);
+        return;
+      }
+
+      console.log('[fetchPrivateMessages] Fetched:', data?.length || 0);
+
+      // Get sender profiles
+      const senderIds = [...new Set(data?.map(m => m.sender_id) || [])];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, username, avatar_url, email')
+        .in('id', senderIds);
+
+      const profileMap = new Map((profiles || []).map(p => [p.id, p]));
+
+      const messages: Message[] = (data || []).map(msg => {
+        const profile = profileMap.get(msg.sender_id);
+        return {
+          id: msg.id,
+          senderId: msg.sender_id,
+          senderName: profile?.username || profile?.email?.split('@')[0] || 'User',
+          senderAvatar: profile?.avatar_url || null,
+          text: msg.content,
+          timestamp: new Date(msg.created_at),
+          isMe: msg.sender_id === user.id,
+        };
+      });
+
+      setMessages(messages);
+      setPrivateChatHistory(prev => ({ ...prev, [otherUserId]: messages }));
+    } catch (error) {
+      console.error('[fetchPrivateMessages] Error:', error);
+    }
+  };
+
+  const handlePeerSelect = async (peer: Peer) => {
     setSelectedPeer(peer);
     setChatMode('private');
     setSelectedGroup(null);
 
-    // Load private chat history (if any)
-    if (privateChatHistory[peer.id]) {
-      setMessages(privateChatHistory[peer.id]);
-    } else {
-      setMessages([]);
-    }
+    // Load private chat history from database
+    await fetchPrivateMessages(peer.id);
 
     // Add to active private chats if not already there
     if (!activePrivateChats.some(p => p.id === peer.id)) {
@@ -609,10 +737,52 @@ export default function PeerConnect() {
   const handleSendPrivateMessage = async () => {
     if (!inputMessage.trim() || !selectedPeer || !user) return;
 
-    // Note: Private messaging would need a separate table
-    // For now, we'll just show a message
-    alert('Private messaging feature coming soon!');
-    setInputMessage('');
+    try {
+      setIsSending(true);
+
+      // Insert message to database
+      const { data, error } = await supabase
+        .from('private_messages')
+        .insert({
+          sender_id: user.id,
+          receiver_id: selectedPeer.id,
+          content: inputMessage.trim(),
+        })
+        .select('id, sender_id, receiver_id, content, created_at')
+        .single();
+
+      if (error) throw error;
+
+      // Get current user profile
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('username, avatar_url, email')
+        .eq('id', user.id)
+        .single();
+
+      // Add to local messages
+      const newMessage: Message = {
+        id: data.id,
+        senderId: data.sender_id,
+        senderName: profileData?.username || profileData?.email?.split('@')[0] || 'You',
+        senderAvatar: profileData?.avatar_url || null,
+        text: data.content,
+        timestamp: new Date(data.created_at),
+        isMe: true,
+      };
+
+      setMessages(prev => [...prev, newMessage]);
+      setPrivateChatHistory(prev => ({
+        ...prev,
+        [selectedPeer.id]: [...(prev[selectedPeer.id] || []), newMessage],
+      }));
+      setInputMessage('');
+    } catch (error) {
+      console.error('[handleSendPrivateMessage] Error:', error);
+      alert('Failed to send message. Please try again.');
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
