@@ -380,6 +380,17 @@ export default function PeerConnect() {
     try {
       if (chatMode === 'private' && selectedPeer) {
         // Private chat - balasan dari peer yang dipilih menggunakan AI Campus
+        // Build history - exclude the last user message (already in message param)
+        let history = currentMessages.slice(0, -1).slice(-10).map(msg => ({
+          role: msg.isMe ? 'user' : 'assistant',
+          content: msg.text
+        }));
+
+        // Ensure history starts with 'user' role
+        if (history.length > 0 && history[0].role === 'assistant') {
+          history = history.slice(1);
+        }
+
         const response = await fetch('/api/chat/campus', {
           method: 'POST',
           headers: {
@@ -387,10 +398,7 @@ export default function PeerConnect() {
           },
           body: JSON.stringify({
             message: currentMessage,
-            history: currentMessages.slice(-10).map(msg => ({
-              role: msg.isMe ? 'user' : 'assistant',
-              content: msg.text
-            })),
+            history: history,
             university: 'UNS'
           }),
         });
@@ -428,6 +436,17 @@ export default function PeerConnect() {
         // Pilih random member untuk balas
         const randomMember = onlineMembers[Math.floor(Math.random() * onlineMembers.length)];
 
+        // Build history - exclude the last user message (already in message param)
+        let history = currentMessages.slice(0, -1).slice(-10).map(msg => ({
+          role: msg.isMe ? 'user' : 'assistant',
+          content: msg.text
+        }));
+
+        // Ensure history starts with 'user' role
+        if (history.length > 0 && history[0].role === 'assistant') {
+          history = history.slice(1);
+        }
+
         const response = await fetch('/api/chat/campus', {
           method: 'POST',
           headers: {
@@ -435,10 +454,7 @@ export default function PeerConnect() {
           },
           body: JSON.stringify({
             message: currentMessage,
-            history: currentMessages.slice(-10).map(msg => ({
-              role: msg.isMe ? 'user' : 'assistant',
-              content: msg.text
-            })),
+            history: history,
             university: 'UNS'
           }),
         });

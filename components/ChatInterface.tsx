@@ -139,6 +139,15 @@ export default function ChatInterface() {
         body: JSON.stringify(requestBody),
       });
 
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.error('Invalid response type:', contentType);
+        const textResponse = await response.text();
+        console.error('Response body:', textResponse);
+        throw new Error('Server mengembalikan response yang tidak valid. Silakan coba lagi.');
+      }
+
       const data = await response.json();
 
       if (!response.ok) {
@@ -192,9 +201,18 @@ export default function ChatInterface() {
             university: selectedUniversity,
           }),
         });
-        
+
+        // Check if response is JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          console.error('Invalid response type:', contentType);
+          const textResponse = await response.text();
+          console.error('Response body:', textResponse);
+          throw new Error('Server mengembalikan response yang tidak valid');
+        }
+
         const data = await response.json();
-        
+
         if (!response.ok) {
           console.error('API Error:', data);
           throw new Error(data.error || 'Failed to get response');

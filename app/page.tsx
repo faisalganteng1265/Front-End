@@ -9,7 +9,6 @@ import WhyBetterSection from '@/components/WhyBetterSection';
 import HowItWorksSection from '@/components/HowItWorksSection';
 import FAQSection from '@/components/FAQSection';
 import Footer from '@/components/Footer';
-import Chatbot from '@/components/Chatbot';
 
 export default function Home() {
   useEffect(() => {
@@ -26,7 +25,6 @@ export default function Home() {
       <HowItWorksSection />
       <FAQSection />
       <Footer />
-      <Chatbot />
     </div>
   );
 }
