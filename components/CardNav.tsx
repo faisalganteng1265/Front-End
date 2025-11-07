@@ -29,6 +29,7 @@ interface CardNavProps {
   buttonTextColor?: string;
   onMenuToggle?: (isOpen: boolean) => void;
   onLoginClick?: () => void;
+  isUserLoggedIn?: boolean;
 }
 
 const CardNav = ({
@@ -42,7 +43,8 @@ const CardNav = ({
   buttonBgColor,
   buttonTextColor,
   onMenuToggle,
-  onLoginClick
+  onLoginClick,
+  isUserLoggedIn = false
 }: CardNavProps) => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -223,12 +225,14 @@ const CardNav = ({
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <button
-              onClick={onLoginClick}
-              className="card-nav-login-button border-2 border-white/80 bg-transparent rounded-xl px-5 py-2 font-semibold text-sm cursor-pointer transition-all duration-300 relative z-[20] pointer-events-auto hover:scale-105 hover:bg-white/10 hover:border-white text-white"
-            >
-              Login
-            </button>
+            {!isUserLoggedIn && (
+              <button
+                onClick={onLoginClick}
+                className="card-nav-login-button border-2 border-white/80 bg-transparent rounded-xl px-5 py-2 font-semibold text-sm cursor-pointer transition-all duration-300 relative z-[20] pointer-events-auto hover:scale-105 hover:bg-white/10 hover:border-white text-white"
+              >
+                Login
+              </button>
+            )}
             <a
               href="/fitur-1"
               className="card-nav-cta-button inline-flex border-0 rounded-xl px-6 py-2.5 items-center justify-center font-semibold text-sm cursor-pointer transition-all duration-300 relative z-[20] pointer-events-auto hover:scale-105 hover:shadow-lg hover:shadow-lime-500/50"

@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
+import UserProfile from '@/components/UserProfile';
 import HeroSection from '@/components/HeroSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import GallerySection from '@/components/GallerySection';
@@ -19,6 +20,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       <Navbar />
+      <UserProfile />
       <HeroSection />
       <FeaturesSection />
       <GallerySection />

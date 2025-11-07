@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -36,6 +38,7 @@ const universities = [
 ];
 
 export default function ChatInterface() {
+  const { user, loading } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [customQuestion, setCustomQuestion] = useState('');
@@ -46,6 +49,8 @@ export default function ChatInterface() {
   const [selectedMode, setSelectedMode] = useState<'campus' | 'general' | ''>('');
   const [directAnswer, setDirectAnswer] = useState<string>('');
   const [isAnswerLoading, setIsAnswerLoading] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -56,6 +61,79 @@ export default function ChatInterface() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Auto-fetch university from profile when campus mode is selected
+  useEffect(() => {
+    console.log('ChatInterface: useEffect triggered', { loading, user: user?.id, selectedMode, hasInitialized });
+
+    // Wait for auth to finish loading
+    if (loading) {
+      console.log('ChatInterface: Waiting for auth to load...');
+      return;
+    }
+
+    // Only fetch if campus mode is selected
+    if (selectedMode !== 'campus') {
+      console.log('ChatInterface: Not in campus mode, skipping profile fetch');
+      return;
+    }
+
+    // Prevent double execution
+    if (hasInitialized) {
+      console.log('ChatInterface: Already initialized, skipping...');
+      return;
+    }
+
+    const fetchUniversityFromProfile = async () => {
+      console.log('ChatInterface: Starting university fetch for user:', user?.id);
+      setHasInitialized(true);
+
+      // Check if user is logged in
+      if (!user) {
+        console.log('ChatInterface: User not logged in, no auto-fill');
+        setIsLoadingProfile(false);
+        return;
+      }
+
+      setIsLoadingProfile(true);
+
+      try {
+        console.log('ChatInterface: Fetching user_data for user:', user.id);
+
+        // Fetch universitas from user_data table
+        const { data, error } = await supabase
+          .from('user_data')
+          .select('universitas')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error) {
+          console.log('ChatInterface: Error fetching profile:', error.message);
+          setIsLoadingProfile(false);
+          return;
+        }
+
+        if (!data || !data.universitas) {
+          console.log('ChatInterface: No university found in profile');
+          setIsLoadingProfile(false);
+          return;
+        }
+
+        console.log('ChatInterface: University found in profile:', data.universitas);
+
+        // Set the university from profile
+        setSelectedUniversity(data.universitas);
+        setIsLoadingProfile(false);
+
+        console.log('ChatInterface: Successfully auto-filled university:', data.universitas);
+      } catch (error: any) {
+        console.error('ChatInterface: Unexpected error:', error);
+        setIsLoadingProfile(false);
+      }
+    };
+
+    fetchUniversityFromProfile();
+  }, [user, loading, selectedMode, hasInitialized]);
 
   const handleStartChat = () => {
     // Validasi mode dipilih
@@ -317,20 +395,74 @@ export default function ChatInterface() {
               <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
                 <label className="block text-white font-semibold mb-3 flex items-center gap-2">
                   <Image src="/KAMPUSICON.png" alt="Kampus" width={32} height={32} className="object-contain" />
-                  Pilih Universitas
+                  {selectedUniversity && !isLoadingProfile ? 'Universitas Kamu' : 'Pilih Universitas'}
                 </label>
-                <select
-                  value={selectedUniversity}
-                  onChange={(e) => setSelectedUniversity(e.target.value)}
-                  className="w-full bg-gray-900/50 text-white rounded-xl px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                >
-                  <option value="">-- Pilih Universitas --</option>
-                  {universities.map((uni, index) => (
-                    <option key={index} value={uni}>
-                      {uni}
-                    </option>
-                  ))}
-                </select>
+
+                {isLoadingProfile ? (
+                  // Loading state
+                  <div className="w-full bg-gray-900/50 rounded-xl px-4 py-3 border border-gray-700 flex items-center gap-3">
+                    <div className="flex gap-2">
+                      <span className="w-2 h-2 bg-green-400 rounded-full animate-bounce"></span>
+                      <span
+                        className="w-2 h-2 bg-green-400 rounded-full animate-bounce"
+                        style={{ animationDelay: '0.2s' }}
+                      ></span>
+                      <span
+                        className="w-2 h-2 bg-green-400 rounded-full animate-bounce"
+                        style={{ animationDelay: '0.4s' }}
+                      ></span>
+                    </div>
+                    <span className="text-gray-400 text-sm">Memuat data universitas dari profil...</span>
+                  </div>
+                ) : selectedUniversity && user ? (
+                  // Auto-filled from profile - Read-only display
+                  <div className="w-full bg-green-500/10 border border-green-500/30 rounded-xl px-4 py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-white font-medium">{selectedUniversity}</p>
+                        <p className="text-green-400 text-xs">✨ Auto-fill dari profil kamu</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setSelectedUniversity('');
+                        setHasInitialized(false);
+                      }}
+                      className="text-gray-400 hover:text-white text-xs underline transition-colors"
+                    >
+                      Ganti
+                    </button>
+                  </div>
+                ) : (
+                  // Manual selection dropdown
+                  <select
+                    value={selectedUniversity}
+                    onChange={(e) => setSelectedUniversity(e.target.value)}
+                    className="w-full bg-gray-900/50 text-white rounded-xl px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                  >
+                    <option value="">-- Pilih Universitas --</option>
+                    {universities.map((uni, index) => (
+                      <option key={index} value={uni}>
+                        {uni}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
+                {/* Info message for non-logged-in users */}
+                {!user && !loading && (
+                  <p className="text-gray-400 text-xs mt-2 flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    💡 Login dan isi profil untuk auto-fill universitas
+                  </p>
+                )}
               </div>
             )}
 

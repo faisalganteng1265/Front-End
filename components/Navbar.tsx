@@ -112,6 +112,7 @@ export default function Navbar() {
           buttonTextColor="#000000"
           onMenuToggle={setIsMenuOpen}
           onLoginClick={handleLoginClick}
+          isUserLoggedIn={!!user}
         />
       </nav>
 

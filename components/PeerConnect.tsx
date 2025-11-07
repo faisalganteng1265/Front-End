@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { Atom } from 'react-loading-indicators';
 import StaggeredMenu from './StaggeredMenu';
 import Particles from './Particles';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
 
 interface Peer {
   id: number;
@@ -251,9 +253,10 @@ const generateGroupChats = (selectedInterests: string[]): GroupChat[] => {
 };
 
 export default function PeerConnect() {
-  const [showInterestPopup, setShowInterestPopup] = useState(true);
+  const { user, loading } = useAuth();
+  const [showInterestPopup, setShowInterestPopup] = useState(false); // Changed to false
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start with loading
   const [showChat, setShowChat] = useState(false);
   const [groups, setGroups] = useState<GroupChat[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<GroupChat | null>(null);
@@ -264,6 +267,148 @@ export default function PeerConnect() {
   const [isSending, setIsSending] = useState(false);
   const [privateChatHistory, setPrivateChatHistory] = useState<{[key: number]: Message[]}>({});
   const [activePrivateChats, setActivePrivateChats] = useState<Peer[]>([]); // Track active private chats
+  const [loadingMessage, setLoadingMessage] = useState('AI sedang menganalisis profil kamu...');
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  // Auto-fetch user interests from database
+  useEffect(() => {
+    // Wait for auth to finish loading
+    if (loading) {
+      console.log('PeerConnect: Waiting for auth to load...');
+      setLoadingMessage('Memuat data autentikasi...');
+      return;
+    }
+
+    // Prevent double execution
+    if (hasInitialized) {
+      console.log('PeerConnect: Already initialized, skipping...');
+      return;
+    }
+
+    const fetchUserInterests = async () => {
+      console.log('PeerConnect: Starting fetch, user:', user?.id);
+      setHasInitialized(true);
+
+      if (!user) {
+        // Redirect to login if not authenticated
+        console.log('PeerConnect: User not authenticated');
+        setLoadingMessage('Kamu belum login. Redirecting...');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+        return;
+      }
+
+      try {
+        setLoadingMessage('Memuat data minat dari profil kamu...');
+        console.log('PeerConnect: Fetching user_data for user:', user.id);
+
+        // Fetch user data from supabase
+        const { data, error } = await supabase
+          .from('user_data')
+          .select('minat')
+          .eq('user_id', user.id)
+          .single();
+
+        console.log('PeerConnect: Fetch result:', { data, error });
+
+        if (error) {
+          console.error('PeerConnect: Supabase error:', error);
+          if (error.code === 'PGRST116') {
+            // No data found - user hasn't filled profile
+            console.log('PeerConnect: No profile data found');
+            setLoadingMessage('Profil belum lengkap. Redirecting to profile...');
+            setTimeout(() => {
+              alert('Silakan lengkapi profil kamu terlebih dahulu (khususnya minat) untuk menggunakan Peer Connect!');
+              window.location.href = '/';
+            }, 2000);
+            return;
+          }
+          throw error;
+        }
+
+        console.log('PeerConnect: User minat:', data?.minat);
+
+        if (!data || !data.minat || data.minat.trim() === '') {
+          console.log('PeerConnect: Minat is empty or null');
+          setLoadingMessage('Minat belum diisi. Redirecting to profile...');
+          setTimeout(() => {
+            alert('Silakan isi minat kamu di profil untuk menggunakan Peer Connect!');
+            window.location.href = '/';
+          }, 2000);
+          return;
+        }
+
+        // Parse minat - convert from text to array of interest values
+        const minatText = data.minat.toLowerCase().trim();
+        console.log('PeerConnect: Parsing minat text:', minatText);
+        const detectedInterests: string[] = [];
+
+        // Map minat keywords to interest values
+        const interestKeywords: { [key: string]: string[] } = {
+          teknologi: ['teknologi', 'it', 'programming', 'coding', 'software', 'web', 'ai', 'machine learning', 'data', 'komputer', 'developer'],
+          bisnis: ['bisnis', 'business', 'entrepreneur', 'startup', 'marketing', 'manajemen', 'wirausaha'],
+          seni: ['seni', 'art', 'design', 'creative', 'kreatif', 'musik', 'film', 'fotografi', 'gambar'],
+          sosial: ['sosial', 'social', 'volunteer', 'komunitas', 'charity', 'kemanusiaan'],
+          akademik: ['akademik', 'research', 'penelitian', 'science', 'sains', 'study', 'belajar', 'ilmu'],
+          olahraga: ['olahraga', 'sport', 'fitness', 'kesehatan', 'health', 'futsal', 'basket', 'lari'],
+          leadership: ['leadership', 'leader', 'organisasi', 'organization', 'management', 'pemimpin', 'ketua'],
+          lingkungan: ['lingkungan', 'environment', 'sustainability', 'eco', 'green', 'alam'],
+        };
+
+        // Detect interests based on keywords
+        Object.entries(interestKeywords).forEach(([interestValue, keywords]) => {
+          if (keywords.some(keyword => minatText.includes(keyword))) {
+            detectedInterests.push(interestValue);
+            console.log(`PeerConnect: Detected interest "${interestValue}" from keywords`);
+          }
+        });
+
+        // If no interests detected, use default
+        if (detectedInterests.length === 0) {
+          console.log('PeerConnect: No keywords matched, using defaults');
+          detectedInterests.push('teknologi', 'akademik'); // Default interests
+        }
+
+        console.log('PeerConnect: Final detected interests:', detectedInterests);
+        setSelectedInterests(detectedInterests);
+        setLoadingMessage('AI sedang mencarikan peers yang cocok untukmu...');
+
+        // Generate groups after 2 seconds
+        setTimeout(() => {
+          console.log('PeerConnect: Generating groups for interests:', detectedInterests);
+          const generatedGroups = generateGroupChats(detectedInterests);
+          console.log('PeerConnect: Generated groups:', generatedGroups.length);
+          setGroups(generatedGroups);
+
+          // Auto select first group
+          if (generatedGroups.length > 0) {
+            handleGroupSelect(generatedGroups[0]);
+            console.log('PeerConnect: Auto-selected first group');
+          }
+
+          setIsLoading(false);
+          setShowChat(true);
+          console.log('PeerConnect: Chat interface ready');
+        }, 2000);
+
+      } catch (err: any) {
+        console.error('PeerConnect: Unexpected error:', err);
+        console.error('PeerConnect: Error details:', {
+          message: err.message,
+          code: err.code,
+          details: err.details,
+        });
+        setLoadingMessage('Terjadi kesalahan. Redirecting...');
+        setTimeout(() => {
+          alert(`Terjadi kesalahan: ${err.message}. Silakan coba lagi.`);
+          window.location.href = '/';
+        }, 2000);
+      }
+    };
+
+    fetchUserInterests();
+  }, [user]);
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests(prev =>
@@ -615,7 +760,7 @@ export default function PeerConnect() {
                 textShadow: '0 0 20px rgba(132, 204, 22, 0.9), 0 0 40px rgba(132, 204, 22, 0.6)'
               }}
             >
-              AI sedang mencarikan peers yang cocok untukmu...
+              {loadingMessage}
             </p>
           </div>
         </div>
