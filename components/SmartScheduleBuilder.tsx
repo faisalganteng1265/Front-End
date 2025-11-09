@@ -4,6 +4,11 @@ import { useState, useEffect } from 'react';
 import AnimatedContent from './AnimatedContent';
 import ParticleBackground from './ParticleBackground';
 import StaggeredMenu from './StaggeredMenu';
+import CalendarView from './CalendarView';
+import dynamic from 'next/dynamic';
+
+// Dynamically import CalendarView to avoid SSR issues
+const DynamicCalendarView = dynamic(() => import('./CalendarView'), { ssr: false });
 
 interface ScheduleItem {
   id?: string;
@@ -60,7 +65,7 @@ export default function SmartScheduleBuilder() {
   const [activities, setActivities] = useState<ScheduleItem[]>([]);
   const [optimizedSchedule, setOptimizedSchedule] = useState<OptimizedSchedule | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'input' | 'result'>('input');
+  const [activeTab, setActiveTab] = useState<'input' | 'result' | 'calendar'>('input');
   const [activityMode, setActivityMode] = useState<'flexible' | 'specific'>('flexible');
 
  
@@ -348,6 +353,19 @@ export default function SmartScheduleBuilder() {
               disabled={!optimizedSchedule}
             >
               JADWAL OPTIMAL
+            </button>
+            <button
+              onClick={() => setActiveTab('calendar')}
+              className={`px-8 py-3 rounded-lg font-semibold transition-all ${
+                activeTab === 'calendar'
+                  ? 'bg-white/95 text-gray-800 shadow-lg'
+                  : optimizedSchedule
+                    ? 'bg-gray-700/30 text-gray-200 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white'
+                    : 'bg-gray-700/20 text-gray-500 border border-gray-600/30 cursor-not-allowed opacity-50'
+              }`}
+              disabled={!optimizedSchedule}
+            >
+              📅 KALENDER
             </button>
           </div>
         </div>
@@ -878,6 +896,29 @@ export default function SmartScheduleBuilder() {
         )}
 
         {activeTab === 'result' && !optimizedSchedule && (
+          <div className="text-center py-20 bg-neutral-800 rounded-2xl border border-gray-600 shadow-md">
+            <h3 className="text-3xl font-bold text-white mb-3" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' }}>BELUM ADA JADWAL</h3>
+            <p className="text-gray-400 mb-6">Generate jadwal terlebih dahulu di tab Input Jadwal</p>
+            <button
+              onClick={() => setActiveTab('input')}
+              className="bg-gray-700/30 border border-gray-600/50 hover:bg-white/95 hover:border-white text-gray-200 hover:text-gray-800 px-8 py-3 rounded-lg font-bold transition-all shadow-md"
+            >
+              KE INPUT JADWAL
+            </button>
+          </div>
+        )}
+
+        {/* Calendar Tab */}
+        {activeTab === 'calendar' && optimizedSchedule && (
+          <AnimatedContent>
+            <DynamicCalendarView
+              optimizedSchedule={editedOptimizedSchedule?.optimizedSchedule || optimizedSchedule.optimizedSchedule}
+              scheduleItems={[...courses, ...activities]}
+            />
+          </AnimatedContent>
+        )}
+
+        {activeTab === 'calendar' && !optimizedSchedule && (
           <div className="text-center py-20 bg-neutral-800 rounded-2xl border border-gray-600 shadow-md">
             <h3 className="text-3xl font-bold text-white mb-3" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' }}>BELUM ADA JADWAL</h3>
             <p className="text-gray-400 mb-6">Generate jadwal terlebih dahulu di tab Input Jadwal</p>
