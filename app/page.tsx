@@ -7,7 +7,6 @@ import HeroSection from '@/components/HeroSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import PeerConnectSection from '@/components/PeerConnectSection';
 import GallerySection from '@/components/GallerySection';
-import WhyBetterSection from '@/components/WhyBetterSection';
 import HowItWorksSection from '@/components/HowItWorksSection';
 import FAQSection from '@/components/FAQSection';
 import Footer from '@/components/Footer';

@@ -10,6 +10,7 @@ import MyProjectsTab from '@/components/fitur-6/MyProjectsTab';
 import MyApplicationsTab from '@/components/fitur-6/MyApplicationsTab';
 import { Plus, Briefcase, Users, FileText } from 'lucide-react';
 import StaggeredMenu from '@/components/StaggeredMenu';
+import UserProfile from '@/components/UserProfile';
 
 type TabType = 'all' | 'my-projects' | 'my-applications';
 
@@ -43,11 +44,16 @@ export default function ProjectCollaborationPage() {
     setIsCreateModalOpen(false);
   };
 
-    
+
   return (
+
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+      {/* Top Right Navigation */}
+      
+
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 py-16">
+        
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -73,6 +79,7 @@ export default function ProjectCollaborationPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
