@@ -54,6 +54,7 @@ export default function SmartTaskManager() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'completed'>('all');
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
   // Form State
   const [newTask, setNewTask] = useState({
@@ -283,51 +284,72 @@ export default function SmartTaskManager() {
 
     return (
       <div className="space-y-4">
-        {/* Stats Cards - Separated with Glassmorphism */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* Stats Cards - 4 boxes in single row */}
+        <div className="grid grid-cols-4 gap-2">
           {/* Total - Blue Transparent */}
-          <div className="bg-blue-500/20 backdrop-blur-md rounded-xl p-4 shadow-xl border border-blue-500/30 hover:scale-[1.02] transition-all duration-300">
+          <button
+            onClick={() => {
+              setFilterCategory('all');
+              setFilterStatus('all');
+            }}
+            className="bg-blue-500/20 backdrop-blur-md rounded-lg p-3 shadow-xl border border-blue-500/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer hover:border-blue-400 hover:shadow-[0_0_20px_rgba(59,130,246,0.5)]"
+          >
             <div className="flex flex-col items-center text-center">
-              <svg className="w-6 h-6 text-blue-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-blue-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
-              <h3 className="text-blue-300 text-xs font-semibold mb-1">Total</h3>
-              <p className="text-2xl font-bold text-white">{stats.total}</p>
+              <h3 className="text-blue-300 text-[10px] font-semibold mb-0.5">Total</h3>
+              <p className="text-xl font-bold text-white">{stats.total}</p>
             </div>
-          </div>
+          </button>
 
           {/* Selesai - Green Transparent */}
-          <div className="bg-green-500/20 backdrop-blur-md rounded-xl p-4 shadow-xl border border-green-500/30 hover:scale-[1.02] transition-all duration-300">
+          <button
+            onClick={() => {
+              setFilterStatus('completed');
+            }}
+            className="bg-green-500/20 backdrop-blur-md rounded-lg p-3 shadow-xl border border-green-500/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer hover:border-green-400 hover:shadow-[0_0_20px_rgba(34,197,94,0.5)]"
+          >
             <div className="flex flex-col items-center text-center">
-              <svg className="w-6 h-6 text-green-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-green-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <h3 className="text-green-300 text-xs font-semibold mb-1">Selesai</h3>
-              <p className="text-2xl font-bold text-white">{stats.completed}</p>
+              <h3 className="text-green-300 text-[10px] font-semibold mb-0.5">Selesai</h3>
+              <p className="text-xl font-bold text-white">{stats.completed}</p>
             </div>
-          </div>
+          </button>
 
           {/* Pending - Yellow Transparent */}
-          <div className="bg-yellow-500/20 backdrop-blur-md rounded-xl p-4 shadow-xl border border-yellow-500/30 hover:scale-[1.02] transition-all duration-300">
+          <button
+            onClick={() => {
+              setFilterStatus('pending');
+            }}
+            className="bg-yellow-500/20 backdrop-blur-md rounded-lg p-3 shadow-xl border border-yellow-500/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer hover:border-yellow-400 hover:shadow-[0_0_20px_rgba(234,179,8,0.5)]"
+          >
             <div className="flex flex-col items-center text-center">
-              <svg className="w-6 h-6 text-yellow-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-yellow-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <h3 className="text-yellow-300 text-xs font-semibold mb-1">Pending</h3>
-              <p className="text-2xl font-bold text-white">{stats.pending}</p>
+              <h3 className="text-yellow-300 text-[10px] font-semibold mb-0.5">Pending</h3>
+              <p className="text-xl font-bold text-white">{stats.pending}</p>
             </div>
-          </div>
+          </button>
 
           {/* Terlambat - Red Transparent */}
-          <div className="bg-red-500/20 backdrop-blur-md rounded-xl p-4 shadow-xl border border-red-500/30 hover:scale-[1.02] transition-all duration-300">
+          <button
+            onClick={() => {
+              setFilterStatus('pending');
+            }}
+            className="bg-red-500/20 backdrop-blur-md rounded-lg p-3 shadow-xl border border-red-500/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer hover:border-red-400 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)]"
+          >
             <div className="flex flex-col items-center text-center">
-              <svg className="w-6 h-6 text-red-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-red-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <h3 className="text-red-300 text-xs font-semibold mb-1">Terlambat</h3>
-              <p className="text-2xl font-bold text-white">{stats.overdue}</p>
+              <h3 className="text-red-300 text-[10px] font-semibold mb-0.5">Terlambat</h3>
+              <p className="text-xl font-bold text-white">{stats.overdue}</p>
             </div>
-          </div>
+          </button>
         </div>
 
         {/* Pie Chart - Black Glassmorphism */}
@@ -376,21 +398,21 @@ export default function SmartTaskManager() {
               <p className="text-gray-500 text-xs mt-1">Tambahkan tugas untuk melihat statistik</p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2">
               {getUniqueCategories().map((cat) => {
                 const count = tasks.filter(t => t.category === cat).length;
                 return (
                   <div key={cat} className="group hover:scale-[1.02] transition-all duration-300">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-lg">📖</span>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-sm">📖</span>
                       <div className="flex-1 flex justify-between items-center">
-                        <span className="text-white font-semibold text-xs truncate">{cat}</span>
-                        <span className="text-gray-300 text-xs ml-2">{count}</span>
+                        <span className="text-white font-semibold text-[10px] truncate">{cat}</span>
+                        <span className="text-gray-300 text-[10px] ml-2">{count}</span>
                       </div>
                     </div>
-                    <div className="w-full bg-gray-700/50 rounded-full h-2 border border-gray-600/30">
+                    <div className="w-full bg-gray-700/50 rounded-full h-1 border border-gray-600/30">
                       <div
-                        className="h-2 rounded-full transition-all duration-500 bg-gradient-to-r from-white to-gray-300"
+                        className="h-1 rounded-full transition-all duration-500 bg-gradient-to-r from-white to-gray-300"
                         style={{
                           width: `${stats.total > 0 ? (count / stats.total) * 100 : 0}%`
                         }}
@@ -450,41 +472,74 @@ export default function SmartTaskManager() {
         {/* Left Side - 70% */}
         <div className="w-[70%] flex flex-col">
           {/* HEADER FILTER */}
-          <div className="bg-black/890 p-4  ">
-            <div className="flex flex-wrap gap-3 items-center justify-between">
-              <div className="flex flex-wrap gap-2">
+          <div className="bg-black/890 p-4">
+            <div className="flex items-center justify-between relative">
+              {/* Custom Dropdown Button for Mata Kuliah */}
+              <div className="relative">
                 <button
-                  onClick={() => setFilterCategory('all')}
-                  className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 ${
-                    filterCategory === 'all'
-                      ? 'bg-white text-black shadow-lg scale-105'
-                      : 'bg-gray-800 text-white hover:bg-gray-700 border border-gray-700'
-                  }`}
+                  onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+                  className="px-6 py-3 rounded-xl font-semibold bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-white/50 hover:bg-gray-700 transition-all duration-300 cursor-pointer flex items-center gap-2"
                 >
-                  📚 Semua Matkul
+                  <span>📚</span>
+                  {filterCategory === 'all' ? 'Semua Mata Kuliah' : filterCategory}
+                  <svg className={`w-4 h-4 transition-transform duration-300 ${showFilterDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
                 </button>
-                {getUniqueCategories().map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setFilterCategory(cat)}
-                    className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 border ${
-                      filterCategory === cat
-                        ? 'bg-white text-black shadow-lg scale-105'
-                        : 'bg-gray-800 text-white hover:bg-gray-700 border-gray-700'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
+
+                {/* Dropdown Menu - Only Mata Kuliah */}
+                {showFilterDropdown && (
+                  <div className="absolute top-full left-0 mt-2 w-[400px] bg-gray-900/95 backdrop-blur-xl border-2 border-gray-700/50 rounded-2xl shadow-2xl z-50 p-6">
+                    <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
+                      <span>📚</span> Pilih Mata Kuliah
+                    </h3>
+                    <div className="space-y-2 max-h-[400px] overflow-y-auto custom-scrollbar">
+                      <button
+                        onClick={() => {
+                          setFilterCategory('all');
+                          setShowFilterDropdown(false);
+                        }}
+                        className={`w-full p-4 rounded-xl border-2 transition-all duration-300 text-left ${
+                          filterCategory === 'all'
+                            ? 'bg-white/10 border-white text-white'
+                            : 'bg-gray-800/50 border-gray-700/50 text-gray-300 hover:bg-gray-700/50 hover:border-gray-600'
+                        }`}
+                      >
+                        <div className="font-semibold text-sm">Semua Mata Kuliah</div>
+                        <div className="text-xs text-gray-400 mt-1">Tampilkan semua tugas</div>
+                      </button>
+                      {getUniqueCategories().map((cat) => (
+                        <button
+                          key={cat}
+                          onClick={() => {
+                            setFilterCategory(cat);
+                            setShowFilterDropdown(false);
+                          }}
+                          className={`w-full p-4 rounded-xl border-2 transition-all duration-300 text-left ${
+                            filterCategory === cat
+                              ? 'bg-white/10 border-white text-white'
+                              : 'bg-gray-800/50 border-gray-700/50 text-gray-300 hover:bg-gray-700/50 hover:border-gray-600'
+                          }`}
+                        >
+                          <div className="font-semibold text-sm">{cat}</div>
+                          <div className="text-xs text-gray-400 mt-1">
+                            {tasks.filter(t => t.category === cat).length} tugas
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
+              {/* Status Filter Buttons on Right */}
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setFilterStatus('all')}
                   className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                     filterStatus === 'all'
                       ? 'bg-white text-black shadow-lg scale-105'
-                      : 'bg-gray-800 text-white hover:bg-gray-700 border border-gray-700'
+                      : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-700'
                   }`}
                 >
                   Semua
@@ -493,8 +548,8 @@ export default function SmartTaskManager() {
                   onClick={() => setFilterStatus('pending')}
                   className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                     filterStatus === 'pending'
-                      ? 'bg-gray-400 text-black shadow-lg scale-105'
-                      : 'bg-gray-800 text-white hover:bg-gray-700 border border-gray-700'
+                      ? 'bg-white text-black shadow-lg scale-105'
+                      : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-700'
                   }`}
                 >
                   Pending
@@ -503,8 +558,8 @@ export default function SmartTaskManager() {
                   onClick={() => setFilterStatus('completed')}
                   className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                     filterStatus === 'completed'
-                      ? 'bg-gray-900 text-white shadow-lg scale-105'
-                      : 'bg-gray-800 text-white hover:bg-gray-700 border border-gray-700'
+                      ? 'bg-white text-black shadow-lg scale-105'
+                      : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-700'
                   }`}
                 >
                   Selesai
@@ -526,17 +581,29 @@ export default function SmartTaskManager() {
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-2">Belum Ada Tugas</h3>
                   <p className="text-gray-400 mb-6">Klik tombol + untuk menambahkan tugas baru</p>
+                  {/* Tambah Tugas Button - Moved here */}
+                  <button
+                    onClick={() => setShowAddModal(true)}
+                    className="bg-gray-800 text-white px-8 py-3 rounded-xl font-bold hover:bg-gray-700 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 mx-auto shadow-lg"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Tambah Tugas
+                  </button>
                 </div>
               </div>
             ) : (
               <div className="space-y-4">
+                {/* Task Grid - 2 columns */}
+                <div className="grid grid-cols-2 gap-4">
                 {filteredTasks.map((task) => {
                   const isOverdue = !task.completed && new Date(task.deadline) < new Date();
 
                   return (
                     <div
                       key={task.id}
-                      className="bg-black/30 backdrop-blur-md rounded-xl p-6 border border-gray-700/50 hover:border-gray-600/70 transition-all duration-300 hover:shadow-lg shadow-xl"
+                      className="bg-gray-800/50 backdrop-blur-md rounded-xl p-6 border border-gray-700/50 hover:border-gray-600/70 transition-all duration-300 hover:shadow-lg shadow-xl hover:-translate-y-2 cursor-pointer"
                     >
                       <div className="flex items-start gap-4">
                         <button
@@ -614,21 +681,20 @@ export default function SmartTaskManager() {
                     </div>
                   );
                 })}
+                </div>
+
+                {/* Tambah Tugas Button - At bottom of task list */}
+                <button
+                  onClick={() => setShowAddModal(true)}
+                  className="w-full bg-gray-800 text-white py-4 rounded-xl font-bold hover:bg-gray-700 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Tambah Tugas
+                </button>
               </div>
             )}
-          </div>
-
-          {/* Bottom Button */}
-          <div className="bg-black/880 p-4 border-t-2 border-black ">
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="w-full bg-gray-800 text-white py-4 rounded-xl font-bold hover:bg-gray-700 transition-all duration-300 flex items-center justify-center gap-2"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Tambah Tugas
-            </button>
           </div>
         </div>
 
