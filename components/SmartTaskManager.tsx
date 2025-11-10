@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { Pie } from 'react-chartjs-2';
+import ParticleBackground from '@/components/ParticleBackground';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -69,13 +70,6 @@ export default function SmartTaskManager() {
     return Array.from(cats);
   };
 
-  const getCategoryColor = (index: number): string => {
-    const colors = [
-      '#FF6F3C', '#06D6A0', '#118AB2', '#FFD60A', '#EF476F',
-      '#9C89B8', '#06A77D', '#F77F00', '#4EA8DE', '#C9ADA7'
-    ];
-    return colors[index % colors.length];
-  };
 
   // ====================================
   // Fetch Tasks from Supabase
@@ -238,206 +232,6 @@ export default function SmartTaskManager() {
     }
   };
 
-  const renderTaskList = () => (
-    <div className="flex flex-col h-full">
-      {/* Filters */}
-      <div className="bg-gradient-to-r from-slate-900/95 to-blue-900/95 backdrop-blur-xl p-4 border-b border-cyan-500/30 shadow-xl">
-        <div className="flex flex-wrap gap-4 items-center justify-between">
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setFilterCategory('all')}
-              className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 ${
-                filterCategory === 'all'
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/50 scale-105'
-                  : 'bg-slate-800/50 text-slate-200 hover:bg-slate-700/50 border border-slate-600/30'
-              }`}
-            >
-              📚 Semua Matkul
-            </button>
-            {getUniqueCategories().map((cat, index) => (
-              <button
-                key={cat}
-                onClick={() => setFilterCategory(cat)}
-                className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 border ${
-                  filterCategory === cat
-                    ? 'text-white shadow-lg border-transparent scale-105'
-                    : 'bg-slate-800/50 text-slate-200 hover:bg-slate-700/50 border-slate-600/30'
-                }`}
-                style={filterCategory === cat ? {
-                  background: `linear-gradient(135deg, ${getCategoryColor(index)}, ${getCategoryColor(index)}dd)`,
-                  boxShadow: `0 4px 20px ${getCategoryColor(index)}60`
-                } : {}}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setFilterStatus('all')}
-              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
-                filterStatus === 'all'
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg border-transparent scale-105'
-                  : 'bg-slate-800/50 text-slate-200 hover:bg-slate-700/50 border-slate-600/30'
-              }`}
-            >
-              Semua
-            </button>
-            <button
-              onClick={() => setFilterStatus('pending')}
-              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
-                filterStatus === 'pending'
-                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg border-transparent scale-105'
-                  : 'bg-slate-800/50 text-slate-200 hover:bg-slate-700/50 border-slate-600/30'
-              }`}
-            >
-              Pending
-            </button>
-            <button
-              onClick={() => setFilterStatus('completed')}
-              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
-                filterStatus === 'completed'
-                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg border-transparent scale-105'
-                  : 'bg-slate-800/50 text-slate-200 hover:bg-slate-700/50 border-slate-600/30'
-              }`}
-            >
-              Selesai
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Task List */}
-      <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-gradient-to-br from-slate-900/40 to-blue-900/40">
-        {filteredTasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full">
-            <div className="text-center animate-fade-in">
-              <div className="w-32 h-32 mx-auto mb-6 relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full opacity-20 animate-pulse"></div>
-                <svg className="w-full h-full text-cyan-400 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-2">Belum Ada Tugas</h3>
-              <p className="text-cyan-300 mb-6">Klik tombol + untuk menambahkan tugas baru</p>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredTasks.map((task, index) => {
-              const isOverdue = !task.completed && new Date(task.deadline) < new Date();
-
-              const categoryIndex = getUniqueCategories().indexOf(task.category);
-
-              return (
-                <div
-                  key={task.id}
-                  className="bg-gradient-to-r from-slate-800/60 to-blue-800/60 backdrop-blur-md rounded-2xl p-6 border border-cyan-500/30 hover:border-cyan-400/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-cyan-500/20 animate-slide-in group"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  <div className="flex items-start gap-4">
-                    {/* Checkbox */}
-                    <button
-                      onClick={() => handleToggleComplete(task.id)}
-                      className={`flex-shrink-0 w-7 h-7 rounded-full border-2 transition-all duration-300 hover:scale-110 ${
-                        task.completed
-                          ? 'bg-gradient-to-r from-emerald-500 to-teal-500 border-emerald-500 shadow-lg shadow-emerald-500/50'
-                          : 'border-cyan-400 hover:border-cyan-300 bg-slate-900/50'
-                      }`}
-                    >
-                      {task.completed && (
-                        <svg className="w-full h-full text-white p-1" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      )}
-                    </button>
-
-                    {/* Task Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-4 mb-3">
-                        <h3 className={`text-lg font-bold text-white ${task.completed ? 'line-through opacity-60' : ''}`}>
-                          {task.title}
-                        </h3>
-                        <button
-                          onClick={() => handleDeleteTask(task.id)}
-                          className="flex-shrink-0 text-red-400 hover:text-red-300 transition-colors hover:scale-110"
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
-                      </div>
-
-                      {task.description && (
-                        <p className={`text-slate-200 text-sm mb-4 ${task.completed ? 'line-through opacity-60' : ''}`}>
-                          {task.description}
-                        </p>
-                      )}
-
-                      <div className="flex flex-wrap items-center gap-3">
-                        {/* Category Badge */}
-                        {task.category && (
-                          <span
-                            className="px-3 py-1 rounded-full text-xs font-semibold text-white shadow-lg border border-white/20"
-                            style={{ backgroundColor: getCategoryColor(categoryIndex) }}
-                          >
-                            📖 {task.category}
-                          </span>
-                        )}
-
-                        {/* Priority Badge */}
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white border border-white/20 ${
-                          task.priority === 'high'
-                            ? 'bg-gradient-to-r from-red-500 to-pink-500'
-                            : task.priority === 'medium'
-                            ? 'bg-gradient-to-r from-amber-500 to-orange-500'
-                            : 'bg-gradient-to-r from-emerald-500 to-teal-500'
-                        }`}>
-                          {task.priority === 'high' && '🔴'}
-                          {task.priority === 'medium' && '🟡'}
-                          {task.priority === 'low' && '🟢'}
-                          {task.priority.toUpperCase()}
-                        </span>
-
-                        {/* Deadline */}
-                        {task.deadline && (
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${
-                            isOverdue
-                              ? 'bg-gradient-to-r from-red-500/20 to-pink-500/20 text-red-300 border-red-400/30'
-                              : 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 border-blue-400/30'
-                          }`}>
-                            📅 {new Date(task.deadline).toLocaleDateString('id-ID', {
-                              day: 'numeric',
-                              month: 'short',
-                              year: 'numeric'
-                            })}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Add Button */}
-      <div className="p-4 bg-gradient-to-r from-slate-900/95 to-blue-900/95 backdrop-blur-xl border-t border-cyan-500/30 shadow-xl">
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-4 rounded-2xl font-bold hover:shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 group border border-cyan-400/30"
-        >
-          <svg className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Tambah Tugas Baru
-        </button>
-      </div>
-    </div>
-  );
 
   const renderStatistics = () => {
     // Prepare data for pie chart
@@ -447,13 +241,13 @@ export default function SmartTaskManager() {
         {
           data: [stats.completed, stats.pending, stats.overdue],
           backgroundColor: [
-            'rgba(16, 185, 129, 0.8)',   // emerald-500
-            'rgba(251, 191, 36, 0.8)',   // amber-400
-            'rgba(239, 68, 68, 0.8)',    // red-500
+            'rgba(34, 197, 94, 0.8)',    // green
+            'rgba(234, 179, 8, 0.8)',    // yellow
+            'rgba(239, 68, 68, 0.8)',    // red
           ],
           borderColor: [
-            'rgba(16, 185, 129, 1)',
-            'rgba(251, 191, 36, 1)',
+            'rgba(34, 197, 94, 1)',
+            'rgba(234, 179, 8, 1)',
             'rgba(239, 68, 68, 1)',
           ],
           borderWidth: 2,
@@ -469,10 +263,10 @@ export default function SmartTaskManager() {
           display: false,
         },
         tooltip: {
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
           titleColor: 'white',
           bodyColor: 'white',
-          borderColor: 'rgba(132, 204, 22, 0.5)',
+          borderColor: 'rgba(255, 255, 255, 0.5)',
           borderWidth: 1,
           padding: 10,
           displayColors: true,
@@ -488,131 +282,125 @@ export default function SmartTaskManager() {
     };
 
     return (
-      <div className="h-full flex flex-col">
-        <div className="p-6 border-b border-cyan-500/30 bg-gradient-to-r from-slate-900/95 to-blue-900/95 backdrop-blur-xl shadow-xl">
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <span className="text-2xl">📊</span>
-            Statistik
-          </h2>
+      <div className="space-y-4">
+        {/* Stats Cards - Separated with Glassmorphism */}
+        <div className="grid grid-cols-2 gap-3">
+          {/* Total - Blue Transparent */}
+          <div className="bg-blue-500/20 backdrop-blur-md rounded-xl p-4 shadow-xl border border-blue-500/30 hover:scale-[1.02] transition-all duration-300">
+            <div className="flex flex-col items-center text-center">
+              <svg className="w-6 h-6 text-blue-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              <h3 className="text-blue-300 text-xs font-semibold mb-1">Total</h3>
+              <p className="text-2xl font-bold text-white">{stats.total}</p>
+            </div>
+          </div>
+
+          {/* Selesai - Green Transparent */}
+          <div className="bg-green-500/20 backdrop-blur-md rounded-xl p-4 shadow-xl border border-green-500/30 hover:scale-[1.02] transition-all duration-300">
+            <div className="flex flex-col items-center text-center">
+              <svg className="w-6 h-6 text-green-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h3 className="text-green-300 text-xs font-semibold mb-1">Selesai</h3>
+              <p className="text-2xl font-bold text-white">{stats.completed}</p>
+            </div>
+          </div>
+
+          {/* Pending - Yellow Transparent */}
+          <div className="bg-yellow-500/20 backdrop-blur-md rounded-xl p-4 shadow-xl border border-yellow-500/30 hover:scale-[1.02] transition-all duration-300">
+            <div className="flex flex-col items-center text-center">
+              <svg className="w-6 h-6 text-yellow-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h3 className="text-yellow-300 text-xs font-semibold mb-1">Pending</h3>
+              <p className="text-2xl font-bold text-white">{stats.pending}</p>
+            </div>
+          </div>
+
+          {/* Terlambat - Red Transparent */}
+          <div className="bg-red-500/20 backdrop-blur-md rounded-xl p-4 shadow-xl border border-red-500/30 hover:scale-[1.02] transition-all duration-300">
+            <div className="flex flex-col items-center text-center">
+              <svg className="w-6 h-6 text-red-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <h3 className="text-red-300 text-xs font-semibold mb-1">Terlambat</h3>
+              <p className="text-2xl font-bold text-white">{stats.overdue}</p>
+            </div>
+          </div>
         </div>
-        <div className="flex-1 p-6 overflow-y-auto custom-scrollbar space-y-4 bg-gradient-to-br from-slate-900/40 to-blue-900/40">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-4 gap-2">
-            <div className="bg-gradient-to-br from-blue-600/30 to-cyan-600/30 backdrop-blur-md rounded-xl p-2 border border-cyan-400/30 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/20">
-              <div className="flex flex-col items-center text-center">
-                <svg className="w-5 h-5 text-cyan-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                <h3 className="text-cyan-200 text-[10px] font-semibold mb-1">Total</h3>
-                <p className="text-lg font-bold text-white">{stats.total}</p>
+
+        {/* Pie Chart - Black Glassmorphism */}
+        <div className="bg-gray-900/40 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-gray-700/50">
+          <h3 className="text-white font-bold text-sm mb-3">Distribusi Tugas</h3>
+          {stats.total > 0 ? (
+            <div className="h-48 flex items-center justify-center">
+              <div className="w-40 h-40">
+                <Pie data={pieChartData} options={pieChartOptions} />
               </div>
             </div>
-
-            <div className="bg-gradient-to-br from-emerald-600/30 to-teal-600/30 backdrop-blur-md rounded-xl p-2 border border-emerald-400/30 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/20">
-              <div className="flex flex-col items-center text-center">
-                <svg className="w-5 h-5 text-emerald-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h3 className="text-emerald-200 text-[10px] font-semibold mb-1">Selesai</h3>
-                <p className="text-lg font-bold text-white">{stats.completed}</p>
-              </div>
+          ) : (
+            <div className="h-48 flex items-center justify-center">
+              <p className="text-gray-400 text-sm">Belum ada data untuk ditampilkan</p>
             </div>
+          )}
+        </div>
 
-            <div className="bg-gradient-to-br from-amber-600/30 to-orange-600/30 backdrop-blur-md rounded-xl p-2 border border-amber-400/30 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/20">
-              <div className="flex flex-col items-center text-center">
-                <svg className="w-5 h-5 text-amber-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h3 className="text-amber-200 text-[10px] font-semibold mb-1">Pending</h3>
-                <p className="text-lg font-bold text-white">{stats.pending}</p>
+        {/* Progress - Black Glassmorphism */}
+        <div className="bg-gray-900/40 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-gray-700/50">
+          <h3 className="text-white font-bold text-sm mb-3">Progress Keseluruhan</h3>
+          <div className="space-y-3">
+            <div>
+              <div className="flex justify-between text-xs mb-2">
+                <span className="text-gray-300">Completion Rate</span>
+                <span className="text-white font-semibold">
+                  {stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0}%
+                </span>
               </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-red-600/30 to-pink-600/30 backdrop-blur-md rounded-xl p-2 border border-red-400/30 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20">
-              <div className="flex flex-col items-center text-center">
-                <svg className="w-5 h-5 text-red-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-                <h3 className="text-red-200 text-[10px] font-semibold mb-1">Terlambat</h3>
-                <p className="text-lg font-bold text-white">{stats.overdue}</p>
+              <div className="w-full bg-gray-700/50 rounded-full h-3 border border-gray-600/30">
+                <div
+                  className="bg-gradient-to-r from-white to-gray-300 h-3 rounded-full transition-all duration-500 shadow-lg"
+                  style={{ width: `${stats.total > 0 ? (stats.completed / stats.total) * 100 : 0}%` }}
+                ></div>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Pie Chart */}
-          <div className="bg-gradient-to-br from-slate-800/60 to-blue-800/60 backdrop-blur-md rounded-2xl p-4 border border-cyan-500/30">
-            <h3 className="text-white font-bold text-sm mb-3">Distribusi Tugas</h3>
-            {stats.total > 0 ? (
-              <div className="h-48 flex items-center justify-center">
-                <div className="w-40 h-40">
-                  <Pie data={pieChartData} options={pieChartOptions} />
-                </div>
-              </div>
-            ) : (
-              <div className="h-48 flex items-center justify-center">
-                <p className="text-cyan-300 text-sm">Belum ada data untuk ditampilkan</p>
-              </div>
-            )}
-          </div>
-
-          {/* Progress */}
-          <div className="bg-gradient-to-br from-slate-800/60 to-blue-800/60 backdrop-blur-md rounded-2xl p-4 border border-cyan-500/30">
-            <h3 className="text-white font-bold text-sm mb-3">Progress Keseluruhan</h3>
+        {/* Category Breakdown - Black Glassmorphism */}
+        <div className="bg-gray-900/40 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-gray-700/50">
+          <h3 className="text-white font-bold text-sm mb-3">Tugas per Mata Kuliah</h3>
+          {getUniqueCategories().length === 0 ? (
+            <div className="text-center py-6">
+              <p className="text-gray-300 text-xs">Belum ada kategori</p>
+              <p className="text-gray-500 text-xs mt-1">Tambahkan tugas untuk melihat statistik</p>
+            </div>
+          ) : (
             <div className="space-y-3">
-              <div>
-                <div className="flex justify-between text-xs mb-2">
-                  <span className="text-cyan-300">Completion Rate</span>
-                  <span className="text-white font-semibold">
-                    {stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0}%
-                  </span>
-                </div>
-                <div className="w-full bg-slate-900/60 rounded-full h-3">
-                  <div
-                    className="bg-gradient-to-r from-emerald-500 to-teal-500 h-3 rounded-full transition-all duration-500 shadow-lg shadow-emerald-500/50"
-                    style={{ width: `${stats.total > 0 ? (stats.completed / stats.total) * 100 : 0}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Category Breakdown */}
-          <div className="bg-gradient-to-br from-slate-800/60 to-blue-800/60 backdrop-blur-md rounded-2xl p-4 border border-cyan-500/30">
-            <h3 className="text-white font-bold text-sm mb-3">Tugas per Mata Kuliah</h3>
-            {getUniqueCategories().length === 0 ? (
-              <div className="text-center py-6">
-                <p className="text-cyan-300 text-xs">Belum ada kategori</p>
-                <p className="text-slate-400 text-xs mt-1">Tambahkan tugas untuk melihat statistik</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {getUniqueCategories().map((cat, index) => {
-                  const count = tasks.filter(t => t.category === cat).length;
-                  return (
-                    <div key={cat} className="group hover:scale-[1.02] transition-all duration-300">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-lg">📖</span>
-                        <div className="flex-1 flex justify-between items-center">
-                          <span className="text-white font-semibold text-xs truncate">{cat}</span>
-                          <span className="text-cyan-300 text-xs ml-2">{count}</span>
-                        </div>
-                      </div>
-                      <div className="w-20 bg-slate-900/60 rounded-full h-2 ml-7">
-                        <div
-                          className="h-2 rounded-full transition-all duration-500"
-                          style={{
-                            width: `${stats.total > 0 ? (count / stats.total) * 100 : 0}%`,
-                            backgroundColor: getCategoryColor(index),
-                            boxShadow: `0 0 10px ${getCategoryColor(index)}80`
-                          }}
-                        ></div>
+              {getUniqueCategories().map((cat) => {
+                const count = tasks.filter(t => t.category === cat).length;
+                return (
+                  <div key={cat} className="group hover:scale-[1.02] transition-all duration-300">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-lg">📖</span>
+                      <div className="flex-1 flex justify-between items-center">
+                        <span className="text-white font-semibold text-xs truncate">{cat}</span>
+                        <span className="text-gray-300 text-xs ml-2">{count}</span>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                    <div className="w-full bg-gray-700/50 rounded-full h-2 border border-gray-600/30">
+                      <div
+                        className="h-2 rounded-full transition-all duration-500 bg-gradient-to-r from-white to-gray-300"
+                        style={{
+                          width: `${stats.total > 0 ? (count / stats.total) * 100 : 0}%`
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -630,43 +418,237 @@ export default function SmartTaskManager() {
   }
 
   return (
-    <div className="relative z-10 min-h-screen flex flex-col">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-slate-900/95 to-blue-900/95 backdrop-blur-xl border-b border-cyan-500/30 shadow-2xl p-4">
-        <h1 className="text-3xl font-bold text-white text-left flex items-center justify-start">
-          <Image
-            src="/AICAMPUS.png"
-            alt="Smart Task Manager"
-            width={40}
-            height={40}
-            className="mr-3"
-          />
-          <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Smart Task Manager</span>
-        </h1>
-      </div>
+    <div className="relative h-screen flex flex-col overflow-hidden">
+      {/* Particle Background */}
+      <ParticleBackground />
 
-      {/* Main Content - Split View */}
-      <div className="flex-1 flex overflow-hidden bg-gradient-to-br from-slate-950/60 to-blue-950/60">
-        {/* Left Side - Task List */}
-        <div className="w-[65%] flex flex-col border-r border-cyan-500/20">
-          {renderTaskList()}
+      {/* Main Content with z-index */}
+      <div className="relative z-10 h-screen flex flex-col overflow-hidden">
+      {/* Top Headers Row */}
+      <div className="flex">
+        {/* Left Header - HEADER */}
+        <div className="w-[70%] bg-black/880 p-4 flex items-center justify-center ">
+          <h1 className="text-2xl font-bold text-white text-center flex items-center gap-3">
+            <Image
+              src="/AICAMPUS.png"
+              alt="Smart Task Manager"
+              width={40}
+              height={40}
+            />
+            HEADER
+          </h1>
         </div>
 
-        {/* Right Side - Statistics */}
-        <div className="w-[35%] bg-gradient-to-br from-slate-900/40 to-blue-900/40 backdrop-blur-xl border-l border-cyan-500/20 overflow-hidden">
-          {renderStatistics()}
+        {/* Right Header - Statistik */}
+        <div className="w-[30%] bg-black/880 p-4 flex items-center justify-center">
+          <h2 className="text-2xl font-bold text-white">Statistik</h2>
+        </div>
+      </div>
+
+      {/* Main Content Row */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left Side - 70% */}
+        <div className="w-[70%] flex flex-col">
+          {/* HEADER FILTER */}
+          <div className="bg-black/890 p-4  ">
+            <div className="flex flex-wrap gap-3 items-center justify-between">
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setFilterCategory('all')}
+                  className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 ${
+                    filterCategory === 'all'
+                      ? 'bg-white text-black shadow-lg scale-105'
+                      : 'bg-gray-800 text-white hover:bg-gray-700 border border-gray-700'
+                  }`}
+                >
+                  📚 Semua Matkul
+                </button>
+                {getUniqueCategories().map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setFilterCategory(cat)}
+                    className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 border ${
+                      filterCategory === cat
+                        ? 'bg-white text-black shadow-lg scale-105'
+                        : 'bg-gray-800 text-white hover:bg-gray-700 border-gray-700'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setFilterStatus('all')}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                    filterStatus === 'all'
+                      ? 'bg-white text-black shadow-lg scale-105'
+                      : 'bg-gray-800 text-white hover:bg-gray-700 border border-gray-700'
+                  }`}
+                >
+                  Semua
+                </button>
+                <button
+                  onClick={() => setFilterStatus('pending')}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                    filterStatus === 'pending'
+                      ? 'bg-gray-400 text-black shadow-lg scale-105'
+                      : 'bg-gray-800 text-white hover:bg-gray-700 border border-gray-700'
+                  }`}
+                >
+                  Pending
+                </button>
+                <button
+                  onClick={() => setFilterStatus('completed')}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                    filterStatus === 'completed'
+                      ? 'bg-gray-900 text-white shadow-lg scale-105'
+                      : 'bg-gray-800 text-white hover:bg-gray-700 border border-gray-700'
+                  }`}
+                >
+                  Selesai
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="flex-1 bg-black/880 overflow-y-auto p-6">
+            {/* Task list content here */}
+            {filteredTasks.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full">
+                <div className="text-center">
+                  <div className="w-32 h-32 mx-auto mb-6 relative">
+                    <svg className="w-full h-full text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Belum Ada Tugas</h3>
+                  <p className="text-gray-400 mb-6">Klik tombol + untuk menambahkan tugas baru</p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredTasks.map((task) => {
+                  const isOverdue = !task.completed && new Date(task.deadline) < new Date();
+
+                  return (
+                    <div
+                      key={task.id}
+                      className="bg-black/30 backdrop-blur-md rounded-xl p-6 border border-gray-700/50 hover:border-gray-600/70 transition-all duration-300 hover:shadow-lg shadow-xl"
+                    >
+                      <div className="flex items-start gap-4">
+                        <button
+                          onClick={() => handleToggleComplete(task.id)}
+                          className={`flex-shrink-0 w-7 h-7 rounded-full border-2 transition-all duration-300 ${
+                            task.completed
+                              ? 'bg-green-500 border-green-500'
+                              : 'border-gray-500 hover:border-gray-400 bg-gray-900/50'
+                          }`}
+                        >
+                          {task.completed && (
+                            <svg className="w-full h-full text-white p-1" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </button>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-4 mb-3">
+                            <h3 className={`text-lg font-bold text-white ${task.completed ? 'line-through opacity-60' : ''}`}>
+                              {task.title}
+                            </h3>
+                            <button
+                              onClick={() => handleDeleteTask(task.id)}
+                              className="flex-shrink-0 text-red-400 hover:text-red-300 transition-colors"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
+
+                          {task.description && (
+                            <p className={`text-gray-300 text-sm mb-4 ${task.completed ? 'line-through opacity-60' : ''}`}>
+                              {task.description}
+                            </p>
+                          )}
+
+                          <div className="flex flex-wrap items-center gap-3">
+                            {task.category && (
+                              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-900/50 text-blue-200 border border-blue-700/50 backdrop-blur-sm">
+                                📖 {task.category}
+                              </span>
+                            )}
+
+                            <span className={`px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${
+                              task.priority === 'high'
+                                ? 'bg-red-900/50 text-red-200 border border-red-700/50'
+                                : task.priority === 'medium'
+                                ? 'bg-yellow-900/50 text-yellow-200 border border-yellow-700/50'
+                                : 'bg-green-900/50 text-green-200 border border-green-700/50'
+                            }`}>
+                              {task.priority === 'high' && '🔴'}
+                              {task.priority === 'medium' && '🟡'}
+                              {task.priority === 'low' && '🟢'}
+                              {task.priority.toUpperCase()}
+                            </span>
+
+                            {task.deadline && (
+                              <span className={`px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${
+                                isOverdue
+                                  ? 'bg-red-900/50 text-red-200 border border-red-700/50'
+                                  : 'bg-gray-700/50 text-gray-200 border border-gray-600/50'
+                              }`}>
+                                📅 {new Date(task.deadline).toLocaleDateString('id-ID', {
+                                  day: 'numeric',
+                                  month: 'short',
+                                  year: 'numeric'
+                                })}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Bottom Button */}
+          <div className="bg-black/880 p-4 border-t-2 border-black ">
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="w-full bg-gray-800 text-white py-4 rounded-xl font-bold hover:bg-gray-700 transition-all duration-300 flex items-center justify-center gap-2"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Tambah Tugas
+            </button>
+          </div>
+        </div>
+
+        {/* Right Side - STATISTIK (30%) */}
+        <div className="w-[30%] bg-black/880 flex flex-col overflow-hidden">
+          <div className="flex-1 overflow-y-auto p-4">
+            {renderStatistics()}
+          </div>
         </div>
       </div>
 
       {/* Add Task Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-gradient-to-br from-slate-900 to-blue-900 rounded-3xl p-8 max-w-2xl w-full border border-cyan-500/30 animate-fade-in shadow-2xl shadow-cyan-500/20">
+        <div className="fixed inset-0 bg-gray-900/880 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-gradient-to-br from-gray-900 to-black rounded-3xl p-8 max-w-2xl w-full border border-gray-600/50 animate-fade-in shadow-2xl shadow-gray-500/20">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-white">Tambah Tugas Baru</h2>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="text-cyan-300 hover:text-white transition-colors hover:scale-110"
+                className="text-gray-400 hover:text-white transition-colors hover:scale-110"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -676,37 +658,37 @@ export default function SmartTaskManager() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-cyan-200 font-semibold mb-2">Judul Tugas</label>
+                <label className="block text-gray-300 font-semibold mb-2">Judul Tugas</label>
                 <input
                   type="text"
                   value={newTask.title}
                   onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                   placeholder="Contoh: Mengerjakan PR Matematika"
-                  className="w-full bg-slate-800/50 text-white rounded-xl px-4 py-3 border border-cyan-600/30 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+                  className="w-full bg-gray-800/70 text-white rounded-xl px-4 py-3 border border-gray-600/50 focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-cyan-200 font-semibold mb-2">Deskripsi</label>
+                <label className="block text-gray-300 font-semibold mb-2">Deskripsi</label>
                 <textarea
                   value={newTask.description}
                   onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
                   placeholder="Detail tugas..."
                   rows={3}
-                  className="w-full bg-slate-800/50 text-white rounded-xl px-4 py-3 border border-cyan-600/30 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+                  className="w-full bg-gray-800/70 text-white rounded-xl px-4 py-3 border border-gray-600/50 focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 transition-all"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-cyan-200 font-semibold mb-2">Mata Kuliah</label>
+                  <label className="block text-gray-300 font-semibold mb-2">Mata Kuliah</label>
                   <input
                     type="text"
                     value={newTask.category}
                     onChange={(e) => setNewTask({ ...newTask, category: e.target.value })}
                     placeholder="Contoh: Matematika, Fisika, dll"
                     list="categories-list"
-                    className="w-full bg-slate-800/50 text-white rounded-xl px-4 py-3 border border-cyan-600/30 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+                    className="w-full bg-gray-800/70 text-white rounded-xl px-4 py-3 border border-gray-600/50 focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 transition-all"
                   />
                   <datalist id="categories-list">
                     {getUniqueCategories().map(cat => (
@@ -716,11 +698,11 @@ export default function SmartTaskManager() {
                 </div>
 
                 <div>
-                  <label className="block text-cyan-200 font-semibold mb-2">Prioritas</label>
+                  <label className="block text-gray-300 font-semibold mb-2">Prioritas</label>
                   <select
                     value={newTask.priority}
                     onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as any })}
-                    className="w-full bg-slate-800/50 text-white rounded-xl px-4 py-3 border border-cyan-600/30 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+                    className="w-full bg-gray-800/70 text-white rounded-xl px-4 py-3 border border-gray-600/50 focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 transition-all"
                   >
                     <option value="low">🟢 Rendah</option>
                     <option value="medium">🟡 Sedang</option>
@@ -729,12 +711,12 @@ export default function SmartTaskManager() {
                 </div>
 
                 <div>
-                  <label className="block text-cyan-200 font-semibold mb-2">Deadline</label>
+                  <label className="block text-gray-300 font-semibold mb-2">Deadline</label>
                   <input
                     type="date"
                     value={newTask.deadline}
                     onChange={(e) => setNewTask({ ...newTask, deadline: e.target.value })}
-                    className="w-full bg-slate-800/50 text-white rounded-xl px-4 py-3 border border-cyan-600/30 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+                    className="w-full bg-gray-800/70 text-white rounded-xl px-4 py-3 border border-gray-600/50 focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 transition-all"
                   />
                 </div>
               </div>
@@ -743,13 +725,13 @@ export default function SmartTaskManager() {
                 <button
                   onClick={handleAddTask}
                   disabled={!newTask.title.trim()}
-                  className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-3 rounded-xl font-bold hover:shadow-xl hover:shadow-cyan-500/50 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed border border-cyan-400/30"
+                  className="flex-1 bg-white text-black py-3 rounded-xl font-bold hover:shadow-xl hover:shadow-white/30 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed border border-gray-400"
                 >
                   Tambah Tugas
                 </button>
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="flex-1 bg-slate-800/50 text-slate-200 py-3 rounded-xl font-bold hover:bg-slate-700/50 transition-all duration-300 hover:scale-[1.02] border border-slate-600/30"
+                  className="flex-1 bg-gray-800/70 text-gray-200 py-3 rounded-xl font-bold hover:bg-gray-700/70 transition-all duration-300 hover:scale-[1.02] border border-gray-600/50"
                 >
                   Batal
                 </button>
@@ -767,19 +749,19 @@ export default function SmartTaskManager() {
         }
 
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(15, 23, 42, 0.4);
+          background: rgba(26, 26, 26, 0.6);
           border-radius: 10px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(6, 182, 212, 0.4);
+          background: rgba(153, 153, 153, 0.5);
           border-radius: 10px;
           transition: all 0.3s ease;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(6, 182, 212, 0.7);
-          box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+          background: rgba(204, 204, 204, 0.8);
+          box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
         @keyframes slide-in {
@@ -822,6 +804,7 @@ export default function SmartTaskManager() {
           }
         }
       `}</style>
+      </div>
     </div>
   );
 }
