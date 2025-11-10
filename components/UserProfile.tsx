@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavbarVisibility } from '@/contexts/NavbarVisibilityContext';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import ProfileModal from './ProfileModal';
@@ -8,6 +9,7 @@ import { supabase } from '@/lib/supabase';
 
 export default function UserProfile() {
   const { user, signOut } = useAuth();
+  const { hideNavbar, showNavbar } = useNavbarVisibility();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -65,6 +67,15 @@ export default function UserProfile() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isDropdownOpen]);
+
+  useEffect(() => {
+    // Hide navbar when profile modal is open, show when closed
+    if (isProfileModalOpen) {
+      hideNavbar();
+    } else {
+      showNavbar();
+    }
+  }, [isProfileModalOpen, hideNavbar, showNavbar]);
 
   if (!user) return null;
 
@@ -251,7 +262,10 @@ export default function UserProfile() {
         )}
       </div>
 
-      <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+      />
 
       {/* Logout Confirmation Modal */}
       {isLogoutModalOpen && (

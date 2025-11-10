@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import CardNav from './CardNav';
 import AuthModal from './AuthModal';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavbarVisibility } from '@/contexts/NavbarVisibilityContext';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -13,6 +14,7 @@ export default function Navbar() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
   const { user, signOut } = useAuth();
+  const { isNavbarVisible: isNavbarVisibleFromContext } = useNavbarVisibility();
 
   // Navigation items for CardNav - matching GallerySection features
   const navItems = [
@@ -100,7 +102,7 @@ export default function Navbar() {
   return (
     <>
       <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+        isVisible && isNavbarVisibleFromContext ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
       }`}>
         <CardNav
           logo="/AICAMPUS.png"

@@ -1040,7 +1040,7 @@ export default function PeerConnect() {
                       <button
                         key={group.id}
                         onClick={() => handleGroupSelect(group)}
-                        className={`w-full text-left p-3 rounded-lg transition-all ${
+                        className={`w-full text-left p-3 rounded-lg transition-all cursor-pointer ${
                           selectedGroup?.id === group.id
                             ? 'bg-lime-500/20 border border-lime-500/50'
                             : 'bg-gray-800/50 hover:bg-gray-800/80 border border-transparent'
@@ -1111,7 +1111,7 @@ export default function PeerConnect() {
                         <button
                           key={peer.id}
                           onClick={() => handlePeerSelect(peer)}
-                          className={`w-full text-left p-3 rounded-lg transition-all ${
+                          className={`w-full text-left p-3 rounded-lg transition-all cursor-pointer ${
                             selectedPeer?.id === peer.id
                               ? 'bg-blue-500/20 border border-blue-500/50'
                               : 'bg-gray-800/50 hover:bg-gray-800/80 border border-transparent'
@@ -1320,40 +1320,46 @@ export default function PeerConnect() {
                   <h2 className="text-white font-bold mb-4">
                     Members ({selectedGroup.memberCount})
                   </h2>
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {selectedGroup.members.map(member => (
-                      <div
+                      <button
                         key={member.id}
-                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800/50 transition-all cursor-pointer"
                         onClick={() => handlePeerSelect(member)}
+                        className={`w-full text-left p-3 rounded-lg transition-all cursor-pointer ${
+                          selectedPeer?.id === member.id
+                            ? 'border border-purple-500/50'
+                            : 'bg-gray-800/50 hover:bg-gray-800/80 border border-transparent'
+                        }`}
                       >
-                        {member.avatar ? (
-                          <Image
-                            src={member.avatar}
-                            alt={member.name}
-                            width={36}
-                            height={36}
-                            className="rounded-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-lime-500 to-green-500 flex items-center justify-center text-white font-bold text-sm">
-                            {member.name.charAt(0).toUpperCase()}
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <p className="text-white text-sm font-semibold truncate">{member.name}</p>
-                          <div className="flex items-center gap-1">
-                            <span
-                              className={`w-2 h-2 rounded-full ${
-                                member.online ? 'bg-green-400' : 'bg-gray-500'
-                              }`}
-                            ></span>
-                            <p className="text-gray-400 text-xs">
-                              {member.online ? 'Online' : 'Offline'}
-                            </p>
+                        <div className="flex items-center gap-3">
+                          {member.avatar ? (
+                            <Image
+                              src={member.avatar}
+                              alt={member.name}
+                              width={40}
+                              height={40}
+                              className="rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
+                              {member.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <div className="flex-1">
+                            <p className="text-white font-semibold">{member.name}</p>
+                            <div className="flex items-center gap-1">
+                              <span
+                                className={`w-2 h-2 rounded-full ${
+                                  member.online ? 'bg-green-400' : 'bg-gray-500'
+                                }`}
+                              ></span>
+                              <p className="text-gray-400 text-xs">
+                                {member.online ? 'Online' : 'Offline'}
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
