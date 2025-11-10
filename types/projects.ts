@@ -8,6 +8,7 @@ export interface Project {
   updated_at: string;
   deadline?: string;
   max_collaborators: number;
+  progress: number;
   initiator?: {
     id: string;
     username?: string;

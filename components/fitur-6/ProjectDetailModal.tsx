@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Project, ProjectApplication } from '@/types/projects';
 import { getProjectApplications } from '@/lib/supabase/projects';
 import ApplyModal from './ApplyModal';
 import ManageApplicationsModal from './ManageApplicationsModal';
+import ProgressSlider from './ProgressSlider';
 import {
   X,
   Calendar,
@@ -50,8 +51,31 @@ export default function ProjectDetailModal({
   const [showManageModal, setShowManageModal] = useState(false);
   const [applications, setApplications] = useState<ProjectApplication[]>([]);
   const [userApplications, setUserApplications] = useState<ProjectApplication[]>([]);
+  const [currentProgress, setCurrentProgress] = useState(project.progress || 0);
+  const [lastProjectId, setLastProjectId] = useState(project.id);
+  const [showProgressNotification, setShowProgressNotification] = useState(false);
+  const [notificationProgress, setNotificationProgress] = useState(0);
+  const notificationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const isInitiator = user?.id === project.initiator_id;
+
+  // Only reset progress when opening modal or switching to a different project
+  useEffect(() => {
+    if (isOpen && project.id !== lastProjectId) {
+      console.log('Project changed, resetting progress to:', project.progress);
+      setCurrentProgress(project.progress || 0);
+      setLastProjectId(project.id);
+    }
+  }, [isOpen, project.id, project.progress, lastProjectId]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (isOpen && user) {
@@ -79,10 +103,48 @@ export default function ProjectDetailModal({
 
   const canApply = user && !isInitiator && project.status === 'open';
 
+  const handleProgressUpdate = (newProgress: number) => {
+    console.log('Progress update callback called with:', newProgress);
+    // Update local state immediately for instant UI feedback
+    setCurrentProgress(newProgress);
+    console.log('Local state updated to:', newProgress);
+    // Force a re-render by updating the project object's progress property
+    project.progress = newProgress;
+    
+    // Clear any existing timeout
+    if (notificationTimeoutRef.current) {
+      clearTimeout(notificationTimeoutRef.current);
+    }
+    
+    // Show progress notification
+    console.log('Setting notification progress to:', newProgress);
+    setNotificationProgress(newProgress);
+    console.log('Setting showProgressNotification to true');
+    setShowProgressNotification(true);
+    
+    // Hide notification after 3 seconds
+    notificationTimeoutRef.current = setTimeout(() => {
+      console.log('Hiding notification after 3 seconds');
+      setShowProgressNotification(false);
+    }, 3000);
+    
+    // Refresh the project list in parent (this will update the card view)
+    onRefresh();
+  };
+
   if (!isOpen) return null;
 
   return (
     <>
+      {/* Progress Success Notification */}
+      {showProgressNotification && (
+        <div className="fixed top-4 right-4 z-[9999] bg-green-500 text-white px-6 py-4 rounded-lg shadow-2xl flex items-center animate-pulse transition-all duration-300 ease-in-out transform border-2 border-green-600">
+          <CheckCircle className="w-6 h-6 mr-3" />
+          <span className="font-bold text-lg">You updated your progress to {notificationProgress}%</span>
+        </div>
+      )}
+      
+      
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
           {/* Header */}
@@ -160,6 +222,16 @@ export default function ProjectDetailModal({
             <div>
               <h3 className="text-lg font-bold text-gray-900 mb-3">Deskripsi Project</h3>
               <p className="text-gray-700 whitespace-pre-wrap">{project.description}</p>
+            </div>
+
+            {/* Progress Slider */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <ProgressSlider
+                projectId={project.id}
+                currentProgress={currentProgress}
+                onUpdate={handleProgressUpdate}
+                isInitiator={isInitiator}
+              />
             </div>
 
             {/* Deadline */}

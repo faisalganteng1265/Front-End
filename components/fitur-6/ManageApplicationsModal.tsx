@@ -18,7 +18,7 @@ export default function ManageApplicationsModal({
   onClose,
   onSuccess,
 }: ManageApplicationsModalProps) {
-  const [applications, setApplications] = useState<ProjectApplication[]>([]);
+  const [allApplications, setAllApplications] = useState<ProjectApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | ProjectApplication['status']>('pending');
@@ -27,16 +27,13 @@ export default function ManageApplicationsModal({
     if (isOpen) {
       loadApplications();
     }
-  }, [isOpen, filterStatus]);
+  }, [isOpen]);
 
   const loadApplications = async () => {
     try {
       setLoading(true);
-      const data = await getProjectApplications(
-        project.id,
-        filterStatus === 'all' ? undefined : filterStatus
-      );
-      setApplications(data);
+      const data = await getProjectApplications(project.id);
+      setAllApplications(data);
     } catch (error) {
       console.error('Error loading applications:', error);
     } finally {
@@ -61,9 +58,14 @@ export default function ManageApplicationsModal({
     }
   };
 
-  const pendingCount = applications.filter((a) => a.status === 'pending').length;
-  const acceptedCount = applications.filter((a) => a.status === 'accepted').length;
-  const rejectedCount = applications.filter((a) => a.status === 'rejected').length;
+  const pendingCount = allApplications.filter((a) => a.status === 'pending').length;
+  const acceptedCount = allApplications.filter((a) => a.status === 'accepted').length;
+  const rejectedCount = allApplications.filter((a) => a.status === 'rejected').length;
+  
+  // Filter applications based on selected status
+  const filteredApplications = filterStatus === 'all'
+    ? allApplications
+    : allApplications.filter((a) => a.status === filterStatus);
 
   if (!isOpen) return null;
 
@@ -127,13 +129,13 @@ export default function ManageApplicationsModal({
             <div className="flex justify-center py-10">
               <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
             </div>
-          ) : applications.length === 0 ? (
+          ) : filteredApplications.length === 0 ? (
             <div className="text-center py-10">
               <p className="text-gray-500">Tidak ada aplikasi</p>
             </div>
           ) : (
             <div className="space-y-4">
-              {applications.map((application) => (
+              {filteredApplications.map((application) => (
                 <div
                   key={application.id}
                   className={`border rounded-lg p-4 ${

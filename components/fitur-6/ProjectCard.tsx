@@ -26,6 +26,12 @@ export default function ProjectCard({ project, onClick }: ProjectCardProps) {
   const totalRolesNeeded = project.roles?.reduce((acc, role) => acc + role.required_count, 0) || 0;
   const totalRolesFilled = project.roles?.reduce((acc, role) => acc + role.filled_count, 0) || 0;
 
+  const getProgressColor = (value: number) => {
+    if (value < 30) return 'bg-red-400';
+    if (value < 70) return 'bg-yellow-400';
+    return 'bg-green-400';
+  };
+
   return (
     <div
       onClick={onClick}
@@ -84,6 +90,20 @@ export default function ProjectCard({ project, onClick }: ProjectCardProps) {
           )}
         </div>
       )}
+
+      {/* Progress Bar */}
+      <div className="mt-4">
+        <div className="flex justify-between items-center mb-1">
+          <span className="text-xs font-semibold text-gray-300">Progress</span>
+          <span className="text-xs font-bold text-white">{project.progress || 0}%</span>
+        </div>
+        <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
+          <div
+            className={`h-full transition-all duration-500 ${getProgressColor(project.progress || 0)}`}
+            style={{ width: `${project.progress || 0}%` }}
+          />
+        </div>
+      </div>
 
       {/* Footer */}
       <div className="mt-4 pt-4 border-t border-white/10">

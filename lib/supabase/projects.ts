@@ -154,6 +154,23 @@ export async function updateProject(
   return data;
 }
 
+export async function updateProjectProgress(projectId: string, progress: number) {
+  // Validate progress is between 0 and 100
+  if (progress < 0 || progress > 100) {
+    throw new Error('Progress must be between 0 and 100');
+  }
+
+  const { data, error } = await supabase
+    .from('projects')
+    .update({ progress })
+    .eq('id', projectId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
 export async function deleteProject(projectId: string) {
   const { error } = await supabase
     .from('projects')
