@@ -143,7 +143,7 @@ export default function FAQSection() {
   };
 
   return (
-    <section ref={sectionRef} id="faq-section" className="py-20 px-0 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
+    <section ref={sectionRef} id="about-us" className="py-20 px-0 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
       <div className="w-full relative z-10">
         {/* Title */}
         <div className="text-center mb-16 px-8">

@@ -129,14 +129,17 @@ export default function SmartTaskManager() {
             completed: false,
           }
         ])
-        .select();
+        .select()
+        .single();
 
       if (error) throw error;
 
-      if (data && data.length > 0) {
-        setTasks(prev => [data[0], ...prev]);
+      if (data) {
+        // Add the new task to the top of the list
+        setTasks(prev => [data, ...prev]);
       }
 
+      // Reset form and close modal
       setShowAddModal(false);
       setNewTask({
         title: '',
@@ -148,6 +151,8 @@ export default function SmartTaskManager() {
     } catch (error) {
       console.error('Error adding task:', error);
       alert('Gagal menambahkan tugas. Silakan coba lagi.');
+      // Fallback: fetch all tasks again
+      await fetchTasks();
     }
   };
 
@@ -238,10 +243,10 @@ export default function SmartTaskManager() {
       {/* Filters */}
       <div className="bg-gradient-to-r from-slate-900/95 to-blue-900/95 backdrop-blur-xl p-4 border-b border-cyan-500/30 shadow-xl">
         <div className="flex flex-wrap gap-4 items-center justify-between">
-          <div className="flex gap-2 overflow-x-auto custom-scrollbar pb-2">
+          <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setFilterCategory('all')}
-              className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap ${
+              className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 ${
                 filterCategory === 'all'
                   ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/50 scale-105'
                   : 'bg-slate-800/50 text-slate-200 hover:bg-slate-700/50 border border-slate-600/30'
@@ -253,7 +258,7 @@ export default function SmartTaskManager() {
               <button
                 key={cat}
                 onClick={() => setFilterCategory(cat)}
-                className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 whitespace-nowrap border ${
+                className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 border ${
                   filterCategory === cat
                     ? 'text-white shadow-lg border-transparent scale-105'
                     : 'bg-slate-800/50 text-slate-200 hover:bg-slate-700/50 border-slate-600/30'
@@ -268,7 +273,7 @@ export default function SmartTaskManager() {
             ))}
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setFilterStatus('all')}
               className={`px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
@@ -492,45 +497,45 @@ export default function SmartTaskManager() {
         </div>
         <div className="flex-1 p-6 overflow-y-auto custom-scrollbar space-y-4 bg-gradient-to-br from-slate-900/40 to-blue-900/40">
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-gradient-to-br from-blue-600/30 to-cyan-600/30 backdrop-blur-md rounded-2xl p-3 border border-cyan-400/30 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/20">
-              <div className="flex items-center justify-between mb-1">
-                <h3 className="text-cyan-200 text-xs font-semibold">Total</h3>
-                <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="grid grid-cols-4 gap-2">
+            <div className="bg-gradient-to-br from-blue-600/30 to-cyan-600/30 backdrop-blur-md rounded-xl p-2 border border-cyan-400/30 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/20">
+              <div className="flex flex-col items-center text-center">
+                <svg className="w-5 h-5 text-cyan-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
+                <h3 className="text-cyan-200 text-[10px] font-semibold mb-1">Total</h3>
+                <p className="text-lg font-bold text-white">{stats.total}</p>
               </div>
-              <p className="text-2xl font-bold text-white">{stats.total}</p>
             </div>
 
-            <div className="bg-gradient-to-br from-emerald-600/30 to-teal-600/30 backdrop-blur-md rounded-2xl p-3 border border-emerald-400/30 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/20">
-              <div className="flex items-center justify-between mb-1">
-                <h3 className="text-emerald-200 text-xs font-semibold">Selesai</h3>
-                <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-gradient-to-br from-emerald-600/30 to-teal-600/30 backdrop-blur-md rounded-xl p-2 border border-emerald-400/30 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/20">
+              <div className="flex flex-col items-center text-center">
+                <svg className="w-5 h-5 text-emerald-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
+                <h3 className="text-emerald-200 text-[10px] font-semibold mb-1">Selesai</h3>
+                <p className="text-lg font-bold text-white">{stats.completed}</p>
               </div>
-              <p className="text-2xl font-bold text-white">{stats.completed}</p>
             </div>
 
-            <div className="bg-gradient-to-br from-amber-600/30 to-orange-600/30 backdrop-blur-md rounded-2xl p-3 border border-amber-400/30 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/20">
-              <div className="flex items-center justify-between mb-1">
-                <h3 className="text-amber-200 text-xs font-semibold">Pending</h3>
-                <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-gradient-to-br from-amber-600/30 to-orange-600/30 backdrop-blur-md rounded-xl p-2 border border-amber-400/30 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/20">
+              <div className="flex flex-col items-center text-center">
+                <svg className="w-5 h-5 text-amber-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
+                <h3 className="text-amber-200 text-[10px] font-semibold mb-1">Pending</h3>
+                <p className="text-lg font-bold text-white">{stats.pending}</p>
               </div>
-              <p className="text-2xl font-bold text-white">{stats.pending}</p>
             </div>
 
-            <div className="bg-gradient-to-br from-red-600/30 to-pink-600/30 backdrop-blur-md rounded-2xl p-3 border border-red-400/30 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20">
-              <div className="flex items-center justify-between mb-1">
-                <h3 className="text-red-200 text-xs font-semibold">Terlambat</h3>
-                <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-gradient-to-br from-red-600/30 to-pink-600/30 backdrop-blur-md rounded-xl p-2 border border-red-400/30 hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20">
+              <div className="flex flex-col items-center text-center">
+                <svg className="w-5 h-5 text-red-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
+                <h3 className="text-red-200 text-[10px] font-semibold mb-1">Terlambat</h3>
+                <p className="text-lg font-bold text-white">{stats.overdue}</p>
               </div>
-              <p className="text-2xl font-bold text-white">{stats.overdue}</p>
             </div>
           </div>
 

@@ -33,7 +33,7 @@ export default function PeerConnectSection() {
   };
 
   return (
-    <section className="py-20 px-4 bg-gradient-to-b from-black via-gray-900 to-gray-800">
+    <section id="peerconnect" className="py-20 px-4 bg-gradient-to-b from-black via-gray-900 to-gray-800">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
