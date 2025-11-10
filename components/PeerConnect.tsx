@@ -1001,7 +1001,7 @@ export default function PeerConnect() {
 
           <div className="flex-1 flex overflow-hidden">
             {/* Left Sidebar - Group & Private Chat List */}
-            <div className="w-80 bg-black/30 backdrop-blur-md overflow-y-auto custom-scrollbar">
+            <div className="w-80 bg-black/40 backdrop-blur-xl overflow-y-auto custom-scrollbar border-r border-gray-700/30">
               {/* Group Chats Section */}
               <div className="p-4 border-b border-black/50">
                 <button
@@ -1040,20 +1040,23 @@ export default function PeerConnect() {
                       <button
                         key={group.id}
                         onClick={() => handleGroupSelect(group)}
-                        className={`w-full text-left p-3 rounded-lg transition-all cursor-pointer ${
+                        className={`w-full text-left p-3 rounded-lg transition-all duration-300 cursor-pointer hover:scale-[1.02] group ${
                           selectedGroup?.id === group.id
-                            ? 'bg-lime-500/20 border border-lime-500/50'
-                            : 'bg-gray-800/50 hover:bg-gray-800/80 border border-transparent'
+                            ? 'bg-gradient-to-r from-lime-500/20 to-green-500/20 border border-lime-500/50 shadow-lg shadow-lime-500/20'
+                            : 'bg-gray-800/50 hover:bg-gray-800/80 border border-gray-700/50 hover:border-lime-500/30'
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <Image
-                            src={group.icon}
-                            alt={group.name}
-                            width={40}
-                            height={40}
-                            className="rounded-full"
-                          />
+                          <div className="relative">
+                            <Image
+                              src={group.icon}
+                              alt={group.name}
+                              width={40}
+                              height={40}
+                              className="rounded-full ring-2 ring-lime-500/30 group-hover:ring-lime-500/60 transition-all duration-300"
+                            />
+                            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-lime-400 rounded-full border-2 border-black animate-pulse"></div>
+                          </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-white font-semibold truncate">{group.name}</p>
                             <p className="text-gray-400 text-xs truncate">
@@ -1111,10 +1114,10 @@ export default function PeerConnect() {
                         <button
                           key={peer.id}
                           onClick={() => handlePeerSelect(peer)}
-                          className={`w-full text-left p-3 rounded-lg transition-all cursor-pointer ${
+                          className={`w-full text-left p-3 rounded-lg transition-all duration-300 cursor-pointer hover:scale-[1.02] group ${
                             selectedPeer?.id === peer.id
-                              ? 'bg-blue-500/20 border border-blue-500/50'
-                              : 'bg-gray-800/50 hover:bg-gray-800/80 border border-transparent'
+                              ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/50 shadow-lg shadow-blue-500/20'
+                              : 'bg-gray-800/50 hover:bg-gray-800/80 border border-gray-700/50 hover:border-blue-500/30'
                           }`}
                         >
                           <div className="flex items-center gap-3">
@@ -1124,10 +1127,10 @@ export default function PeerConnect() {
                                 alt={peer.name}
                                 width={40}
                                 height={40}
-                                className="rounded-full object-cover"
+                                className="rounded-full object-cover ring-2 ring-blue-500/30 group-hover:ring-blue-500/60 transition-all duration-300"
                               />
                             ) : (
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold ring-2 ring-blue-500/30 group-hover:ring-blue-500/60 transition-all duration-300 shadow-lg shadow-blue-500/50">
                                 {peer.name.charAt(0).toUpperCase()}
                               </div>
                             )}
@@ -1222,33 +1225,45 @@ export default function PeerConnect() {
               <div className="flex-1 overflow-y-auto bg-transparent p-6 space-y-4 custom-scrollbar">
                 {messages.length === 0 ? (
                   <div className="flex items-center justify-center h-full">
-                    <div className="text-center">
-                      <p className="text-gray-500 text-lg mb-2">No messages yet</p>
+                    <div className="text-center animate-fade-in">
+                      <div className="mb-4">
+                        <svg className="w-20 h-20 mx-auto text-gray-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                      </div>
+                      <p className="text-gray-400 text-lg mb-2 font-semibold">No messages yet</p>
                       <p className="text-gray-600 text-sm">Be the first to send a message!</p>
                     </div>
                   </div>
                 ) : (
-                  messages.map(message => (
+                  messages.map((message, index) => (
                     <div
                       key={message.id}
-                      className={`flex gap-3 ${message.isMe ? 'justify-end' : 'justify-start'}`}
+                      className={`flex gap-3 ${message.isMe ? 'justify-end' : 'justify-start'} animate-slide-in`}
+                      style={{ animationDelay: `${index * 0.05}s` }}
                     >
                       {!message.isMe && (
                         <div
-                          className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+                          className="flex-shrink-0 cursor-pointer hover:scale-110 hover:rotate-3 transition-all duration-300 group"
                           onClick={() => handleUserProfileClick(message.senderId, message.senderName)}
                         >
                           {message.senderAvatar ? (
-                            <Image
-                              src={message.senderAvatar}
-                              alt={message.senderName}
-                              width={40}
-                              height={40}
-                              className="rounded-full object-cover"
-                            />
+                            <div className="relative">
+                              <Image
+                                src={message.senderAvatar}
+                                alt={message.senderName}
+                                width={40}
+                                height={40}
+                                className="rounded-full object-cover ring-2 ring-lime-500/30 group-hover:ring-lime-500/60 transition-all duration-300"
+                              />
+                              <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-black animate-pulse-glow"></div>
+                            </div>
                           ) : (
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lime-500 to-green-500 flex items-center justify-center text-white font-bold">
-                              {message.senderName.charAt(0).toUpperCase()}
+                            <div className="relative">
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-lime-500 to-green-500 flex items-center justify-center text-white font-bold ring-2 ring-lime-500/30 group-hover:ring-lime-500/60 transition-all duration-300 shadow-lg shadow-lime-500/50">
+                                {message.senderName.charAt(0).toUpperCase()}
+                              </div>
+                              <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-black animate-pulse-glow"></div>
                             </div>
                           )}
                         </div>
@@ -1256,27 +1271,34 @@ export default function PeerConnect() {
                       <div className={`max-w-lg ${message.isMe ? 'items-end' : 'items-start'}`}>
                         {!message.isMe && (
                           <p
-                            className="text-white-400 text-sm font-semibold mb-1 cursor-pointer hover:text-lime-500 transition-colors"
+                            className="text-lime-400 text-sm font-semibold mb-1 cursor-pointer hover:text-lime-300 transition-colors duration-200 hover:scale-105 inline-block"
                             onClick={() => handleUserProfileClick(message.senderId, message.senderName)}
                           >
                             {message.senderName}
                           </p>
                         )}
                         <div
-                          className={`rounded-2xl px-4 py-2 ${
+                          className={`rounded-2xl px-5 py-3 backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${
                             message.isMe
-                              ? 'bg-gray-500 text-white'
-                              : 'bg-gray-800/70 text-white border border-gray-700/50'
+                              ? 'bg-gradient-to-br from-lime-600 to-green-600 text-white shadow-lg shadow-lime-500/30 border border-lime-400/30 hover:shadow-lime-500/50'
+                              : 'bg-gray-800/80 text-white border border-gray-600/50 shadow-lg shadow-black/30 hover:border-gray-500/70 hover:bg-gray-800/90'
                           }`}
                         >
-                          <p className="text-sm">{message.text}</p>
+                          <p className="text-sm leading-relaxed">{message.text}</p>
                         </div>
-                        <p className="text-gray-500 text-xs mt-1">
-                          {message.timestamp.toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </p>
+                        <div className={`flex items-center gap-2 mt-1 ${message.isMe ? 'justify-end' : 'justify-start'}`}>
+                          <p className="text-gray-500 text-xs">
+                            {message.timestamp.toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </p>
+                          {message.isMe && (
+                            <svg className="w-3 h-3 text-lime-400" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))
@@ -1286,27 +1308,54 @@ export default function PeerConnect() {
 
               {/* Input Area */}
               {(selectedGroup || selectedPeer) && (
-                <div className="bg-black/50 backdrop-blur-md p-4">
-                  <div className="flex gap-3">
-                    <input
-                      type="text"
-                      value={inputMessage}
-                      onChange={e => setInputMessage(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      placeholder={
-                        chatMode === 'group'
-                          ? `Send a message to ${selectedGroup?.name}...`
-                          : `Send a private message to ${selectedPeer?.name}...`
-                      }
-                      className="flex-1 bg-gray-700/50 text-white rounded-full px-6 py-3 border border-gray-600/50 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-transparent transition-all"
-                      disabled={isSending}
-                    />
+                <div className="bg-black/60 backdrop-blur-xl p-4 border-t border-gray-700/50">
+                  <div className="flex gap-3 items-center">
+                    <div className="flex-1 relative group">
+                      <input
+                        type="text"
+                        value={inputMessage}
+                        onChange={e => setInputMessage(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        placeholder={
+                          chatMode === 'group'
+                            ? `Send a message to ${selectedGroup?.name}...`
+                            : `Send a private message to ${selectedPeer?.name}...`
+                        }
+                        className="w-full bg-gray-800/70 text-white rounded-full px-6 py-4 border-2 border-gray-600/50 focus:outline-none focus:border-lime-500 focus:ring-4 focus:ring-lime-500/20 transition-all duration-300 placeholder-gray-500 group-hover:border-gray-500/70"
+                        disabled={isSending}
+                      />
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                        {inputMessage.trim() && (
+                          <span className="text-xs text-gray-400 animate-fade-in">
+                            Press Enter to send
+                          </span>
+                        )}
+                      </div>
+                    </div>
                     <button
                       onClick={chatMode === 'group' ? handleSendMessage : handleSendPrivateMessage}
                       disabled={!inputMessage.trim() || isSending}
-                      className="bg-gradient-to-r from-lime-500 to-green-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-lime-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="relative bg-gradient-to-r from-lime-500 to-green-500 text-white px-8 py-4 rounded-full font-semibold hover:shadow-xl hover:shadow-lime-500/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 group overflow-hidden"
                     >
-                      {isSending ? 'Sending...' : 'send'}
+                      <span className="relative z-10 flex items-center gap-2">
+                        {isSending ? (
+                          <>
+                            <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Sending
+                          </>
+                        ) : (
+                          <>
+                            Send
+                            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                          </>
+                        )}
+                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-lime-400 to-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </button>
                   </div>
                 </div>
@@ -1315,7 +1364,7 @@ export default function PeerConnect() {
 
             {/* Right Sidebar - Members List */}
             {selectedGroup && (
-              <div className="w-64 bg-black/50 backdrop-blur-md overflow-y-auto custom-scrollbar">
+              <div className="w-64 bg-black/40 backdrop-blur-xl overflow-y-auto custom-scrollbar border-l border-gray-700/30">
                 <div className="p-4">
                   <h2 className="text-white font-bold mb-4">
                     Members ({selectedGroup.memberCount})
@@ -1325,10 +1374,10 @@ export default function PeerConnect() {
                       <button
                         key={member.id}
                         onClick={() => handlePeerSelect(member)}
-                        className={`w-full text-left p-3 rounded-lg transition-all cursor-pointer ${
+                        className={`w-full text-left p-3 rounded-lg transition-all duration-300 cursor-pointer hover:scale-[1.02] group ${
                           selectedPeer?.id === member.id
-                            ? 'border border-purple-500/50'
-                            : 'bg-gray-800/50 hover:bg-gray-800/80 border border-transparent'
+                            ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/50 shadow-lg shadow-purple-500/20'
+                            : 'bg-gray-800/50 hover:bg-gray-800/80 border border-gray-700/50 hover:border-purple-500/30'
                         }`}
                       >
                         <div className="flex items-center gap-3">
@@ -1338,10 +1387,10 @@ export default function PeerConnect() {
                               alt={member.name}
                               width={40}
                               height={40}
-                              className="rounded-full object-cover"
+                              className="rounded-full object-cover ring-2 ring-purple-500/30 group-hover:ring-purple-500/60 transition-all duration-300"
                             />
                           ) : (
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold ring-2 ring-purple-500/30 group-hover:ring-purple-500/60 transition-all duration-300 shadow-lg shadow-purple-500/50">
                               {member.name.charAt(0).toUpperCase()}
                             </div>
                           )}
@@ -1369,7 +1418,7 @@ export default function PeerConnect() {
         </div>
       )}
 
-      {/* Custom Scrollbar Styles */}
+      {/* Custom Scrollbar & Animation Styles */}
       <style jsx>{`
         /* Chrome, Safari, Edge */
         .custom-scrollbar::-webkit-scrollbar {
@@ -1383,18 +1432,85 @@ export default function PeerConnect() {
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(107, 114, 128, 0.5);
+          background: rgba(132, 204, 22, 0.4);
           border-radius: 10px;
+          transition: all 0.3s ease;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(107, 114, 128, 0.7);
+          background: rgba(132, 204, 22, 0.7);
+          box-shadow: 0 0 10px rgba(132, 204, 22, 0.5);
         }
 
         /* Firefox */
         .custom-scrollbar {
           scrollbar-width: thin;
-          scrollbar-color: rgba(107, 114, 128, 0.5) rgba(0, 0, 0, 0.2);
+          scrollbar-color: rgba(132, 204, 22, 0.4) rgba(0, 0, 0, 0.2);
+        }
+
+        /* Message Animations */
+        @keyframes slide-in {
+          from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes pulse-glow {
+          0%, 100% {
+            box-shadow: 0 0 5px rgba(132, 204, 22, 0.5);
+          }
+          50% {
+            box-shadow: 0 0 15px rgba(132, 204, 22, 0.8);
+          }
+        }
+
+        .animate-slide-in {
+          animation: slide-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+          opacity: 0;
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.5s ease-in-out forwards;
+        }
+
+        .animate-pulse-glow {
+          animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        /* Gradient Text Animation */
+        @keyframes gradient-shift {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+
+        .gradient-text {
+          background: linear-gradient(90deg, #84cc16, #22c55e, #84cc16);
+          background-size: 200% 200%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: gradient-shift 3s ease infinite;
         }
       `}</style>
 

@@ -158,7 +158,7 @@ export default function PeerConnectSection() {
           <div className="order-1 lg:order-2 lg:col-span-3">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl blur-2xl opacity-20"></div>
-              <div className="relative bg-gray-800/50 rounded-2xl p-6 border border-gray-700">
+              <div className="relative bg-gray-800/50 rounded-2xl p-2 border border-gray-700">
                 <Image
                   src={
                     activeTab === 'group'
