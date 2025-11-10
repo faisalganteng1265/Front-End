@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar';
 import UserProfile from '@/components/UserProfile';
 import HeroSection from '@/components/HeroSection';
 import FeaturesSection from '@/components/FeaturesSection';
+import PeerConnectSection from '@/components/PeerConnectSection';
 import GallerySection from '@/components/GallerySection';
 import WhyBetterSection from '@/components/WhyBetterSection';
 import HowItWorksSection from '@/components/HowItWorksSection';
@@ -23,6 +24,7 @@ export default function Home() {
       <UserProfile />
       <HeroSection />
       <FeaturesSection />
+      <PeerConnectSection />
       <GallerySection />
       <HowItWorksSection />
       <FAQSection />
