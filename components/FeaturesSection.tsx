@@ -569,6 +569,116 @@ export default function FeaturesSection() {
                 </div>
               </div>
             </Card>
+
+            {/* Feature 5: Smart Task Manager - Modern Dark Design */}
+            <Card className={`relative overflow-hidden ${activeCardIndex === 4 ? 'card-active' : ''}`}>
+              {/* Dark Background */}
+              <div className="absolute inset-0 bg-black"></div>
+
+              {/* Animated Gradient Orbs */}
+              <div className="absolute top-20 right-20 w-96 h-96 bg-gradient-to-br from-purple-500/40 via-pink-500/30 to-blue-500/40 rounded-full blur-3xl animate-pulse"></div>
+              <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-gradient-to-tr from-teal-500/30 to-emerald-500/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+
+              {/* Dark Card Content with Border */}
+              <div className="relative p-8 flex flex-col justify-between h-full bg-gray-950/80 backdrop-blur-md border border-gray-800/50 rounded-3xl shadow-2xl">
+                {/* Shine Effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-50 rounded-2xl"></div>
+
+                {/* Next Button */}
+                <button
+                  className="absolute top-4 right-4 w-12 h-12 bg-gradient-to-br from-white/30 to-white/10 hover:from-white/40 hover:to-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl hover:shadow-emerald-400/50 transition-all hover:scale-110 z-20 border border-white/40 cursor-pointer group"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCardClick(4);
+                  }}
+                >
+                  <svg className="w-6 h-6 text-white group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+
+                <div className="relative z-10">
+                  {/* Icon Container */}
+                  <div className="relative w-20 h-20 mb-6 group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/30 to-teal-500/30 rounded-2xl blur-xl group-hover:blur-2xl transition-all"></div>
+                    <div className="relative w-full h-full bg-gradient-to-br from-white/25 to-white/5 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/30 shadow-2xl">
+                      <span className="text-5xl">📋</span>
+                    </div>
+                  </div>
+
+                  {/* Title with Gradient */}
+                  <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-white via-emerald-100 to-white bg-clip-text text-transparent drop-shadow-lg" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
+                    Smart Task Manager
+                  </h3>
+
+                  <p className="text-white/95 mb-6 leading-relaxed text-base font-medium drop-shadow" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
+                    Kelola tugas dan deadline dengan mudah! AI akan prioritaskan tugasmu dan ingatkan kamu sebelum terlambat.
+                  </p>
+                </div>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2 relative z-10">
+                  <span className="px-4 py-2 bg-gradient-to-r from-white/25 to-white/10 text-white rounded-full text-xs font-semibold border border-white/30 backdrop-blur-md shadow-lg hover:shadow-emerald-400/50 transition-all hover:scale-105" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>Auto Priority</span>
+                  <span className="px-4 py-2 bg-gradient-to-r from-white/25 to-white/10 text-white rounded-full text-xs font-semibold border border-white/30 backdrop-blur-md shadow-lg hover:shadow-emerald-400/50 transition-all hover:scale-105" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>Deadline Alert</span>
+                  <span className="px-4 py-2 bg-gradient-to-r from-white/25 to-white/10 text-white rounded-full text-xs font-semibold border border-white/30 backdrop-blur-md shadow-lg hover:shadow-emerald-400/50 transition-all hover:scale-105" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>Progress Track</span>
+                </div>
+              </div>
+            </Card>
+
+            {/* Feature 6: Project Collaboration - Modern Dark Design */}
+            <Card className={`relative overflow-hidden ${activeCardIndex === 5 ? 'card-active' : ''}`}>
+              {/* Dark Background */}
+              <div className="absolute inset-0 bg-black"></div>
+
+              {/* Animated Gradient Orbs */}
+              <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-br from-orange-500/40 via-yellow-500/30 to-red-500/40 rounded-full blur-3xl animate-pulse"></div>
+              <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-gradient-to-tl from-emerald-500/30 to-teal-500/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+
+              {/* Dark Card Content with Border */}
+              <div className="relative p-8 flex flex-col justify-between h-full bg-gray-950/80 backdrop-blur-md border border-gray-800/50 rounded-3xl shadow-2xl">
+                {/* Shine Effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-50 rounded-2xl"></div>
+
+                {/* Next Button */}
+                <button
+                  className="absolute top-4 right-4 w-12 h-12 bg-gradient-to-br from-white/30 to-white/10 hover:from-white/40 hover:to-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl hover:shadow-emerald-400/50 transition-all hover:scale-110 z-20 border border-white/40 cursor-pointer group"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCardClick(5);
+                  }}
+                >
+                  <svg className="w-6 h-6 text-white group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+
+                <div className="relative z-10">
+                  {/* Icon Container */}
+                  <div className="relative w-20 h-20 mb-6 group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/30 to-teal-500/30 rounded-2xl blur-xl group-hover:blur-2xl transition-all"></div>
+                    <div className="relative w-full h-full bg-gradient-to-br from-white/25 to-white/5 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/30 shadow-2xl">
+                      <span className="text-5xl">👥</span>
+                    </div>
+                  </div>
+
+                  {/* Title with Gradient */}
+                  <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-white via-emerald-100 to-white bg-clip-text text-transparent drop-shadow-lg" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
+                    Project Collaboration
+                  </h3>
+
+                  <p className="text-white/95 mb-6 leading-relaxed text-base font-medium drop-shadow" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
+                    Kolaborasi project jadi lebih mudah! Buat tim, bagikan tugas, dan pantau progress bersama dalam satu platform.
+                  </p>
+                </div>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2 relative z-10">
+                  <span className="px-4 py-2 bg-gradient-to-r from-white/25 to-white/10 text-white rounded-full text-xs font-semibold border border-white/30 backdrop-blur-md shadow-lg hover:shadow-emerald-400/50 transition-all hover:scale-105" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>Team Work</span>
+                  <span className="px-4 py-2 bg-gradient-to-r from-white/25 to-white/10 text-white rounded-full text-xs font-semibold border border-white/30 backdrop-blur-md shadow-lg hover:shadow-emerald-400/50 transition-all hover:scale-105" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>Real-time</span>
+                  <span className="px-4 py-2 bg-gradient-to-r from-white/25 to-white/10 text-white rounded-full text-xs font-semibold border border-white/30 backdrop-blur-md shadow-lg hover:shadow-emerald-400/50 transition-all hover:scale-105" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>File Share</span>
+                </div>
+              </div>
+            </Card>
           </CardSwap>
         </div>
       </div>
