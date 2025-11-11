@@ -15,21 +15,38 @@ interface Message {
 
 const faqs: FAQItem[] = [
   {
+    question: 'Apakah saya harus login untuk menggunakan fitur-fitur AICAMPUS?',
+    answer: 'Ya, Anda perlu membuat akun dan login untuk menggunakan semua fitur AICAMPUS. Proses registrasi sangat mudah dan cepat - cukup gunakan email kampus Anda atau login dengan akun Google. Setelah login, Anda bisa langsung menikmati semua fitur seperti AI Campus Guide, Event Recommender, Smart Schedule Builder, dan lainnya.',
+  },
+  {
+    question: 'Bagaimana cara menggunakan fitur AI Campus Guide?',
+    answer: 'Setelah login dan atur ptofile dimana Anda memasukan asal universtas atau bisa langsung masuk tanpa mengatur profile, klik page "AI Campus Guide" di dashboard. klik pertanyaan Anda tentang kampus atau bisa menannyakan selain yang ada pada pilihan di mode general, lalu AI akan memberikan jawaban yang akurat.',
+  },
+  {
+    question: 'Bagaimana cara menggunakan Smart Schedule Builder?',
+    answer: 'Klik menu "Smart Schedule Builder", lalu masukkan mata kuliah dan kegiatan Anda dengan menekan tombol "Jadwal Kuliah" atau "Kegiatan Lain". Isi detail seperti nama, hari, dan waktu. Setelah selesai menambahkan semua jadwal, klik "Generate Jadwal Optimal" dan AI akan menyusun jadwal terbaik yang menghindari bentrok dan memaksimalkan waktu istirahat Anda. ini juga telah ter integrasi dengan google kalender. ',
+  },
+  {
+    question: 'Bagaimana cara menggunakan Event Recommender?',
+    answer: 'Buka menu "Event Recommender" di dashboard. Pertama kali, Anda di perlihatkan event event yang ada, tetapi apabila anda ingin mengikuti event tertentu maka anda dapat menggunakan filter yang ada di bagian sebelah kiri. Setelah itu, sistem akan otomatis merekomendasikan event yang sesuai. Anda bisa mendaftar langsung, atau melihat detail event seperti waktu, lokasi, dan persyaratan.',
+  },
+  {
+    question: 'Bagaimana cara menggunakan Peer Connect AI?',
+    answer: 'Masuk ke menu "Peer Connect AI" dan lengkapi profil Anda (jurusan, minat, skills, tujuan). AI akan mencocokkan Anda dengan mahasiswa atau mentor yang compatible. Anda bisa melihat profil match, mengirim request connect, dan mulai berkomunikasi. Fitur ini sangat berguna untuk mencari study partner atau mentor untuk bimbingan karir juga dapat menggunakan video call.',
+  },
+   {
+    question: 'Bagaimana cara menggunakan Smart Task Manager?',
+    answer: 'Buka menu "Smart Task Manager" dan tambahkan tugas-tugas Anda dengan deadline masing-masing. AI akan otomatis memprioritaskan tugas berdasarkan tingkat urgensi dan deadline. Anda akan mendapat notifikasi reminder sebelum deadline, dan bisa tracking progress tugas dalam satu dashboard yang mudah dipahami.',
+  },
+  {
+    question: 'Bagaimana cara menggunakan Project Collaboration?',
+    answer: 'Klik "Project Collaboration", buat project baru, dan undang anggota tim Anda. Anda bisa assign task ke masing-masing anggota, upload file project, melakukan real-time collaboration, dan tracking progress project. ',
+  },
+  {
     question: 'Apakah AI Campus Guide bisa menjawab semua pertanyaan tentang kampus?',
     answer: 'Ya! AI Campus Guide kami dirancang untuk menjawab berbagai pertanyaan seputar kehidupan kampus, mulai dari cara mengisi KRS, lokasi gedung, info dosen, prosedur beasiswa, jadwal kuliah, hingga informasi UKM. AI kami terus belajar dan diperbarui untuk memberikan jawaban yang akurat dan relevan.',
   },
-  {
-    question: 'Bagaimana cara kerja Event Recommender?',
-    answer: 'Event Recommender menggunakan AI untuk menganalisis minat, jurusan, dan aktivitas Anda sebelumnya. Berdasarkan data tersebut, sistem akan merekomendasikan event seperti seminar, lomba, kegiatan UKM, dan volunteering yang paling sesuai dengan profil Anda. Semakin sering Anda menggunakan fitur ini, semakin akurat rekomendasinya!',
-  },
-  {
-    question: 'Apakah Smart Schedule Builder bisa mendeteksi jadwal yang bentrok?',
-    answer: 'Tentu saja! Smart Schedule Builder dilengkapi dengan sistem deteksi otomatis yang akan memperingatkan Anda jika ada jadwal yang bentrok. AI juga akan memberikan saran alternatif jadwal yang optimal, mempertimbangkan waktu istirahat, dan memastikan work-life balance Anda tetap terjaga.',
-  },
-  {
-    question: 'Bagaimana Peer Connect AI mencocokkan saya dengan teman atau mentor?',
-    answer: 'Peer Connect AI menggunakan algoritma machine learning yang menganalisis minat akademik, hobi, tujuan karir, dan preferensi Anda. Sistem akan mencocokkan Anda dengan mahasiswa atau mentor yang memiliki kesamaan atau dapat saling melengkapi. Fitur ini membantu Anda membangun networking yang berkualitas di kampus.',
-  },
+
   {
     question: 'Apakah data pribadi saya aman?',
     answer: 'Keamanan data Anda adalah prioritas utama kami. Semua informasi pribadi dienkripsi dan disimpan dengan standar keamanan tingkat enterprise. Kami tidak akan membagikan data Anda kepada pihak ketiga tanpa izin Anda. Platform kami juga mematuhi regulasi perlindungan data yang berlaku.',
