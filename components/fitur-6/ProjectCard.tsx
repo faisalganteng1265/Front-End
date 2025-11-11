@@ -9,9 +9,9 @@ interface ProjectCardProps {
 }
 
 const statusColors = {
-  open: 'bg-green-500',
-  in_progress: 'bg-blue-500',
-  completed: 'bg-gray-500',
+  open: 'bg-blue-500',
+  in_progress: 'bg-purple-500',
+  completed: 'bg-green-500',
   cancelled: 'bg-red-500',
 };
 

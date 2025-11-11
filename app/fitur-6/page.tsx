@@ -169,7 +169,7 @@ export default function ProjectCollaborationPage() {
               </button>
               <button
                 onClick={() => setActiveTab('my-applications')}
-                className={`px-6 py-3 rounded-lg font-semibold transition-all cursor-pointer ${
+                className={`px-6 py-3 rounded-lg border-2px font-semibold transition-all cursor-pointer ${
                   activeTab === 'my-applications'
                     ? 'bg-white text-blue-600 shadow-lg'
                     : 'bg-white/10 text-white hover:bg-white/20'
@@ -207,10 +207,10 @@ export default function ProjectCollaborationPage() {
             { label: 'HOME', ariaLabel: 'Go to home page', link: '/' },
             { label: 'AI Campus Chatbot', ariaLabel: 'Go to feature 1', link: '/fitur-1' },
             { label: 'Event Recomend', ariaLabel: 'Go to feature 2', link: '/fitur-2' },
-            { label: 'Smart Schedule', ariaLabel: 'Go to feature 3', link: '/fitur-3', color: '#22c55e' },
+            { label: 'Smart Schedule', ariaLabel: 'Go to feature 3', link: '/fitur-3' },
             { label: 'Peer Connect', ariaLabel: 'Go to feature 4', link: '/fitur-4' },
             { label: 'Smart Task Manager', ariaLabel: 'Go to feature 5', link: '/fitur-5' },
-            { label: 'Project Colabollator', ariaLabel: 'Go to feature 6', link: '/fitur-6' }
+            { label: 'Project Colabollator', ariaLabel: 'Go to feature 6', link: '/fitur-6', color: '#22c55e' },
           ]}
           displaySocials={false}
           displayItemNumbering={true}

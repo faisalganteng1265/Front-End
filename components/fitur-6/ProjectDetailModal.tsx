@@ -28,9 +28,9 @@ interface ProjectDetailModalProps {
 }
 
 const statusColors = {
-  open: 'bg-green-500',
-  in_progress: 'bg-blue-500',
-  completed: 'bg-gray-500',
+  open: 'bg-blue-500',
+  in_progress: 'bg-purple-500',
+  completed: 'bg-green-500',
   cancelled: 'bg-red-500',
 };
 
@@ -287,68 +287,74 @@ export default function ProjectDetailModal({
           </div>
 
           {/* Content */}
-          <div className="p-6 space-y-6">
+          <div className="p-6">
+            {/* 2 Column Grid Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            {/* Description */}
-            <div>
-              <h3 className="text-lg font-bold text-white mb-3">Deskripsi Project</h3>
-              <p className="text-gray-300 whitespace-pre-wrap">{project.description}</p>
-            </div>
-
-            {/* Progress Slider */}
-            <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
-              <ProgressSlider
-                projectId={project.id}
-                currentProgress={currentProgress}
-                onUpdate={handleProgressUpdate}
-                isInitiator={isInitiator}
-              />
-            </div>
-
-            {/* Deadline */}
-            {project.deadline && (
-              <div className="bg-gray-800/50 border border-orange-600/50 rounded-lg p-4">
-                <div className="flex items-center text-orange-400">
-                  <Clock className="w-5 h-5 mr-2" />
-                  <span className="font-semibold">
-                    Deadline: {new Date(project.deadline).toLocaleDateString('id-ID')}
-                  </span>
+              {/* Left Column - Description, Progress, Deadline */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Description */}
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-3">Deskripsi Project</h3>
+                  <p className="text-gray-300 whitespace-pre-wrap">{project.description}</p>
                 </div>
-              </div>
-            )}
 
-            {/* Roles Needed */}
-            <div>
-              <h3 className="text-lg font-bold text-white mb-3">Role yang Dibutuhkan</h3>
-              <div className="space-y-3">
-                {project.roles?.map((role) => (
-                  <div
-                    key={role.id}
-                    className="bg-gray-800/50 border border-gray-700 rounded-lg p-4"
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-semibold text-white">{role.role_name}</h4>
-                      <span className="text-sm text-gray-400">
-                        {role.filled_count}/{role.required_count} filled
+                {/* Progress Slider */}
+                <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+                  <ProgressSlider
+                    projectId={project.id}
+                    currentProgress={currentProgress}
+                    onUpdate={handleProgressUpdate}
+                    isInitiator={isInitiator}
+                  />
+                </div>
+
+                {/* Deadline */}
+                {project.deadline && (
+                  <div className="bg-gray-800/50 border border-orange-600/50 rounded-lg p-4">
+                    <div className="flex items-center text-orange-400">
+                      <Clock className="w-5 h-5 mr-2" />
+                      <span className="font-semibold">
+                        Deadline: {new Date(project.deadline).toLocaleDateString('id-ID')}
                       </span>
                     </div>
-                    {role.description && (
-                      <p className="text-gray-400 text-sm">{role.description}</p>
-                    )}
-                    {role.filled_count >= role.required_count && (
-                      <div className="mt-2 flex items-center text-green-400 text-sm">
-                        <CheckCircle className="w-4 h-4 mr-1" />
-                        <span>Role sudah terpenuhi</span>
-                      </div>
-                    )}
                   </div>
-                ))}
+                )}
+              </div>
+
+              {/* Right Column - Roles Needed */}
+              <div className="lg:col-span-1">
+                <h3 className="text-lg font-bold text-white mb-3">Role yang Dibutuhkan</h3>
+                <div className="space-y-3">
+                  {project.roles?.map((role) => (
+                    <div
+                      key={role.id}
+                      className="bg-gray-800/50 border border-gray-700 rounded-lg p-4"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-semibold text-white">{role.role_name}</h4>
+                        <span className="text-sm text-gray-400">
+                          {role.filled_count}/{role.required_count} filled
+                        </span>
+                      </div>
+                      {role.description && (
+                        <p className="text-gray-400 text-sm">{role.description}</p>
+                      )}
+                      {role.filled_count >= role.required_count && (
+                        <div className="mt-2 flex items-center text-green-400 text-sm">
+                          <CheckCircle className="w-4 h-4 mr-1" />
+                          <span>Role sudah terpenuhi</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* User's Applications */}
+            {/* User's Applications - Full Width */}
             {userApplications.length > 0 && (
-              <div>
+              <div className="mt-6">
                 <h3 className="text-lg font-bold text-white mb-3">Aplikasi Anda</h3>
                 <div className="space-y-2">
                   {userApplications.map((app) => (
@@ -389,7 +395,7 @@ export default function ProjectDetailModal({
             )}
 
             {/* Action Buttons */}
-            <div className="flex gap-3 pt-4 border-t border-gray-700">
+            <div className="flex gap-3 pt-4 mt-6 border-t border-gray-700">
               {isInitiator && (
                 <button
                   onClick={() => setShowManageModal(true)}
