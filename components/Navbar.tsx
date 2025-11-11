@@ -30,7 +30,6 @@ export default function Navbar() {
   const navItems = [
     { label: 'Features', href: '/#features' },
     { label: 'PeerConnect', href: '/#peerconnect' },
-    { label: 'Cara Kerja', href: '/#how-it-works' },
     { label: 'About Us', href: '/#about-us' },
   ];
 
@@ -94,7 +93,7 @@ export default function Navbar() {
                         <Link
                           key={item.label}
                           href={item.href}
-                          className="block px-4 py-2 text-sm text-white hover:text-lime-400 hover:bg-gray-800 transition-colors duration-200"
+                          className="block px-4 py-2 text-sm text-white hover:text-lime-400 hover:bg-gray-800 transition-colors duration-200 cursor-pointer"
                           onClick={() => setIsPagesDropdownOpen(false)}
                         >
                           {item.label}
@@ -170,7 +169,7 @@ export default function Navbar() {
                       <Link
                         key={item.label}
                         href={item.href}
-                        className="block text-gray-300 hover:text-lime-400 hover:bg-gray-800 px-3 py-2 rounded-md text-sm transition-colors duration-200"
+                        className="block text-gray-300 hover:text-lime-400 hover:bg-gray-800 px-3 py-2 rounded-md text-sm transition-colors duration-200 cursor-pointer"
                         onClick={() => {
                           setIsMenuOpen(false);
                           setIsPagesDropdownOpen(false);

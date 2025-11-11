@@ -31,7 +31,7 @@ export default function HeroSection() {
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         <motion.h1
-          className="text-[15vw] md:text-[12vw] lg:text-[10vw] font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 leading-none tracking-tighter"
+          className="text-[20vw] md:text-[16vw] lg:text-[14vw] font-black text-white leading-none tracking-tighter relative z-10 mt-8 md:mt-12 lg:mt-16"
           style={{ fontFamily: 'Agency FB, sans-serif' }}
           animate={{
             opacity: [0.9, 1, 0.9]
@@ -45,9 +45,9 @@ export default function HeroSection() {
           AICAMPUS
         </motion.h1>
 
-        {/* Logo below AICAMPUS text */}
+        {/* Logo below with slight overlap */}
         <motion.div
-          className="mt-8 flex justify-center"
+          className="relative -mt-32 md:-mt-40 lg:-mt-48 flex justify-center z-20"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
@@ -55,22 +55,31 @@ export default function HeroSection() {
           <img
             src="/LOGOSVG.svg"
             alt="AI Campus Logo"
-            className="w-[40vw] md:w-[30vw] lg:w-[20vw] max-w-md"
+            className="w-[60vw] md:w-[50vw] lg:w-[35vw] max-w-2xl"
           />
         </motion.div>
 
-        {/* Subtle glow effect */}
-        <motion.div
-          className="absolute inset-0 blur-3xl opacity-20 bg-gradient-to-r from-emerald-500 to-teal-500 -z-10"
-          animate={{
-            opacity: [0.15, 0.25, 0.15]
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
+      </motion.div>
+
+      {/* Slogan - Bottom Left */}
+      <motion.div
+        className="absolute bottom-8 left-8 z-20 max-w-xs md:max-w-sm"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
+      >
+        <p className="text-white/90 text-base md:text-lg font-medium tracking-wide mb-2">
+          Empowering Students with AI
+        </p>
+        <p className="text-white/70 text-sm md:text-base font-light mb-1">
+          Your Smart Campus Companion
+        </p>
+        <p className="text-white/60 text-xs md:text-sm font-light mb-1">
+          Navigate Campus Life Seamlessly
+        </p>
+        <p className="text-white/50 text-xs md:text-sm font-light">
+          Learn Smarter, Connect Better, Achieve More
+        </p>
       </motion.div>
 
       {/* Scroll Down Arrow */}
@@ -86,7 +95,7 @@ export default function HeroSection() {
         }}
       >
         <svg
-          className="w-6 h-6 text-emerald-400/60"
+          className="w-6 h-6 text-white/60"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
