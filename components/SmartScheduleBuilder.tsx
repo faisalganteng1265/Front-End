@@ -67,8 +67,9 @@ export default function SmartScheduleBuilder() {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'input' | 'result' | 'calendar'>('input');
   const [activityMode, setActivityMode] = useState<'flexible' | 'specific'>('flexible');
+  const [showPopup, setShowPopup] = useState<'jadwal' | 'kegiatan' | null>(null);
 
- 
+
   const [newCourse, setNewCourse] = useState<Partial<ScheduleItem>>({
     type: 'kuliah',
     name: '',
@@ -377,21 +378,28 @@ export default function SmartScheduleBuilder() {
         {/* Input Tab */}
         {activeTab === 'input' && (
           <AnimatedContent>
-          <div className="max-w-7xl mx-auto space-y-8">
+          <div className="max-w-[1600px] mx-auto space-y-8">
             {/* Main Grid - Side by Side */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
-              
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+
               {/* LEFT SIDE - JADWAL KULIAH */}
               <AnimatedContent direction="horizontal" reverse={true} delay={0.2}>
-              <div className="space-y-6 bg-gray-800/40 p-8 rounded-lg shadow-md border border-gray-700/50 h-full flex flex-col">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-3xl font-bold text-white" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' }}>JADWAL KULIAH</h3>
-                  <div className="px-4 py-2 bg-white/10 border border-white/20 rounded-full" style={{ boxShadow: '0 0 10px rgba(255, 255, 255, 0.3)' }}>
-                    <span className="text-white font-semibold" style={{ textShadow: '0 0 8px rgba(255, 255, 255, 0.6)' }}>{courses.length} Kuliah</span>
+              <div className="space-y-6 bg-gray-800/40 p-8 rounded-xl shadow-lg border-2 border-gray-700/50 min-h-[500px] flex flex-col hover:border-white/30 transition-all">
+                {/* Clickable Header Box */}
+                <button
+                  onClick={() => setShowPopup('jadwal')}
+                  className="relative bg-gradient-to-r from-gray-700/50 to-gray-800/50 p-3 rounded-lg border-2 border-gray-600/70 hover:border-white/70 hover:bg-gray-700/70 hover:scale-105 active:scale-95 transition-all duration-200 group"
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-bold text-white" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' }}>JADWAL KULIAH</h3>
+                    <div className="px-3 py-1 bg-white/10 border border-white/20 rounded-full">
+                      <span className="text-white text-sm font-semibold">{courses.length} Kuliah</span>
+                    </div>
                   </div>
-                </div>
-                  
-                  <div className="space-y-4">
+                </button>
+
+                  {/* Moved to popup - keeping only the list here */}
+                  {false && (<div className="space-y-4">
                     <div className="flex items-center w-full bg-gray-700/30 rounded-lg border border-gray-600/50 hover:bg-white/95 hover:border-white focus-within:bg-white/95 focus-within:border-white focus-within:ring-1 focus-within:ring-white transition-all group">
                       <input
                         type="text"
@@ -473,41 +481,54 @@ export default function SmartScheduleBuilder() {
                     >
                       + TAMBAH KULIAH
                     </button>
-                </div>
+                </div>)}
 
                 {/* Course List */}
                 {courses.length > 0 && (
-                  <div className="space-y-3 flex-1">
+                  <div className="space-y-4 flex-1">
                     {courses.map(course => (
-                      <div key={course.id} className="bg-gray-700/40 border-l-4 border-white rounded-r-lg p-4 flex justify-between items-center transition-all hover:shadow-md">
-                        <div className="flex-1">
-                          <p className="text-gray-200 font-semibold text-lg">{course.name}</p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <p className="text-gray-400 text-sm">
-                              {course.day} • {course.startTime} - {course.endTime}
-                            </p>
-                            {course.courseType && (
-                              <span className="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-white/10 text-white border border-white/20">
-                                {course.courseType === 'teori' && 'Teori'}
-                                {course.courseType === 'praktikum' && 'Praktikum'}
-                                {course.courseType === 'lab' && 'Lab'}
-                                {course.courseType === 'seminar' && 'Seminar'}
-                              </span>
+                      <div key={course.id} className="bg-gradient-to-r from-gray-700/60 to-gray-800/60 border-2 border-white/30 rounded-xl p-5 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h4 className="text-white font-bold text-xl mb-2" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.5)' }}>
+                              {course.name}
+                            </h4>
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="px-3 py-1 bg-white/20 border border-white/30 rounded-lg">
+                                <p className="text-white text-sm font-semibold">
+                                  {course.day}
+                                </p>
+                              </div>
+                              <div className="px-3 py-1 bg-white/20 border border-white/30 rounded-lg">
+                                <p className="text-white text-sm font-semibold">
+                                  {course.startTime} - {course.endTime}
+                                </p>
+                              </div>
+                              {course.courseType && (
+                                <div className="px-3 py-1 bg-white/20 border border-white/30 rounded-lg">
+                                  <span className="text-white text-sm font-semibold">
+                                    {course.courseType === 'teori' && 'Teori'}
+                                    {course.courseType === 'praktikum' && 'Praktikum'}
+                                    {course.courseType === 'lab' && 'Lab'}
+                                    {course.courseType === 'seminar' && 'Seminar'}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                            {course.location && (
+                              <p className="text-gray-300 text-sm mt-2">📍 {course.location}</p>
+                            )}
+                            {course.description && (
+                              <p className="text-gray-300 text-sm mt-1">📝 {course.description}</p>
                             )}
                           </div>
-                          {course.location && (
-                            <p className="text-gray-500 text-sm mt-1">📍 {course.location}</p>
-                          )}
-                          {course.description && (
-                            <p className="text-gray-500 text-sm mt-1">📝 {course.description}</p>
-                          )}
+                          <button
+                            onClick={() => removeCourse(course.id!)}
+                            className="text-red-400 hover:text-red-600 transition-all text-3xl ml-4 hover:scale-125 active:scale-95 font-bold"
+                          >
+                            ×
+                          </button>
                         </div>
-                        <button
-                          onClick={() => removeCourse(course.id!)}
-                          className="text-red-500 hover:text-red-700 transition-colors text-2xl ml-4 hover:scale-110"
-                        >
-                          ×
-                        </button>
                       </div>
                     ))}
                   </div>
@@ -515,16 +536,24 @@ export default function SmartScheduleBuilder() {
               </div>
               </AnimatedContent>
 
+              {/* RIGHT SIDE - KEGIATAN LAIN */}
               <AnimatedContent direction="horizontal" delay={0.2}>
-              <div className="space-y-6 bg-gray-800/40 p-8 rounded-lg shadow-md border border-gray-700/50 h-full flex flex-col">
-              <div className="space-y-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-3xl font-bold text-white" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' }}>KEGIATAN LAIN</h3>
-                  <div className="px-4 py-2 bg-white/10 border border-white/20 rounded-full" style={{ boxShadow: '0 0 10px rgba(255, 255, 255, 0.3)' }}>
-                    <span className="text-white font-semibold" style={{ textShadow: '0 0 8px rgba(255, 255, 255, 0.6)' }}>{activities.length} Kegiatan</span>
+              <div className="space-y-6 bg-gray-800/40 p-8 rounded-xl shadow-lg border-2 border-gray-700/50 min-h-[500px] flex flex-col hover:border-white/30 transition-all">
+                {/* Clickable Header Box */}
+                <button
+                  onClick={() => setShowPopup('kegiatan')}
+                  className="relative bg-gradient-to-r from-gray-700/50 to-gray-800/50 p-3 rounded-lg border-2 border-gray-600/70 hover:border-white/70 hover:bg-gray-700/70 hover:scale-105 active:scale-95 transition-all duration-200 group"
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-bold text-white" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' }}>KEGIATAN LAIN</h3>
+                    <div className="px-3 py-1 bg-white/10 border border-white/20 rounded-full">
+                      <span className="text-white text-sm font-semibold">{activities.length} Kegiatan</span>
+                    </div>
                   </div>
-                </div>
+                </button>
 
+                  {/* Moved to popup */}
+                  {false && (<div className="space-y-6">
                   {/* Activity Mode Toggle */}
                   <div className="grid grid-cols-2 gap-3 mb-6">
                     <button
@@ -672,33 +701,56 @@ export default function SmartScheduleBuilder() {
                       </button>
                     </div>
                   )}
-                </div>
+                </div>)}
 
                 {/* Activity List */}
                 {activities.length > 0 && (
-                  <div className="space-y-3 flex-1">
+                  <div className="space-y-4 flex-1">
                     {activities.map(activity => (
-                      <div key={activity.id} className="bg-gray-700/40 border-l-4 border-white rounded-r-lg p-4 flex justify-between items-center transition-all hover:shadow-md">
-                        <div className="flex-1">
-                          <p className="font-semibold text-lg text-white">
-                            {activity.name}
-                          </p>
-                          <p className="text-gray-400 text-sm mt-1">                            {activity.hasSpecificTime ? (
-                              <>{activity.specificDay} • {activity.specificTime} • {activity.duration} menit</>
-                            ) : (
-                              <>Durasi: {activity.duration} menit • {activity.priority}</>
+                      <div key={activity.id} className="bg-gradient-to-r from-gray-700/60 to-gray-800/60 border-2 border-white/30 rounded-xl p-5 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h4 className="text-white font-bold text-xl mb-2" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.5)' }}>
+                              {activity.name}
+                            </h4>
+                            <div className="flex items-center gap-2 mb-2 flex-wrap">
+                              {activity.hasSpecificTime ? (
+                                <>
+                                  <div className="px-3 py-1 bg-white/20 border border-white/30 rounded-lg">
+                                    <p className="text-white text-sm font-semibold">{activity.specificDay}</p>
+                                  </div>
+                                  <div className="px-3 py-1 bg-white/20 border border-white/30 rounded-lg">
+                                    <p className="text-white text-sm font-semibold">{activity.specificTime}</p>
+                                  </div>
+                                  <div className="px-3 py-1 bg-white/20 border border-white/30 rounded-lg">
+                                    <p className="text-white text-sm font-semibold">{activity.duration} menit</p>
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="px-3 py-1 bg-white/20 border border-white/30 rounded-lg">
+                                    <p className="text-white text-sm font-semibold">{activity.duration} menit</p>
+                                  </div>
+                                  <div className="px-3 py-1 bg-white/20 border border-white/30 rounded-lg">
+                                    <p className="text-white text-sm font-semibold capitalize">{activity.priority}</p>
+                                  </div>
+                                  <div className="px-3 py-1 bg-blue-500/30 border border-blue-400/50 rounded-lg">
+                                    <p className="text-white text-sm font-semibold">Fleksibel</p>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                            {activity.description && (
+                              <p className="text-gray-300 text-sm mt-2">📝 {activity.description}</p>
                             )}
-                          </p>
-                          {activity.description && (
-                            <p className="text-gray-500 text-sm mt-1">{activity.description}</p>
-                          )}
+                          </div>
+                          <button
+                            onClick={() => removeActivity(activity.id!)}
+                            className="text-red-400 hover:text-red-600 transition-all text-3xl ml-4 hover:scale-125 active:scale-95 font-bold"
+                          >
+                            ×
+                          </button>
                         </div>
-                        <button
-                          onClick={() => removeActivity(activity.id!)}
-                          className="text-red-500 hover:text-red-700 transition-colors text-2xl ml-4 hover:scale-110"
-                        >
-                          ×
-                        </button>
                       </div>
                     ))}
                   </div>
@@ -711,7 +763,7 @@ export default function SmartScheduleBuilder() {
             <button
               onClick={generateSchedule}
               disabled={isLoading || (courses.length === 0 && activities.length === 0)}
-              className="w-full bg-gray-700/30 border-2 border-gray-600/50 hover:bg-white/95 hover:border-white text-gray-200 hover:text-gray-800 py-5 rounded-xl font-bold text-xl hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+              className="w-full bg-gray-700/30 border-2 border-gray-600/50 hover:bg-white/95 hover:border-white text-gray-200 hover:text-gray-800 py-5 rounded-xl font-bold text-xl hover:shadow-lg hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-3"
             >
               {isLoading ? (
                 <>
@@ -933,6 +985,279 @@ export default function SmartScheduleBuilder() {
           </div>
         )}
       </div>
+
+      {/* Pop-up Modal */}
+      {showPopup && (
+        <div
+          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowPopup(null)}
+        >
+          <div
+            className="bg-gray-800 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border-2 border-white/20 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {showPopup === 'jadwal' && (
+              <div className="space-y-6">
+                {/* Close Button */}
+                <div className="flex justify-end -mt-2 -mr-2 mb-2">
+                  <button
+                    onClick={() => setShowPopup(null)}
+                    className="text-gray-400 hover:text-white text-3xl font-bold transition-all hover:scale-125 active:scale-95 hover:rotate-90"
+                  >
+                    ×
+                  </button>
+                </div>
+                <h2 className="text-3xl font-bold text-white mb-6" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8)' }}>
+                  TAMBAH JADWAL KULIAH
+                </h2>
+
+                <input
+                  type="text"
+                  placeholder="Nama Mata Kuliah"
+                  value={newCourse.name}
+                  onChange={(e) => setNewCourse({ ...newCourse, name: e.target.value })}
+                  className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all placeholder:text-gray-500 hover:placeholder:text-gray-400 focus:placeholder:text-gray-400"
+                />
+
+                <select
+                  value={newCourse.day}
+                  onChange={(e) => setNewCourse({ ...newCourse, day: e.target.value })}
+                  className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all"
+                >
+                  {days.map(day => (
+                    <option key={day} value={day} className="bg-neutral-700 text-gray-200">{day}</option>
+                  ))}
+                </select>
+
+                <select
+                  value={newCourse.courseType}
+                  onChange={(e) => setNewCourse({ ...newCourse, courseType: e.target.value as any })}
+                  className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all"
+                >
+                  <option value="teori" className="bg-neutral-700 text-gray-200">Teori</option>
+                  <option value="praktikum" className="bg-neutral-700 text-gray-200">Praktikum</option>
+                  <option value="lab" className="bg-neutral-700 text-gray-200">Lab</option>
+                  <option value="seminar" className="bg-neutral-700 text-gray-200">Seminar</option>
+                </select>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-gray-400 text-sm mb-2 block">Jam Mulai</label>
+                    <select
+                      value={newCourse.startTime}
+                      onChange={(e) => setNewCourse({ ...newCourse, startTime: e.target.value })}
+                      className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all"
+                    >
+                      {timeSlots.map(time => (
+                        <option key={time} value={time} className="bg-neutral-700 text-gray-200">{time}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-gray-400 text-sm mb-2 block">Jam Selesai</label>
+                    <select
+                      value={newCourse.endTime}
+                      onChange={(e) => setNewCourse({ ...newCourse, endTime: e.target.value })}
+                      className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all"
+                    >
+                      {timeSlots.map(time => (
+                        <option key={time} value={time} className="bg-neutral-700 text-gray-200">{time}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <input
+                  type="text"
+                  placeholder="Lokasi (opsional)"
+                  value={newCourse.location || ''}
+                  onChange={(e) => setNewCourse({ ...newCourse, location: e.target.value })}
+                  className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all placeholder:text-gray-500 hover:placeholder:text-gray-400 focus:placeholder:text-gray-400"
+                />
+
+                <input
+                  type="text"
+                  placeholder="Keterangan (opsional)"
+                  value={newCourse.description}
+                  onChange={(e) => setNewCourse({ ...newCourse, description: e.target.value })}
+                  className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all placeholder:text-gray-500 hover:placeholder:text-gray-400 focus:placeholder:text-gray-400"
+                />
+
+                <button
+                  onClick={() => {
+                    addCourse();
+                    setShowPopup(null);
+                  }}
+                  className="w-full bg-white/95 hover:bg-white text-gray-800 px-6 py-3 rounded-lg font-bold transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
+                >
+                  + TAMBAH KULIAH
+                </button>
+              </div>
+            )}
+
+            {showPopup === 'kegiatan' && (
+              <div className="space-y-6">
+                {/* Close Button */}
+                <div className="flex justify-end -mt-2 -mr-2 mb-2">
+                  <button
+                    onClick={() => setShowPopup(null)}
+                    className="text-gray-400 hover:text-white text-3xl font-bold transition-all hover:scale-125 active:scale-95 hover:rotate-90"
+                  >
+                    ×
+                  </button>
+                </div>
+                <h2 className="text-3xl font-bold text-white mb-6" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8)' }}>
+                  TAMBAH KEGIATAN
+                </h2>
+
+                {/* Activity Mode Toggle */}
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setActivityMode('flexible')}
+                    className={`py-4 px-4 rounded-lg font-semibold transition-all hover:scale-105 active:scale-95 ${
+                      activityMode === 'flexible'
+                        ? 'bg-white/95 text-gray-800 shadow-lg'
+                        : 'bg-gray-700/30 text-gray-200 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white'
+                    }`}
+                  >
+                    <div className="text-sm">WAKTU FLEKSIBEL</div>
+                    <div className="text-xs opacity-75 mt-1">AI tentukan waktu</div>
+                  </button>
+                  <button
+                    onClick={() => setActivityMode('specific')}
+                    className={`py-4 px-4 rounded-lg font-semibold transition-all hover:scale-105 active:scale-95 ${
+                      activityMode === 'specific'
+                        ? 'bg-white/95 text-gray-800 shadow-lg'
+                        : 'bg-gray-700/30 text-gray-200 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white'
+                    }`}
+                  >
+                    <div className="text-sm">WAKTU SPESIFIK</div>
+                    <div className="text-xs opacity-75 mt-1">Waktu ditentukan</div>
+                  </button>
+                </div>
+
+                {/* Flexible Activity Form */}
+                {activityMode === 'flexible' && (
+                  <div className="space-y-4">
+                    <input
+                      type="text"
+                      placeholder="Nama Kegiatan"
+                      value={newActivity.name}
+                      onChange={(e) => setNewActivity({ ...newActivity, name: e.target.value })}
+                      className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all placeholder:text-gray-500 hover:placeholder:text-gray-400 focus:placeholder:text-gray-400"
+                    />
+
+                    <select
+                      value={newActivity.duration}
+                      onChange={(e) => setNewActivity({ ...newActivity, duration: Number(e.target.value) })}
+                      className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all"
+                    >
+                      <option value={30} className="bg-neutral-700 text-gray-200">30 menit</option>
+                      <option value={60} className="bg-neutral-700 text-gray-200">1 jam</option>
+                      <option value={90} className="bg-neutral-700 text-gray-200">1.5 jam</option>
+                      <option value={120} className="bg-neutral-700 text-gray-200">2 jam</option>
+                      <option value={180} className="bg-neutral-700 text-gray-200">3 jam</option>
+                    </select>
+
+                    <select
+                      value={newActivity.priority}
+                      onChange={(e) => setNewActivity({ ...newActivity, priority: e.target.value as any })}
+                      className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all"
+                    >
+                      <option value="tinggi" className="bg-neutral-700 text-gray-200">Prioritas Tinggi</option>
+                      <option value="sedang" className="bg-neutral-700 text-gray-200">Prioritas Sedang</option>
+                      <option value="rendah" className="bg-neutral-700 text-gray-200">Prioritas Rendah</option>
+                    </select>
+
+                    <select
+                      value={newActivity.mustBeBefore || ''}
+                      onChange={(e) => setNewActivity({ ...newActivity, mustBeBefore: e.target.value || undefined })}
+                      className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all"
+                    >
+                      <option value="" className="bg-neutral-700 text-gray-200">Kapan saja</option>
+                      <option value="12:00" className="bg-neutral-700 text-gray-200">Sebelum jam 12:00</option>
+                      <option value="15:00" className="bg-neutral-700 text-gray-200">Sebelum jam 15:00</option>
+                      <option value="18:00" className="bg-neutral-700 text-gray-200">Sebelum jam 18:00</option>
+                      <option value="20:00" className="bg-neutral-700 text-gray-200">Sebelum jam 20:00</option>
+                    </select>
+
+                    <input
+                      type="text"
+                      placeholder="Keterangan (opsional)"
+                      value={newActivity.description}
+                      onChange={(e) => setNewActivity({ ...newActivity, description: e.target.value })}
+                      className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all placeholder:text-gray-500 hover:placeholder:text-gray-400 focus:placeholder:text-gray-400"
+                    />
+                  </div>
+                )}
+
+                {/* Specific Time Activity Form */}
+                {activityMode === 'specific' && (
+                  <div className="space-y-4">
+                    <input
+                      type="text"
+                      placeholder="Nama Kegiatan"
+                      value={newActivity.name}
+                      onChange={(e) => setNewActivity({ ...newActivity, name: e.target.value })}
+                      className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all placeholder:text-gray-500 hover:placeholder:text-gray-400 focus:placeholder:text-gray-400"
+                    />
+
+                    <select
+                      value={newActivity.specificDay || 'Senin'}
+                      onChange={(e) => setNewActivity({ ...newActivity, specificDay: e.target.value })}
+                      className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all"
+                    >
+                      {days.map(day => (
+                        <option key={day} value={day} className="bg-neutral-700 text-gray-200">{day}</option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={newActivity.specificTime || '09:00'}
+                      onChange={(e) => setNewActivity({ ...newActivity, specificTime: e.target.value })}
+                      className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all"
+                    >
+                      {timeSlots.map(time => (
+                        <option key={time} value={time} className="bg-neutral-700 text-gray-200">{time}</option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={newActivity.duration}
+                      onChange={(e) => setNewActivity({ ...newActivity, duration: Number(e.target.value) })}
+                      className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all"
+                    >
+                      <option value={30} className="bg-neutral-700 text-gray-200">30 menit</option>
+                      <option value={60} className="bg-neutral-700 text-gray-200">1 jam</option>
+                      <option value={90} className="bg-neutral-700 text-gray-200">1.5 jam</option>
+                      <option value={120} className="bg-neutral-700 text-gray-200">2 jam</option>
+                      <option value={180} className="bg-neutral-700 text-gray-200">3 jam</option>
+                    </select>
+
+                    <input
+                      type="text"
+                      placeholder="Keterangan (opsional)"
+                      value={newActivity.description}
+                      onChange={(e) => setNewActivity({ ...newActivity, description: e.target.value })}
+                      className="w-full bg-gray-700/30 text-gray-200 rounded-lg px-4 py-3 border border-gray-600/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white focus:outline-none focus:ring-1 focus:ring-white transition-all placeholder:text-gray-500 hover:placeholder:text-gray-400 focus:placeholder:text-gray-400"
+                    />
+                  </div>
+                )}
+
+                <button
+                  onClick={() => {
+                    addActivity();
+                    setShowPopup(null);
+                  }}
+                  className="w-full bg-white/95 hover:bg-white text-gray-800 px-6 py-3 rounded-lg font-bold transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95 mt-6"
+                >
+                  + TAMBAH KEGIATAN
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
