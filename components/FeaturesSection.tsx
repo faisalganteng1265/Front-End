@@ -124,7 +124,7 @@ export default function FeaturesSection() {
   };
 
   return (
-    <section id="features" className="pt-20 pb-32 px-6 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
+    <section id="features" className="pt-20 pb-32 px-6 bg-gradient-to-b from-gray-900 via-gray-800 to-black relative overflow-hidden">
       {/* Paint Splatter Effect - Deep Dark Green Blobs (Same Color for Overlap) */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-900 blob-1 opacity-20"></div>
       <div className="absolute top-10 right-16 w-64 h-64 bg-emerald-900 blob-2 opacity-15"></div>

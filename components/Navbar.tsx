@@ -63,16 +63,16 @@ export default function Navbar() {
       }`}>
         <div className={`transition-all duration-500 ${
           isScrolled
-            ? 'max-w-6xl mt-8 mx-auto lg:px-0  rounded-2xl bg-gray-900/95 backdrop-blur-sm shadow-2xl border border-gray-800'
+            ? 'max-w-4xl mt-8 mx-auto lg:px-0 rounded-2xl bg-gray-900/95 backdrop-blur-sm shadow-2xl border border-gray-800'
             : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6'
         }`}>
           <div className={`flex items-center justify-between transition-all duration-500 ${
             isScrolled ? 'h-14 px-6' : 'h-16'
           }`}>
-            
 
-            {/* Desktop Navigation - Centered */}
-            <div className="hidden md:flex flex-1 justify-center">
+
+            {/* Desktop Navigation - Left Aligned */}
+            <div className="hidden md:flex flex-1">
               <div className="flex items-baseline space-x-4">
                 {/* Pages Dropdown */}
                 <div className="relative">

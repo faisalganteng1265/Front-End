@@ -31,8 +31,8 @@ export default function HeroSection() {
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         <motion.h1
-          className="text-[20vw] md:text-[16vw] lg:text-[14vw] font-black text-white leading-none tracking-tighter relative z-10 mt-8 md:mt-12 lg:mt-16"
-          style={{ fontFamily: 'Agency FB, sans-serif' }}
+          className="text-[20vw] md:text-[16vw] lg:text-[14vw] font-black text-white leading-none relative z-10 mt-8 md:mt-12 lg:mt-16"
+          style={{ fontFamily: 'Agency FB, sans-serif', letterSpacing: '0.05em' }}
           animate={{
             opacity: [0.9, 1, 0.9]
           }}
