@@ -53,7 +53,7 @@ export default function HeroSection() {
           transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
         >
           <img
-            src="/LOGOSVG.svg"
+            src="/AICAMPUS1.png"
             alt="AI Campus Logo"
             className="w-[60vw] md:w-[50vw] lg:w-[35vw] max-w-2xl"
           />
