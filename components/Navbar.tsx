@@ -9,12 +9,77 @@ import { useNavbarVisibility } from '@/contexts/NavbarVisibilityContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useUserProfileHover } from '@/contexts/UserProfileHoverContext';
 
+interface LogoutConfirmModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}
+
+function LogoutConfirmModal({ isOpen, onClose, onConfirm }: LogoutConfirmModalProps) {
+  if (!isOpen) return null;
+
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200"
+      onClick={handleOverlayClick}
+    >
+      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700/50 relative overflow-hidden animate-in zoom-in duration-200">
+        {/* Subtle gradient accent */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700"></div>
+
+        <div className="p-8">
+          {/* Icon */}
+          <div className="flex justify-center mb-6">
+            <div className="relative">
+              <div className="absolute inset-0 blur-xl bg-gray-600/30 rounded-full"></div>
+              <div className="relative bg-gray-800/80 backdrop-blur-md rounded-full p-4 border border-gray-700/50">
+                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Title and message */}
+          <h3 className="text-2xl font-bold text-white mb-2 text-center">Logout Confirmation</h3>
+          <p className="text-gray-400 text-sm mb-8 text-center">
+            Are you sure you want to logout from your account?
+          </p>
+
+          {/* Action buttons */}
+          <div className="flex gap-3">
+            <button
+              onClick={onClose}
+              className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold py-3 px-4 rounded-lg transition-all hover:shadow-lg hover:shadow-gray-900/50 border border-gray-700/50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              className="flex-1 bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 text-white font-semibold py-3 px-4 rounded-lg transition-all hover:shadow-lg hover:shadow-gray-700/50"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isPagesDropdownOpen, setIsPagesDropdownOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const { user, signOut } = useAuth();
   const { isNavbarVisible: isNavbarVisibleFromContext } = useNavbarVisibility();
   const { language, setLanguage, t } = useLanguage();
@@ -52,12 +117,15 @@ export default function Navbar() {
 
   const handleLoginClick = () => {
     if (user) {
-      if (confirm('Are you sure you want to logout?')) {
-        signOut();
-      }
+      setIsLogoutModalOpen(true);
     } else {
       setIsAuthModalOpen(true);
     }
+  };
+
+  const handleLogoutConfirm = () => {
+    signOut();
+    setIsLogoutModalOpen(false);
   };
 
   return (
@@ -265,6 +333,11 @@ export default function Navbar() {
       </nav>
 
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+      <LogoutConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleLogoutConfirm}
+      />
     </>
   );
 }
