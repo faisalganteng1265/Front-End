@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { Pie } from 'react-chartjs-2';
 import ParticleBackground from '@/components/ParticleBackground';
+import { Atom } from 'react-loading-indicators';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -55,6 +56,14 @@ export default function SmartTaskManager() {
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'completed'>('all');
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('Memuat data autentikasi...');
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  // AI Assistant State
+  const [showAIModal, setShowAIModal] = useState(false);
+  const [aiResponse, setAiResponse] = useState('');
+  const [isAILoading, setIsAILoading] = useState(false);
+  const [aiAnalysisType, setAiAnalysisType] = useState<'prioritize' | 'estimate'>('prioritize');
 
   // Form State
   const [newTask, setNewTask] = useState({
@@ -73,14 +82,34 @@ export default function SmartTaskManager() {
 
 
   // ====================================
-  // Fetch Tasks from Supabase
+  // Initialize: Check Auth & Fetch Tasks
   // ====================================
 
   useEffect(() => {
-    if (user) {
-      fetchTasks();
+    if (loading) {
+      setLoadingMessage('Memuat data autentikasi...');
+      return;
     }
-  }, [user]);
+
+    if (hasInitialized) return;
+
+    const initializeSmartTaskManager = async () => {
+      setHasInitialized(true);
+
+      if (!user) {
+        setLoadingMessage('Kamu belum login. Redirecting...');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+        return;
+      }
+
+      // User is authenticated, fetch tasks
+      await fetchTasks();
+    };
+
+    initializeSmartTaskManager();
+  }, [loading, user, hasInitialized]);
 
   const fetchTasks = async () => {
     if (!user) return;
@@ -193,6 +222,48 @@ export default function SmartTaskManager() {
     } catch (error) {
       console.error('Error deleting task:', error);
       alert('Gagal menghapus tugas. Silakan coba lagi.');
+    }
+  };
+
+  // ====================================
+  // AI Assistant Functions
+  // ====================================
+
+  const handleAIAnalysis = async (type: 'prioritize' | 'estimate') => {
+    if (tasks.length === 0) {
+      alert('Belum ada tugas untuk dianalisis!');
+      return;
+    }
+
+    setAiAnalysisType(type);
+    setShowAIModal(true);
+    setIsAILoading(true);
+    setAiResponse('');
+
+    try {
+      const response = await fetch('/api/tasks/ai-assistant', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tasks,
+          analysisType: type,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Gagal mendapatkan analisis AI');
+      }
+
+      setAiResponse(data.response);
+    } catch (error: any) {
+      console.error('Error getting AI analysis:', error);
+      setAiResponse(`❌ Maaf, terjadi kesalahan: ${error.message}`);
+    } finally {
+      setIsAILoading(false);
     }
   };
 
@@ -424,16 +495,48 @@ export default function SmartTaskManager() {
             </div>
           )}
         </div>
+
+        {/* AI Assistant Buttons */}
+        <div className="bg-gradient-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-purple-500/30">
+          <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
+            <span className="text-lg">🤖</span> AI Assistant
+          </h3>
+          <div className="space-y-2">
+            <button
+              onClick={() => handleAIAnalysis('prioritize')}
+              disabled={stats.pending === 0}
+              className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 flex items-center justify-center gap-2 text-sm"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+              Prioritas Tugas
+            </button>
+            <button
+              onClick={() => handleAIAnalysis('estimate')}
+              disabled={stats.pending === 0}
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/50 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 flex items-center justify-center gap-2 text-sm"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Estimasi Waktu
+            </button>
+          </div>
+          <p className="text-gray-400 text-[10px] mt-3 text-center">
+            AI akan menganalisis tugas-tugas kamu
+          </p>
+        </div>
       </div>
     );
   };
 
-  if (loading || isLoading) {
+  if (loading || isLoading || !hasInitialized) {
     return (
       <div className="flex items-center justify-center h-screen bg-black">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg">Loading...</p>
+          <Atom color="#06b6d4" size="large" />
+          <p className="text-white text-lg mt-6">{loadingMessage}</p>
         </div>
       </div>
     );
@@ -705,6 +808,67 @@ export default function SmartTaskManager() {
           </div>
         </div>
       </div>
+
+      {/* AI Assistant Modal */}
+      {showAIModal && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-gradient-to-br from-purple-900/90 to-blue-900/90 rounded-3xl p-8 max-w-3xl w-full border border-purple-500/50 animate-fade-in shadow-2xl shadow-purple-500/20 max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                <span className="text-3xl">🤖</span>
+                {aiAnalysisType === 'prioritize' ? 'Rekomendasi Prioritas Tugas' : 'Estimasi Waktu Pengerjaan'}
+              </h2>
+              <button
+                onClick={() => setShowAIModal(false)}
+                className="text-gray-300 hover:text-white transition-colors hover:scale-110"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto custom-scrollbar">
+              {isAILoading ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="flex gap-3 mb-6">
+                    <span className="w-4 h-4 bg-purple-400 rounded-full animate-bounce"></span>
+                    <span
+                      className="w-4 h-4 bg-purple-400 rounded-full animate-bounce"
+                      style={{ animationDelay: '0.2s' }}
+                    ></span>
+                    <span
+                      className="w-4 h-4 bg-purple-400 rounded-full animate-bounce"
+                      style={{ animationDelay: '0.4s' }}
+                    ></span>
+                  </div>
+                  <p className="text-white text-lg">AI sedang menganalisis tugas-tugas kamu...</p>
+                  <p className="text-purple-300 text-sm mt-2">Mohon tunggu sebentar</p>
+                </div>
+              ) : (
+                <div className="bg-black/40 rounded-2xl p-6 border border-purple-500/30">
+                  <div className="prose prose-invert max-w-none">
+                    <pre className="whitespace-pre-wrap font-sans text-gray-100 leading-relaxed text-sm">
+                      {aiResponse}
+                    </pre>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {!isAILoading && (
+              <div className="mt-6 pt-4 border-t border-purple-500/30">
+                <button
+                  onClick={() => setShowAIModal(false)}
+                  className="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition-all duration-300 hover:scale-[1.02] border border-white/30"
+                >
+                  Tutup
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Add Task Modal */}
       {showAddModal && (

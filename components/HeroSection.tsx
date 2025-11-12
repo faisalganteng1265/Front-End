@@ -29,29 +29,41 @@ export default function HeroSection() {
       <motion.div
         className="relative z-10 text-center px-6"
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         <motion.h1
-          className="text-[20vw] md:text-[16vw] lg:text-[14vw] font-black text-white leading-none relative z-10 mt-8 md:mt-12 lg:mt-16"
+          className="text-[20vw] md:text-[16vw] lg:text-[14vw] font-black text-white leading-none relative z-10 mt-8 md:mt-12 lg:mt-16 flex justify-center"
           style={{ fontFamily: 'Agency FB, sans-serif', letterSpacing: '0.05em' }}
-          animate={{
-            opacity: [0.9, 1, 0.9]
-          }}
+          initial={{ opacity: 0, y: -30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.3 }}
           transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut"
+            duration: 0.8,
+            ease: "easeOut"
           }}
         >
-          AICAMPUS
+          {"AICAMPUS".split("").map((letter, index) => (
+            <motion.span
+              key={index}
+              className="inline-block cursor-default"
+              whileHover={{
+                y: -20,
+                transition: { duration: 0.3, ease: "easeOut" }
+              }}
+            >
+              {letter}
+            </motion.span>
+          ))}
         </motion.h1>
 
         {/* Logo below with slight overlap */}
         <motion.div
           className="relative -mt-32 md:-mt-40 lg:-mt-48 flex justify-center z-20"
           initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
         >
           <img
@@ -67,7 +79,8 @@ export default function HeroSection() {
       <motion.div
         className="absolute bottom-8 left-8 z-20 max-w-xs md:max-w-sm"
         initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.8, delay: 0.5 }}
       >
         <p className="text-white/90 text-base md:text-lg font-medium tracking-wide mb-2">

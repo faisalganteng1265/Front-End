@@ -239,11 +239,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
         onClick={handleOverlayClick}
       >
-        <div className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl relative overflow-hidden flex flex-col md:flex-row min-h-[600px]">
+        <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl shadow-2xl w-full max-w-5xl relative overflow-hidden flex flex-col md:flex-row min-h-[600px] border border-gray-700/50">
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition-colors z-[60] bg-white/80 backdrop-blur-sm rounded-full p-2 hover:bg-white cursor-pointer"
+            className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-[60] bg-gray-800/80 backdrop-blur-sm rounded-full p-2 hover:bg-gray-700 cursor-pointer"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -252,15 +252,15 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
           {/* Form Panel - Order changes based on panelOrder */}
           <div
-            className={`w-full p-12 flex flex-col justify-center bg-white relative transition-all duration-500 ease-in-out ${
+            className={`w-full p-12 flex flex-col justify-center bg-gradient-to-br from-gray-900 to-gray-800 relative transition-all duration-500 ease-in-out ${
               isTransitioning ? 'md:w-0 opacity-0' : 'md:w-1/2 opacity-100'
             } ${panelOrder === 'register' ? 'md:order-1' : 'md:order-2'}`}
           >
             <div className={`w-full max-w-sm mx-auto transition-opacity duration-200 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
-              <h2 className="text-3xl font-bold text-gray-800 mb-2">
+              <h2 className="text-3xl font-bold text-white mb-2">
                 {displayMode ? 'Login' : 'Registration'}
               </h2>
-              <p className="text-gray-500 text-sm mb-8">
+              <p className="text-gray-400 text-sm mb-8">
                 {displayMode ? 'Welcome back to AICampus!' : 'Join AICampus today'}
               </p>
 
@@ -273,7 +273,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                       type="text"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      className="w-full pl-12 pr-4 py-3.5 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                       placeholder="Username"
                       required={!isLogin}
                     />
@@ -286,7 +286,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     type={isLogin ? 'text' : 'email'}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                     placeholder={isLogin ? 'Email or Username' : 'Email'}
                     required
                   />
@@ -298,7 +298,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                     placeholder="Password"
                     required
                     minLength={6}
@@ -332,10 +332,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               {/* Divider */}
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300"></div>
+                  <div className="w-full border-t border-gray-700"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">OR</span>
+                  <span className="px-2 bg-gradient-to-br from-gray-900 to-gray-800 text-gray-400">OR</span>
                 </div>
               </div>
 
@@ -347,7 +347,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   onClick={handleGoogleSignIn}
                   disabled={loading}
                   title="Continue with Google"
-                  className="bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 p-3.5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md cursor-pointer"
+                  className="bg-gray-800 border-2 border-gray-600 hover:border-gray-500 text-white p-3.5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md cursor-pointer"
                 >
                   <svg className="w-6 h-6" viewBox="0 0 24 24">
                     <path
@@ -375,7 +375,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   onClick={handleGitHubSignIn}
                   disabled={loading}
                   title="Continue with GitHub"
-                  className="bg-gray-900 hover:bg-gray-800 text-white p-3.5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md cursor-pointer"
+                  className="bg-gray-800 border-2 border-gray-600 hover:border-gray-500 text-white p-3.5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md cursor-pointer"
                 >
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />

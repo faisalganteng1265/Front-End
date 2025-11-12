@@ -53,14 +53,29 @@ export default function ChatInterface() {
   const [hasInitialized, setHasInitialized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const answerSectionRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const scrollToAnswer = () => {
+    answerSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  };
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Auto-scroll ke jawaban ketika directAnswer sudah muncul
+  useEffect(() => {
+    if (directAnswer && !isAnswerLoading) {
+      // Delay sedikit untuk memastikan render selesai
+      setTimeout(() => {
+        scrollToAnswer();
+      }, 100);
+    }
+  }, [directAnswer, isAnswerLoading]);
 
   // Auto-fetch university from profile when campus mode is selected
   useEffect(() => {
@@ -544,12 +559,12 @@ export default function ChatInterface() {
             
             {/* Direct Answer Display - Only for Campus Mode */}
             {selectedMode === 'campus' && selectedQuestion && selectedUniversity && (
-              <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
+              <div ref={answerSectionRef} className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
                 <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
                   <Image src="/ICONLAMPU.png" alt="Jawaban" width={24} height={24} className="object-contain" />
                   Jawaban
                 </h3>
-                
+
                 {isAnswerLoading ? (
                   <div className="flex items-center justify-center py-8">
                     <div className="flex gap-2">

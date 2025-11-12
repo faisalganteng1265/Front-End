@@ -100,6 +100,38 @@ export default function FeaturesSection() {
   const resumeFunctionRef = useRef<(() => void) | null>(null);
   const [activeCardIndex, setActiveCardIndex] = useState<number | null>(null);
 
+  // State for title animation
+  const [isTitleVisible, setIsTitleVisible] = useState(false);
+  const titleRef = useRef<HTMLDivElement>(null);
+
+  // Intersection Observer for title animation
+  useEffect(() => {
+    const currentRef = titleRef.current;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Trigger animation when entering viewport
+          setIsTitleVisible(true);
+        } else {
+          // Reset when leaving viewport
+          setIsTitleVisible(false);
+        }
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
+
   const handleSwapTrigger = (swapFn: () => void) => {
     swapFunctionRef.current = swapFn;
   };
@@ -266,11 +298,25 @@ export default function FeaturesSection() {
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-start mb-16">
-          <h2 className="text-5xl md:text-6xl mb-4 text-emerald-400 font-bold" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif', letterSpacing: '-0.02em' }}>
+        <div ref={titleRef} className="text-start mb-16">
+          <h2
+            className={`text-5xl md:text-6xl mb-4 text-emerald-400 font-bold transition-all duration-1000 ease-out ${
+              isTitleVisible
+                ? 'opacity-100 translate-x-0'
+                : 'opacity-0 -translate-x-32'
+            }`}
+            style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif', letterSpacing: '-0.02em' }}
+          >
             {t('features.title')}
           </h2>
-          <p className="text-xl text-gray-300 max-w-2xl" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
+          <p
+            className={`text-xl text-gray-300 max-w-2xl transition-all duration-1000 ease-out ${
+              isTitleVisible
+                ? 'opacity-100 translate-x-0 delay-300'
+                : 'opacity-0 -translate-x-32 delay-0'
+            }`}
+            style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}
+          >
             {t('features.subtitle')}
           </p>
         </div>

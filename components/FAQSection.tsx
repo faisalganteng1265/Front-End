@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import TextType from './TextType';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -192,9 +193,17 @@ export default function FAQSection() {
           <div className="px-8 md:px-16">
             <div className="space-y-0">
               {faqs.map((faq, index) => (
-                <div
+                <motion.div
                   key={index}
                   className="group border-t border-gray-700 last:border-b last:border-gray-700 transition-all duration-300"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.1,
+                    ease: "easeOut"
+                  }}
                 >
                   {/* Question Button */}
                   <button
@@ -241,7 +250,7 @@ export default function FAQSection() {
                       </p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>

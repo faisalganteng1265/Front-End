@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -9,6 +9,38 @@ export default function PeerConnectSection() {
   const [activeFeature, setActiveFeature] = useState(0);
   const [lastClickTime, setLastClickTime] = useState(0);
   const [activeTab, setActiveTab] = useState('group');
+
+  // Animation state for header
+  const [isHeaderVisible, setIsHeaderVisible] = useState(false);
+  const headerRef = useRef<HTMLDivElement>(null);
+
+  // Intersection Observer for header animation
+  useEffect(() => {
+    const currentRef = headerRef.current;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Trigger animation when entering viewport
+          setIsHeaderVisible(true);
+        } else {
+          // Reset when leaving viewport
+          setIsHeaderVisible(false);
+        }
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
 
   const features = [
     {
@@ -109,8 +141,14 @@ export default function PeerConnectSection() {
     <section id="features" className="py-20 px-4 bg-gradient-to-b from-black via-gray-900 to-gray-800">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
-        <div className="text-center mb-12">
-          <h2 className="text-5xl md:text-6xl font-bold mb-4">
+        <div ref={headerRef} className="text-center mb-12">
+          <h2
+            className={`text-5xl md:text-6xl font-bold mb-4 transition-all duration-1000 ease-out ${
+              isHeaderVisible
+                ? 'opacity-100 scale-100 translate-x-0'
+                : 'opacity-0 scale-95 translate-x-10'
+            }`}
+          >
             <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 bg-clip-text text-transparent">
               {currentFeature.id === 'peerconnect' ? 'PeerConnect' :
                currentFeature.id === 'aicampus' ? 'AI Campus Chatbot' :
@@ -119,7 +157,13 @@ export default function PeerConnectSection() {
                currentFeature.id === 'taskmanager' ? 'Task Manager' : 'Project Collaboration'}
             </span>
           </h2>
-          <p className="text-gray-300 text-lg max-w-3xl mx-auto">
+          <p
+            className={`text-gray-300 text-lg max-w-3xl mx-auto transition-all duration-1000 ease-out ${
+              isHeaderVisible
+                ? 'opacity-100 scale-100 translate-x-0 delay-200'
+                : 'opacity-0 scale-95 translate-x-10 delay-0'
+            }`}
+          >
             {currentFeature.id === 'peerconnect' && t('peerconnect.subtitle')}
             {currentFeature.id === 'aicampus' && 'Asisten virtual cerdas untuk menjawab pertanyaan seputar kampus'}
             {currentFeature.id === 'eventreminder' && 'Rekomendasi event kampus yang sesuai dengan minat dan kebutuhanmu'}
