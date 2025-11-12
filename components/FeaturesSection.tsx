@@ -5,6 +5,7 @@ import CardSwap, { Card } from './CardSwap';
 import { useState, useRef, useEffect } from 'react';
 import ElectricBorder from './ElectricBorder';
 import Image from 'next/image';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface StatItemProps {
   end: number;
@@ -93,6 +94,7 @@ function StatItem({ end, label, suffix = '', icon }: StatItemProps) {
 }
 
 export default function FeaturesSection() {
+  const { t } = useLanguage();
   const swapFunctionRef = useRef<(() => void) | null>(null);
   const pauseFunctionRef = useRef<(() => void) | null>(null);
   const resumeFunctionRef = useRef<(() => void) | null>(null);
@@ -266,10 +268,10 @@ export default function FeaturesSection() {
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-start mb-16">
           <h2 className="text-5xl md:text-6xl mb-4 text-emerald-400 font-bold" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif', letterSpacing: '-0.02em' }}>
-            Fitur Unggulan Kami
+            {t('features.title')}
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
-            Temukan berbagai fitur inovatif yang dirancang khusus untuk meningkatkan pengalaman kampus Anda
+            {t('features.subtitle')}
           </p>
         </div>
 
@@ -386,11 +388,11 @@ export default function FeaturesSection() {
 
                   {/* Title with Gradient */}
                   <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-white via-emerald-100 to-white bg-clip-text text-transparent drop-shadow-lg" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
-                    AI Campus Guide Chatbot
+                    {t('features.aiCampusGuide')}
                   </h3>
 
                   <p className="text-white/95 mb-6 leading-relaxed text-base font-medium drop-shadow" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
-                    Tanya apa saja tentang kampus! Dari cara mengisi KRS, lokasi gedung, info dosen, hingga prosedur beasiswa. AI siap membantu 24/7.
+                    {t('features.aiCampusGuideDesc')}
                   </p>
                 </div>
 
@@ -442,11 +444,11 @@ export default function FeaturesSection() {
 
                   {/* Title with Gradient */}
                   <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-white via-emerald-100 to-white bg-clip-text text-transparent drop-shadow-lg" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
-                    Event Recommender
+                    {t('features.eventRecommender')}
                   </h3>
 
                   <p className="text-white/95 mb-6 leading-relaxed text-base font-medium drop-shadow" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
-                    Dapatkan rekomendasi kegiatan yang sesuai dengan minatmu! Seminar, lomba, UKM, volunteering - semua disesuaikan untukmu.
+                    {t('features.eventRecommenderDesc')}
                   </p>
                 </div>
 
@@ -498,11 +500,11 @@ export default function FeaturesSection() {
 
                   {/* Title with Gradient */}
                   <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-white via-emerald-100 to-white bg-clip-text text-transparent drop-shadow-lg" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
-                    Smart Schedule Builder
+                    {t('features.smartSchedule')}
                   </h3>
 
                   <p className="text-white/95 mb-6 leading-relaxed text-base font-medium drop-shadow" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
-                    AI bantu atur jadwal kuliah dan kegiatanmu agar seimbang. Tidak ada lagi bentrok jadwal atau overload kegiatan!
+                    {t('features.smartScheduleDesc')}
                   </p>
                 </div>
 
@@ -553,11 +555,11 @@ export default function FeaturesSection() {
 
                   {/* Title with Gradient */}
                   <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-white via-emerald-100 to-white bg-clip-text text-transparent drop-shadow-lg" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
-                    Peer Connect AI
+                    {t('features.peerConnect')}
                   </h3>
 
                   <p className="text-white/95 mb-6 leading-relaxed text-base font-medium drop-shadow" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
-                    Temukan teman atau mentor dengan minat yang sama! AI mencocokkan kamu dengan orang-orang yang tepat untuk berkembang bersama.
+                    {t('features.peerConnectDesc')}
                   </p>
                 </div>
 
@@ -608,11 +610,11 @@ export default function FeaturesSection() {
 
                   {/* Title with Gradient */}
                   <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-white via-emerald-100 to-white bg-clip-text text-transparent drop-shadow-lg" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
-                    Smart Task Manager
+                    {t('features.taskManager')}
                   </h3>
 
                   <p className="text-white/95 mb-6 leading-relaxed text-base font-medium drop-shadow" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
-                    Kelola tugas dan deadline dengan mudah! AI akan prioritaskan tugasmu dan ingatkan kamu sebelum terlambat.
+                    {t('features.taskManagerDesc')}
                   </p>
                 </div>
 
@@ -663,11 +665,11 @@ export default function FeaturesSection() {
 
                   {/* Title with Gradient */}
                   <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-white via-emerald-100 to-white bg-clip-text text-transparent drop-shadow-lg" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
-                    Project Collaboration
+                    {t('features.projectCollab')}
                   </h3>
 
                   <p className="text-white/95 mb-6 leading-relaxed text-base font-medium drop-shadow" style={{ fontFamily: '"Inter", "Helvetica Neue", "Arial", sans-serif' }}>
-                    Kolaborasi project jadi lebih mudah! Buat tim, bagikan tugas, dan pantau progress bersama dalam satu platform.
+                    {t('features.projectCollabDesc')}
                   </p>
                 </div>
 
@@ -685,10 +687,10 @@ export default function FeaturesSection() {
 
       <div className="max-w-7xl mx-auto relative z-10 pt-30">
         <div className="grid md:grid-cols-4 gap-6">
-          <StatItem end={1000} label="Mahasiswa Aktif" suffix="+" icon="/AKADEMIKICON.png" />
-          <StatItem end={50} label="Event per Bulan" suffix="+" icon="/JADWALICON.png" />
-          <StatItem end={95} label="Kepuasan Pengguna" suffix="%" icon="/BINTANGICON.png" />
-          <StatItem end={24} label="AI Support" suffix="/7" icon="/GEMINIICON.png" />
+          <StatItem end={1000} label={t('stats.activeStudents')} suffix="+" icon="/AKADEMIKICON.png" />
+          <StatItem end={50} label={t('stats.eventsPerMonth')} suffix="+" icon="/JADWALICON.png" />
+          <StatItem end={95} label={t('stats.userSatisfaction')} suffix="%" icon="/BINTANGICON.png" />
+          <StatItem end={24} label={t('stats.aiSupport')} suffix="/7" icon="/GEMINIICON.png" />
         </div>
       </div>
 

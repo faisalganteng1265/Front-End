@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function PeerConnectSection() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('group');
   const [lastClickTime, setLastClickTime] = useState(0);
 
@@ -38,11 +40,11 @@ export default function PeerConnectSection() {
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 bg-clip-text text-transparent">
-              PeerConnect
+              {t('peerconnect.title')}
             </span>
           </h2>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-            Terhubung dengan teman sekelas dan dosen melalui platform komunikasi terintegrasi kami
+            {t('peerconnect.subtitle')}
           </p>
         </div>
 
@@ -58,7 +60,7 @@ export default function PeerConnectSection() {
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
-                  Grup Chat
+                  {t('peerconnect.groupChat')}
                 </button>
                 <button
                   onClick={() => handleTabClick('private')}
@@ -68,7 +70,7 @@ export default function PeerConnectSection() {
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
-                  Private Chat
+                  {t('peerconnect.privateChat')}
                 </button>
                 <button
                   onClick={() => handleTabClick('call')}
@@ -78,7 +80,7 @@ export default function PeerConnectSection() {
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
-                  Video Call
+                  {t('peerconnect.videoCall')}
                 </button>
               </div>
             </div>
@@ -86,22 +88,22 @@ export default function PeerConnectSection() {
             <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700">
               {activeTab === 'group' && (
                 <div>
-                  <h3 className="text-2xl font-bold text-white mb-4">Grup Chat</h3>
+                  <h3 className="text-2xl font-bold text-white mb-4">{t('peerconnect.groupChat')}</h3>
                   <p className="text-gray-300 mb-4">
-                    Buat dan bergabung dengan grup chat untuk diskusi kelas, proyek kelompok, atau komunitas kampus.
+                    {t('peerconnect.groupChatDesc')}
                   </p>
                   <ul className="space-y-2 text-gray-300">
                     <li className="flex items-start">
                       <span className="text-emerald-400 mr-2">✓</span>
-                      <span>Bagikan file dan dokumen penting</span>
+                      <span>{t('peerconnect.groupFeature1')}</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-emerald-400 mr-2">✓</span>
-                      <span>Diskusi real-time dengan anggota grup</span>
+                      <span>{t('peerconnect.groupFeature2')}</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-emerald-400 mr-2">✓</span>
-                      <span>Notifikasi untuk pesan penting</span>
+                      <span>{t('peerconnect.groupFeature3')}</span>
                     </li>
                   </ul>
                 </div>
@@ -109,22 +111,22 @@ export default function PeerConnectSection() {
 
               {activeTab === 'private' && (
                 <div>
-                  <h3 className="text-2xl font-bold text-white mb-4">Private Chat</h3>
+                  <h3 className="text-2xl font-bold text-white mb-4">{t('peerconnect.privateChat')}</h3>
                   <p className="text-gray-300 mb-4">
-                    Komunikasi langsung dan pribadi dengan teman sekelas atau dosen untuk diskusi yang lebih fokus.
+                    {t('peerconnect.privateChatDesc')}
                   </p>
                   <ul className="space-y-2 text-gray-300">
                     <li className="flex items-start">
                       <span className="text-emerald-400 mr-2">✓</span>
-                      <span>Pesan end-to-end encryption</span>
+                      <span>{t('peerconnect.privateFeature1')}</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-emerald-400 mr-2">✓</span>
-                      <span>Bagikan file dan media secara aman</span>
+                      <span>{t('peerconnect.privateFeature2')}</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-emerald-400 mr-2">✓</span>
-                      <span>Status online untuk melihat ketersediaan</span>
+                      <span>{t('peerconnect.privateFeature3')}</span>
                     </li>
                   </ul>
                 </div>
@@ -132,22 +134,22 @@ export default function PeerConnectSection() {
 
               {activeTab === 'call' && (
                 <div>
-                  <h3 className="text-2xl font-bold text-white mb-4">Video Call</h3>
+                  <h3 className="text-2xl font-bold text-white mb-4">{t('peerconnect.videoCall')}</h3>
                   <p className="text-gray-300 mb-4">
-                    Lakukan panggilan video dengan kualitas tinggi untuk meeting online, konsultasi, atau belajar bersama.
+                    {t('peerconnect.videoCallDesc')}
                   </p>
                   <ul className="space-y-2 text-gray-300">
                     <li className="flex items-start">
                       <span className="text-emerald-400 mr-2">✓</span>
-                      <span>Video HD dengan audio jernih</span>
+                      <span>{t('peerconnect.videoFeature1')}</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-emerald-400 mr-2">✓</span>
-                      <span>Screen sharing untuk presentasi</span>
+                      <span>{t('peerconnect.videoFeature2')}</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-emerald-400 mr-2">✓</span>
-                      <span>Record meeting untuk dokumentasi</span>
+                      <span>{t('peerconnect.videoFeature3')}</span>
                     </li>
                   </ul>
                 </div>

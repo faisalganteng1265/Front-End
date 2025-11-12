@@ -2,8 +2,10 @@
 
 import { motion } from 'framer-motion';
 import Galaxy from './Galaxy';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function HeroSection() {
+  const { t } = useLanguage();
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-black to-gray-900">
@@ -69,16 +71,16 @@ export default function HeroSection() {
         transition={{ duration: 0.8, delay: 0.5 }}
       >
         <p className="text-white/90 text-base md:text-lg font-medium tracking-wide mb-2">
-          Empowering Students with AI
+          {t('hero.empowering')}
         </p>
         <p className="text-white/70 text-sm md:text-base font-light mb-1">
-          Your Smart Campus Companion
+          {t('hero.companion')}
         </p>
         <p className="text-white/60 text-xs md:text-sm font-light mb-1">
-          Navigate Campus Life Seamlessly
+          {t('hero.navigate')}
         </p>
         <p className="text-white/50 text-xs md:text-sm font-light">
-          Learn Smarter, Connect Better, Achieve More
+          {t('hero.learn')}
         </p>
       </motion.div>
 

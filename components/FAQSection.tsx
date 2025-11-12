@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import TextType from './TextType';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface FAQItem {
   question: string;
@@ -13,47 +14,46 @@ interface Message {
   content: string;
 }
 
-const faqs: FAQItem[] = [
+const getFAQs = (t: (key: string) => string): FAQItem[] => [
   {
-    question: 'Apakah saya harus login untuk menggunakan fitur-fitur AICAMPUS?',
-    answer: 'Ya, Anda perlu membuat akun dan login untuk menggunakan semua fitur AICAMPUS. Proses registrasi sangat mudah dan cepat - cukup gunakan email kampus Anda atau login dengan akun Google. Setelah login, Anda bisa langsung menikmati semua fitur seperti AI Campus Guide, Event Recommender, Smart Schedule Builder, dan lainnya.',
+    question: t('faq.q1'),
+    answer: t('faq.a1'),
   },
   {
-    question: 'Bagaimana cara menggunakan fitur AI Campus Guide?',
-    answer: 'Setelah login dan atur ptofile dimana Anda memasukan asal universtas atau bisa langsung masuk tanpa mengatur profile, klik page "AI Campus Guide" di dashboard. klik pertanyaan Anda tentang kampus atau bisa menannyakan selain yang ada pada pilihan di mode general, lalu AI akan memberikan jawaban yang akurat.',
+    question: t('faq.q2'),
+    answer: t('faq.a2'),
   },
   {
-    question: 'Bagaimana cara menggunakan Smart Schedule Builder?',
-    answer: 'Klik menu "Smart Schedule Builder", lalu masukkan mata kuliah dan kegiatan Anda dengan menekan tombol "Jadwal Kuliah" atau "Kegiatan Lain". Isi detail seperti nama, hari, dan waktu. Setelah selesai menambahkan semua jadwal, klik "Generate Jadwal Optimal" dan AI akan menyusun jadwal terbaik yang menghindari bentrok dan memaksimalkan waktu istirahat Anda. ini juga telah ter integrasi dengan google kalender. ',
+    question: t('faq.q3'),
+    answer: t('faq.a3'),
   },
   {
-    question: 'Bagaimana cara menggunakan Event Recommender?',
-    answer: 'Buka menu "Event Recommender" di dashboard. Pertama kali, Anda di perlihatkan event event yang ada, tetapi apabila anda ingin mengikuti event tertentu maka anda dapat menggunakan filter yang ada di bagian sebelah kiri. Setelah itu, sistem akan otomatis merekomendasikan event yang sesuai. Anda bisa mendaftar langsung, atau melihat detail event seperti waktu, lokasi, dan persyaratan.',
+    question: t('faq.q4'),
+    answer: t('faq.a4'),
   },
   {
-    question: 'Bagaimana cara menggunakan Peer Connect AI?',
-    answer: 'Masuk ke menu "Peer Connect AI" dan lengkapi profil Anda (jurusan, minat, skills, tujuan). AI akan mencocokkan Anda dengan mahasiswa atau mentor yang compatible. Anda bisa melihat profil match, mengirim request connect, dan mulai berkomunikasi. Fitur ini sangat berguna untuk mencari study partner atau mentor untuk bimbingan karir juga dapat menggunakan video call.',
-  },
-   {
-    question: 'Bagaimana cara menggunakan Smart Task Manager?',
-    answer: 'Buka menu "Smart Task Manager" dan tambahkan tugas-tugas Anda dengan deadline masing-masing. AI akan otomatis memprioritaskan tugas berdasarkan tingkat urgensi dan deadline. Anda akan mendapat notifikasi reminder sebelum deadline, dan bisa tracking progress tugas dalam satu dashboard yang mudah dipahami.',
+    question: t('faq.q5'),
+    answer: t('faq.a5'),
   },
   {
-    question: 'Bagaimana cara menggunakan Project Collaboration?',
-    answer: 'Klik "Project Collaboration", buat project baru, dan undang anggota tim Anda. Anda bisa assign task ke masing-masing anggota, upload file project, melakukan real-time collaboration, dan tracking progress project. ',
+    question: t('faq.q6'),
+    answer: t('faq.a6'),
   },
   {
-    question: 'Apakah AI Campus Guide bisa menjawab semua pertanyaan tentang kampus?',
-    answer: 'Ya! AI Campus Guide kami dirancang untuk menjawab berbagai pertanyaan seputar kehidupan kampus, mulai dari cara mengisi KRS, lokasi gedung, info dosen, prosedur beasiswa, jadwal kuliah, hingga informasi UKM. AI kami terus belajar dan diperbarui untuk memberikan jawaban yang akurat dan relevan.',
-  },
-
-  {
-    question: 'Apakah data pribadi saya aman?',
-    answer: 'Keamanan data Anda adalah prioritas utama kami. Semua informasi pribadi dienkripsi dan disimpan dengan standar keamanan tingkat enterprise. Kami tidak akan membagikan data Anda kepada pihak ketiga tanpa izin Anda. Platform kami juga mematuhi regulasi perlindungan data yang berlaku.',
+    question: t('faq.q7'),
+    answer: t('faq.a7'),
   },
   {
-    question: 'Apakah layanan ini berbayar?',
-    answer: 'Kami menyediakan paket gratis dengan fitur dasar yang sudah sangat lengkap untuk mendukung kehidupan kampus Anda. Untuk fitur premium seperti mentoring prioritas, analitik mendalam, dan rekomendasi yang lebih personal, tersedia paket berlangganan dengan harga terjangkau khusus untuk mahasiswa.',
+    question: t('faq.q8'),
+    answer: t('faq.a8'),
+  },
+  {
+    question: t('faq.q9'),
+    answer: t('faq.a9'),
+  },
+  {
+    question: t('faq.q10'),
+    answer: t('faq.a10'),
   },
 ];
 
@@ -65,18 +65,26 @@ const quickQuestions = [
 ];
 
 export default function FAQSection() {
+  const { t } = useLanguage();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'assistant',
-      content: 'Halo! Saya AI Assistant untuk aplikasi web AICAMPUS. Saya siap membantu menjawab pertanyaan seputar aplikasi AICAMPUS. Silakan pilih pertanyaan cepat di bawah atau ketik pertanyaan Anda sendiri!',
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  
+  const faqs = getFAQs(t);
+
+  // Initialize welcome message when language changes
+  useEffect(() => {
+    setMessages([
+      {
+        role: 'assistant',
+        content: t('faq.welcome'),
+      },
+    ]);
+  }, [t]);
 
   // Detect when this section becomes visible
   useEffect(() => {
@@ -165,7 +173,7 @@ export default function FAQSection() {
         {/* Title */}
         <div className="text-center mb-16 px-8">
           <TextType
-            text="FAQs"
+            text={t('faq.title')}
             as="h2"
             className="text-5xl md:text-6xl mb-8 text-white"
             style={{ fontFamily: '"Agency FB", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif', letterSpacing: '0.02em' }}

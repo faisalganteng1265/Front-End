@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { GoogleCalendarProvider } from "@/context/GoogleCalendarContext";
 import { NavbarVisibilityProvider } from "@/contexts/NavbarVisibilityContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,13 +44,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NavbarVisibilityProvider>
-          <AuthProvider>
-            <GoogleCalendarProvider>
-              {children}
-            </GoogleCalendarProvider>
-          </AuthProvider>
-        </NavbarVisibilityProvider>
+        <LanguageProvider>
+          <NavbarVisibilityProvider>
+            <AuthProvider>
+              <GoogleCalendarProvider>
+                {children}
+              </GoogleCalendarProvider>
+            </AuthProvider>
+          </NavbarVisibilityProvider>
+        </LanguageProvider>
       </body>
     </html>
   );
