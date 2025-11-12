@@ -56,13 +56,13 @@ function LogoutConfirmModal({ isOpen, onClose, onConfirm }: LogoutConfirmModalPr
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold py-3 px-4 rounded-lg transition-all hover:shadow-lg hover:shadow-gray-900/50 border border-gray-700/50"
+              className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold py-3 px-4 rounded-lg transition-all hover:shadow-lg hover:shadow-gray-900/50 border border-gray-700/50 cursor-pointer"
             >
               Cancel
             </button>
             <button
               onClick={onConfirm}
-              className="flex-1 bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 text-white font-semibold py-3 px-4 rounded-lg transition-all hover:shadow-lg hover:shadow-gray-700/50"
+              className="flex-1 bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 text-white font-semibold py-3 px-4 rounded-lg transition-all hover:shadow-lg hover:shadow-gray-700/50 cursor-pointer"
             >
               Logout
             </button>

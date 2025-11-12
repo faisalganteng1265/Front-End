@@ -41,7 +41,7 @@ function SuccessPopup({ message, onClose }: SuccessPopupProps) {
           {/* Close button */}
           <button
             onClick={onClose}
-            className="w-full bg-gradient-to-r from-green-500 to-lime-500 hover:from-green-600 hover:to-lime-600 text-white font-bold py-3 px-4 rounded-lg transition-all hover:shadow-lg hover:shadow-green-500/50 hover:scale-105"
+            className="w-full bg-gradient-to-r from-green-500 to-lime-500 hover:from-green-600 hover:to-lime-600 text-white font-bold py-3 px-4 rounded-lg transition-all hover:shadow-lg hover:shadow-green-500/50 hover:scale-105 cursor-pointer"
           >
             Got it!
           </button>
@@ -243,7 +243,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition-colors z-[60] bg-white/80 backdrop-blur-sm rounded-full p-2 hover:bg-white"
+            className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition-colors z-[60] bg-white/80 backdrop-blur-sm rounded-full p-2 hover:bg-white cursor-pointer"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -305,16 +305,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   />
                 </div>
 
-                {isLogin && (
-                  <div className="flex justify-end">
-                    <button
-                      type="button"
-                      className="text-sm text-green-500 hover:text-green-600 font-medium transition-colors"
-                    >
-                      Forgot Password?
-                    </button>
-                  </div>
-                )}
+            
 
                 {error && (
                   <div className="bg-red-50 border border-red-200 rounded-lg p-3">
@@ -325,7 +316,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-green-500 to-lime-500 hover:from-green-600 hover:to-lime-600 text-white font-bold py-3.5 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:shadow-green-500/30 flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-green-500 to-lime-500 hover:from-green-600 hover:to-lime-600 text-white font-bold py-3.5 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:shadow-green-500/30 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {loading ? (
                     <>
@@ -356,7 +347,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   onClick={handleGoogleSignIn}
                   disabled={loading}
                   title="Continue with Google"
-                  className="bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 p-3.5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md"
+                  className="bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 p-3.5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md cursor-pointer"
                 >
                   <svg className="w-6 h-6" viewBox="0 0 24 24">
                     <path
@@ -384,7 +375,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   onClick={handleGitHubSignIn}
                   disabled={loading}
                   title="Continue with GitHub"
-                  className="bg-gray-900 hover:bg-gray-800 text-white p-3.5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md"
+                  className="bg-gray-900 hover:bg-gray-800 text-white p-3.5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md cursor-pointer"
                 >
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
@@ -430,7 +421,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               </p>
               <button
                 onClick={handleModeSwitch}
-                className="px-8 py-3 border-2 border-white text-white rounded-full hover:bg-white hover:text-green-500 transition-all duration-300 font-medium"
+                className="px-8 py-3 border-2 border-white text-white rounded-full hover:bg-white hover:text-green-500 transition-all duration-300 font-medium cursor-pointer"
               >
                 {displayMode ? 'Register' : 'Login'}
               </button>
