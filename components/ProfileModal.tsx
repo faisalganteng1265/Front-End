@@ -355,7 +355,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 className="w-12 h-12 object-contain"
               />
             </div>
-            <h2 className="text-3xl font-bold text-white">Edit Profile</h2>
+            <h2 className="text-3xl font-bold text-white">My Profile</h2>
           </div>
 
           {/* Tab Switcher */}

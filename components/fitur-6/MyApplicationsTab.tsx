@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react';
 import { getMyApplications } from '@/lib/supabase/projects';
 import type { ProjectApplication } from '@/types/projects';
 import { Loader2, Calendar, Briefcase, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface MyApplicationsTabProps {
   userId: string;
 }
 
 export default function MyApplicationsTab({ userId }: MyApplicationsTabProps) {
+  const { t } = useLanguage();
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,8 +46,8 @@ export default function MyApplicationsTab({ userId }: MyApplicationsTabProps) {
     return (
       <div className="text-center py-20">
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-12 border border-white/20">
-          <p className="text-xl text-gray-300">Anda belum apply ke project manapun</p>
-          <p className="text-gray-400 mt-2">Mulai eksplorasi dan apply ke project yang menarik!</p>
+          <p className="text-xl text-gray-300">{t('projects.empty.noApplications')}</p>
+          <p className="text-gray-400 mt-2">{t('projects.empty.noApplicationsDesc')}</p>
         </div>
       </div>
     );
@@ -84,10 +86,10 @@ export default function MyApplicationsTab({ userId }: MyApplicationsTabProps) {
               }`}
             >
               {application.status === 'accepted'
-                ? 'Accepted'
+                ? t('projects.manage.accepted')
                 : application.status === 'rejected'
-                ? 'Rejected'
-                : 'Pending'}
+                ? t('projects.manage.rejected')
+                : t('projects.manage.pending')}
             </span>
           </div>
 
@@ -111,7 +113,7 @@ export default function MyApplicationsTab({ userId }: MyApplicationsTabProps) {
             <div className="bg-white/5 rounded-lg p-3">
               <div className="flex items-center text-gray-400 text-xs mb-1">
                 <Calendar className="w-3 h-3 mr-1" />
-                <span>Applied</span>
+                <span>{t('projects.labels.applied')}</span>
               </div>
               <p className="text-white text-sm font-semibold">
                 {new Date(application.created_at).toLocaleDateString('id-ID')}
@@ -120,7 +122,7 @@ export default function MyApplicationsTab({ userId }: MyApplicationsTabProps) {
             <div className="bg-white/5 rounded-lg p-3">
               <div className="flex items-center text-gray-400 text-xs mb-1">
                 <Clock className="w-3 h-3 mr-1" />
-                <span>Project Status</span>
+                <span>{t('projects.labels.projectStatus')}</span>
               </div>
               <p className="text-white text-sm font-semibold capitalize">
                 {application.project?.status?.replace('_', ' ')}
@@ -129,7 +131,7 @@ export default function MyApplicationsTab({ userId }: MyApplicationsTabProps) {
             <div className="bg-white/5 rounded-lg p-3">
               <div className="flex items-center text-gray-400 text-xs mb-1">
                 <Briefcase className="w-3 h-3 mr-1" />
-                <span>Initiator</span>
+                <span>{t('projects.labels.initiator')}</span>
               </div>
               <p className="text-white text-sm font-semibold truncate">
                 {application.project?.initiator?.username ||
@@ -143,19 +145,19 @@ export default function MyApplicationsTab({ userId }: MyApplicationsTabProps) {
           {application.status === 'accepted' && (
             <div className="flex items-center text-green-300 text-sm bg-green-900/30 rounded-lg p-3">
               <CheckCircle className="w-5 h-5 mr-2" />
-              <span>Selamat! Aplikasi Anda diterima. Anda sekarang bagian dari project ini.</span>
+              <span>{t('projects.application.accepted')}</span>
             </div>
           )}
           {application.status === 'rejected' && (
             <div className="flex items-center text-red-300 text-sm bg-red-900/30 rounded-lg p-3">
               <XCircle className="w-5 h-5 mr-2" />
-              <span>Aplikasi Anda ditolak. Jangan berkecil hati, coba apply ke project lain!</span>
+              <span>{t('projects.application.rejected')}</span>
             </div>
           )}
           {application.status === 'pending' && (
             <div className="flex items-center text-yellow-300 text-sm bg-yellow-900/30 rounded-lg p-3">
               <Clock className="w-5 h-5 mr-2" />
-              <span>Aplikasi Anda sedang direview oleh initiator project.</span>
+              <span>{t('projects.application.pending')}</span>
             </div>
           )}
         </div>

@@ -6,6 +6,7 @@ import type { Project } from '@/types/projects';
 import ProjectCard from './ProjectCard';
 import ProjectDetailModal from './ProjectDetailModal';
 import { Loader2 } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface MyProjectsTabProps {
   userId: string;
@@ -13,6 +14,7 @@ interface MyProjectsTabProps {
 }
 
 export default function MyProjectsTab({ userId, onRefresh }: MyProjectsTabProps) {
+  const { t } = useLanguage();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -45,8 +47,8 @@ export default function MyProjectsTab({ userId, onRefresh }: MyProjectsTabProps)
     return (
       <div className="text-center py-20">
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-12 border border-white/20">
-          <p className="text-xl text-gray-300">Anda belum membuat project</p>
-          <p className="text-gray-400 mt-2">Mulai buat project pertama Anda!</p>
+          <p className="text-xl text-gray-300">{t('projects.empty.noMyProjects')}</p>
+          <p className="text-gray-400 mt-2">{t('projects.empty.noMyProjectsDesc')}</p>
         </div>
       </div>
     );

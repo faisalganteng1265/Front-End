@@ -4,11 +4,38 @@ import { useState } from 'react';
 import SmartTaskManager from '@/components/SmartTaskManager';
 import StaggeredMenu from '@/components/StaggeredMenu';
 import Particles from '@/components/Particles';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Fitur5Page() {
+  const { language, setLanguage } = useLanguage();
+
   return (
     <div className="relative min-h-screen bg-black overflow-hidden">
       <Particles />
+
+      {/* Language Toggle Buttons */}
+      <div className="fixed top-8 right-80 z-[9999] flex gap-2">
+        <button
+          onClick={() => setLanguage('id')}
+          className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${
+            language === 'id'
+              ? 'bg-white text-black shadow-lg'
+              : 'bg-gray-800 text-white hover:bg-gray-700'
+          }`}
+        >
+          ID
+        </button>
+        <button
+          onClick={() => setLanguage('en')}
+          className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${
+            language === 'en'
+              ? 'bg-white text-black shadow-lg'
+              : 'bg-gray-800 text-white hover:bg-gray-700'
+          }`}
+        >
+          EN
+        </button>
+      </div>
 
       {/* Staggered Menu Navigation */}
       <StaggeredMenu

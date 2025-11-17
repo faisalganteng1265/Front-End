@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/lib/supabase';
 import { Pie } from 'react-chartjs-2';
 import ParticleBackground from '@/components/ParticleBackground';
@@ -49,6 +50,7 @@ interface Task {
 
 export default function SmartTaskManager() {
   const { user, loading } = useAuth();
+  const { t } = useLanguage();
 
   // Task State
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -57,7 +59,7 @@ export default function SmartTaskManager() {
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'completed'>('all');
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
-  const [loadingMessage, setLoadingMessage] = useState('Memuat data autentikasi...');
+  const [loadingMessage, setLoadingMessage] = useState(t('tasks.loading.auth'));
   const [hasInitialized, setHasInitialized] = useState(false);
 
   // AI Assistant State
@@ -88,7 +90,7 @@ export default function SmartTaskManager() {
 
   useEffect(() => {
     if (loading) {
-      setLoadingMessage('Memuat data autentikasi...');
+      setLoadingMessage(t('tasks.loading.auth'));
       return;
     }
 
@@ -98,7 +100,7 @@ export default function SmartTaskManager() {
       setHasInitialized(true);
 
       if (!user) {
-        setLoadingMessage('Kamu belum login. Redirecting...');
+        setLoadingMessage(t('tasks.loading.data'));
         setTimeout(() => {
           window.location.href = '/';
         }, 2000);
@@ -110,7 +112,7 @@ export default function SmartTaskManager() {
     };
 
     initializeSmartTaskManager();
-  }, [loading, user, hasInitialized]);
+  }, [loading, user, hasInitialized, t]);
 
   const fetchTasks = async () => {
     if (!user) return;
@@ -175,7 +177,7 @@ export default function SmartTaskManager() {
       });
     } catch (error) {
       console.error('Error adding task:', error);
-      alert('Gagal menambahkan tugas. Silakan coba lagi.');
+      alert(t('tasks.alerts.addError'));
       // Fallback: fetch all tasks again
       await fetchTasks();
     }
@@ -203,7 +205,7 @@ export default function SmartTaskManager() {
       );
     } catch (error) {
       console.error('Error toggling task:', error);
-      alert('Gagal mengubah status tugas. Silakan coba lagi.');
+      alert(t('tasks.alerts.updateError'));
     }
   };
 
@@ -222,7 +224,7 @@ export default function SmartTaskManager() {
       setTasks(prev => prev.filter(task => task.id !== taskId));
     } catch (error) {
       console.error('Error deleting task:', error);
-      alert('Gagal menghapus tugas. Silakan coba lagi.');
+      alert(t('tasks.alerts.deleteError'));
     }
   };
 
@@ -232,7 +234,7 @@ export default function SmartTaskManager() {
 
   const handleAIAnalysis = async (type: 'prioritize' | 'estimate') => {
     if (tasks.length === 0) {
-      alert('Belum ada tugas untuk dianalisis!');
+      alert(t('tasks.ai.noTasks'));
       return;
     }
 
@@ -256,13 +258,13 @@ export default function SmartTaskManager() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Gagal mendapatkan analisis AI');
+        throw new Error(data.error || t('tasks.errors.fetch'));
       }
 
       setAiResponse(data.response);
     } catch (error: any) {
       console.error('Error getting AI analysis:', error);
-      setAiResponse(`❌ Maaf, terjadi kesalahan: ${error.message}`);
+      setAiResponse(`❌ ${t('tasks.ai.error')}: ${error.message}`);
     } finally {
       setIsAILoading(false);
     }
@@ -309,7 +311,7 @@ export default function SmartTaskManager() {
   const renderStatistics = () => {
     // Prepare data for pie chart
     const pieChartData = {
-      labels: ['Selesai', 'Pending', 'Terlambat'],
+      labels: [t('tasks.chart.completed'), t('tasks.chart.pending'), t('tasks.chart.overdue')],
       datasets: [
         {
           data: [stats.completed, stats.pending, stats.overdue],
@@ -356,6 +358,9 @@ export default function SmartTaskManager() {
 
     return (
       <div className="space-y-4">
+        {/* Statistik Header */}
+        <h2 className="text-2xl font-bold text-white">{t('tasks.stats.statistics')}</h2>
+
         {/* Stats Cards - 4 boxes in single row */}
         <div className="grid grid-cols-4 gap-2">
           {/* Total - Blue Transparent */}
@@ -370,7 +375,7 @@ export default function SmartTaskManager() {
               <svg className="w-5 h-5 text-blue-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
-              <h3 className="text-blue-300 text-[10px] font-semibold mb-0.5">Total</h3>
+              <h3 className="text-blue-300 text-[10px] font-semibold mb-0.5">{t('tasks.stats.total')}</h3>
               <p className="text-xl font-bold text-white">{stats.total}</p>
             </div>
           </button>
@@ -386,7 +391,7 @@ export default function SmartTaskManager() {
               <svg className="w-5 h-5 text-green-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <h3 className="text-green-300 text-[10px] font-semibold mb-0.5">Selesai</h3>
+              <h3 className="text-green-300 text-[10px] font-semibold mb-0.5">{t('tasks.stats.completed')}</h3>
               <p className="text-xl font-bold text-white">{stats.completed}</p>
             </div>
           </button>
@@ -402,7 +407,7 @@ export default function SmartTaskManager() {
               <svg className="w-5 h-5 text-yellow-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <h3 className="text-yellow-300 text-[10px] font-semibold mb-0.5">Pending</h3>
+              <h3 className="text-yellow-300 text-[10px] font-semibold mb-0.5">{t('tasks.stats.pending')}</h3>
               <p className="text-xl font-bold text-white">{stats.pending}</p>
             </div>
           </button>
@@ -418,7 +423,7 @@ export default function SmartTaskManager() {
               <svg className="w-5 h-5 text-red-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <h3 className="text-red-300 text-[10px] font-semibold mb-0.5">Terlambat</h3>
+              <h3 className="text-red-300 text-[10px] font-semibold mb-0.5">{t('tasks.stats.overdue')}</h3>
               <p className="text-xl font-bold text-white">{stats.overdue}</p>
             </div>
           </button>
@@ -426,7 +431,7 @@ export default function SmartTaskManager() {
 
         {/* Pie Chart - Black Glassmorphism */}
         <div className="bg-gray-900/40 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-gray-700/50">
-          <h3 className="text-white font-bold text-sm mb-3">Distribusi Tugas</h3>
+          <h3 className="text-white font-bold text-sm mb-3">{t('tasks.chart.distribution')}</h3>
           {stats.total > 0 ? (
             <div className="h-48 flex items-center justify-center">
               <div className="w-40 h-40">
@@ -435,18 +440,18 @@ export default function SmartTaskManager() {
             </div>
           ) : (
             <div className="h-48 flex items-center justify-center">
-              <p className="text-gray-400 text-sm">Belum ada data untuk ditampilkan</p>
+              <p className="text-gray-400 text-sm">{t('tasks.chart.noData')}</p>
             </div>
           )}
         </div>
 
         {/* Progress - Black Glassmorphism */}
         <div className="bg-gray-900/40 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-gray-700/50">
-          <h3 className="text-white font-bold text-sm mb-3">Progress Keseluruhan</h3>
+          <h3 className="text-white font-bold text-sm mb-3">{t('tasks.stats.progress')}</h3>
           <div className="space-y-3">
             <div>
               <div className="flex justify-between text-xs mb-2">
-                <span className="text-gray-300">Completion Rate</span>
+                <span className="text-gray-300">{t('tasks.stats.completionRate')}</span>
                 <span className="text-white font-semibold">
                   {stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0}%
                 </span>
@@ -463,11 +468,11 @@ export default function SmartTaskManager() {
 
         {/* Category Breakdown - Black Glassmorphism */}
         <div className="bg-gray-900/40 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-gray-700/50">
-          <h3 className="text-white font-bold text-sm mb-3">Tugas per Mata Kuliah</h3>
+          <h3 className="text-white font-bold text-sm mb-3">{t('tasks.stats.categoryBreakdown')}</h3>
           {getUniqueCategories().length === 0 ? (
             <div className="text-center py-6">
-              <p className="text-gray-300 text-xs">Belum ada kategori</p>
-              <p className="text-gray-500 text-xs mt-1">Tambahkan tugas untuk melihat statistik</p>
+              <p className="text-gray-300 text-xs">{t('tasks.stats.noCategory')}</p>
+              <p className="text-gray-500 text-xs mt-1">{t('tasks.stats.noCategoryDesc')}</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -497,38 +502,6 @@ export default function SmartTaskManager() {
           )}
         </div>
 
-        {/* AI Assistant Buttons */}
-        <div className="bg-gray-900/40 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-gray-700">
-          <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
-            <Image src="/GEMINIICON.png" alt="AI Assistant" width={24} height={24} className="object-contain" />
-            AI Assistant
-          </h3>
-          <div className="space-y-2">
-            <button
-              onClick={() => handleAIAnalysis('prioritize')}
-              disabled={stats.pending === 0}
-              className="w-full bg-gray-300 hover:bg-white text-purple-600 py-3 px-4 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 flex items-center justify-center gap-2 text-sm"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-              </svg>
-              Prioritas Tugas
-            </button>
-            <button
-              onClick={() => handleAIAnalysis('estimate')}
-              disabled={stats.pending === 0}
-              className="w-full bg-gray-300 hover:bg-white text-blue-600 py-3 px-4 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/50 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 flex items-center justify-center gap-2 text-sm"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Estimasi Waktu
-            </button>
-          </div>
-          <p className="text-gray-400 text-[10px] mt-3 text-center">
-            AI akan menganalisis tugas-tugas kamu
-          </p>
-        </div>
       </div>
     );
   };
@@ -549,31 +522,30 @@ export default function SmartTaskManager() {
       {/* Particle Background */}
       <ParticleBackground />
 
-      {/* Logo positioned at top-left corner */}
-      <Link href="/" className="absolute top-4 left-4 z-50 hover:opacity-80 transition-opacity cursor-pointer">
-        <Image
-          src="/AICAMPUS.png"
-          alt="AI Campus Logo"
-          width={50}
-          height={50}
-          className="object-contain"
-        />
-      </Link>
-
       {/* Main Content with z-index */}
       <div className="relative z-10 h-screen flex flex-col overflow-hidden">
       {/* Top Headers Row */}
       <div className="flex">
-        {/* Left Header - HEADER */}
-        <div className="w-[70%] bg-black/880 p-4 flex items-center justify-center">
-          <h1 className="text-2xl font-bold text-white text-center">
-            Smart Task Manager
-          </h1>
+        {/* Left Header - HEADER with Logo */}
+        <div className="w-[70%] bg-black/880 p-4 flex items-center justify-start pl-6">
+          <div className="flex items-center gap-3">
+            <Link href="/" className="hover:opacity-80 transition-opacity cursor-pointer">
+              <Image
+                src="/AICAMPUS.png"
+                alt="AI Campus Logo"
+                width={50}
+                height={50}
+                className="object-contain"
+              />
+            </Link>
+            <h1 className="text-2xl font-bold text-white"style={{ textShadow: '0 0 8px rgba(255, 255, 255, 0.97)' }}>
+              {t('tasks.title')}
+            </h1>
+          </div>
         </div>
 
-        {/* Right Header - Statistik */}
-        <div className="w-[30%] bg-black/880 p-4 flex items-center justify-center">
-          <h2 className="text-2xl font-bold text-white">Statistik</h2>
+        {/* Right Header - Empty space for consistency */}
+        <div className="w-[30%] bg-black/880">
         </div>
       </div>
 
@@ -591,7 +563,7 @@ export default function SmartTaskManager() {
                   className="px-6 py-3 rounded-xl font-semibold bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-white/50 hover:bg-gray-700 transition-all duration-300 cursor-pointer flex items-center gap-2"
                 >
                   <Image src="/TASKICON.png" alt="Task" width={20} height={20} className="object-contain" />
-                  {filterCategory === 'all' ? 'Semua Mata Kuliah' : filterCategory}
+                  {filterCategory === 'all' ? t('tasks.filter.category') : filterCategory}
                   <svg className={`w-4 h-4 transition-transform duration-300 ${showFilterDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -601,7 +573,7 @@ export default function SmartTaskManager() {
                 {showFilterDropdown && (
                   <div className="absolute top-full left-0 mt-2 w-[400px] bg-gray-900/95 backdrop-blur-xl border-2 border-gray-700/50 rounded-2xl shadow-2xl z-50 p-6">
                     <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
-                      <Image src="/TASKICON.png" alt="Task" width={20} height={20} className="object-contain" /> Pilih Mata Kuliah
+                      <Image src="/TASKICON.png" alt="Task" width={20} height={20} className="object-contain" /> {t('tasks.filter.selectCategory')}
                     </h3>
                     <div className="space-y-2 max-h-[400px] overflow-y-auto custom-scrollbar">
                       <button
@@ -615,8 +587,8 @@ export default function SmartTaskManager() {
                             : 'bg-gray-800/50 border-gray-700/50 text-gray-300 hover:bg-gray-700/50 hover:border-gray-600'
                         }`}
                       >
-                        <div className="font-semibold text-sm">Semua Mata Kuliah</div>
-                        <div className="text-xs text-gray-400 mt-1">Tampilkan semua tugas</div>
+                        <div className="font-semibold text-sm">{t('tasks.filter.category')}</div>
+                        <div className="text-xs text-gray-400 mt-1">{t('tasks.empty.description')}</div>
                       </button>
                       {getUniqueCategories().map((cat) => (
                         <button
@@ -633,7 +605,7 @@ export default function SmartTaskManager() {
                         >
                           <div className="font-semibold text-sm">{cat}</div>
                           <div className="text-xs text-gray-400 mt-1">
-                            {tasks.filter(t => t.category === cat).length} tugas
+                            {tasks.filter(t => t.category === cat).length} {t('tasks.count')}
                           </div>
                         </button>
                       ))}
@@ -652,7 +624,7 @@ export default function SmartTaskManager() {
                       : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-700'
                   }`}
                 >
-                  Semua
+                  {t('tasks.status.all')}
                 </button>
                 <button
                   onClick={() => setFilterStatus('pending')}
@@ -662,7 +634,7 @@ export default function SmartTaskManager() {
                       : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-700'
                   }`}
                 >
-                  Pending
+                  {t('tasks.status.pending')}
                 </button>
                 <button
                   onClick={() => setFilterStatus('completed')}
@@ -672,7 +644,7 @@ export default function SmartTaskManager() {
                       : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-700'
                   }`}
                 >
-                  Selesai
+                  {t('tasks.status.completed')}
                 </button>
               </div>
             </div>
@@ -689,8 +661,8 @@ export default function SmartTaskManager() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Belum Ada Tugas</h3>
-                  <p className="text-gray-400 mb-6">Klik tombol + untuk menambahkan tugas baru</p>
+                  <h3 className="text-2xl font-bold text-white mb-2">{t('tasks.empty.title')}</h3>
+                  <p className="text-gray-400 mb-6">{t('tasks.empty.description')}</p>
                   {/* Tambah Tugas Button - Moved here */}
                   <button
                     onClick={() => setShowAddModal(true)}
@@ -699,7 +671,7 @@ export default function SmartTaskManager() {
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
-                    Tambah Tugas
+                    {t('tasks.buttons.addTask')}
                   </button>
                 </div>
               </div>
@@ -769,7 +741,7 @@ export default function SmartTaskManager() {
                               {task.priority === 'high' && '🔴'}
                               {task.priority === 'medium' && '🟡'}
                               {task.priority === 'low' && '🟢'}
-                              {task.priority.toUpperCase()}
+                              {t(`tasks.priorities.${task.priority}`).toUpperCase()}
                             </span>
 
                             {task.deadline && (
@@ -801,7 +773,7 @@ export default function SmartTaskManager() {
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
-                  Tambah Tugas
+                  {t('tasks.buttons.addTask')}
                 </button>
               </div>
             )}
@@ -823,7 +795,7 @@ export default function SmartTaskManager() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                 <Image src="/GEMINIICON.png" alt="AI Assistant" width={32} height={32} className="object-contain" />
-                {aiAnalysisType === 'prioritize' ? 'Rekomendasi Prioritas Tugas' : 'Estimasi Waktu Pengerjaan'}
+                {aiAnalysisType === 'prioritize' ? t('tasks.ai.prioritizeTitle') : t('tasks.ai.estimateTitle')}
               </h2>
               <button
                 onClick={() => setShowAIModal(false)}
@@ -849,8 +821,8 @@ export default function SmartTaskManager() {
                       style={{ animationDelay: '0.4s' }}
                     ></span>
                   </div>
-                  <p className="text-white text-lg">AI sedang menganalisis tugas-tugas kamu...</p>
-                  <p className="text-gray-300 text-sm mt-2">Mohon tunggu sebentar</p>
+                  <p className="text-white text-lg">{t('tasks.ai.analyzing')}</p>
+                  <p className="text-gray-300 text-sm mt-2">{t('tasks.ai.wait')}</p>
                 </div>
               ) : (
                 <div className="bg-gray-900/60 rounded-2xl p-6 border border-gray-700">
@@ -869,7 +841,7 @@ export default function SmartTaskManager() {
                   onClick={() => setShowAIModal(false)}
                   className="w-full bg-white/10 hover:bg-white/20 text-white py-3 rounded-xl font-bold transition-all duration-300 hover:scale-[1.02] border border-white/30"
                 >
-                  Tutup
+                  {t('tasks.buttons.close')}
                 </button>
               </div>
             )}
@@ -882,7 +854,7 @@ export default function SmartTaskManager() {
         <div className="fixed inset-0 bg-gray-900/880 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-gradient-to-br from-gray-900 to-black rounded-3xl p-8 max-w-2xl w-full border border-gray-600/50 animate-fade-in shadow-2xl shadow-gray-500/20">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-white">Tambah Tugas Baru</h2>
+              <h2 className="text-2xl font-bold text-white">{t('tasks.modal.addTitle')}</h2>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-gray-400 hover:text-white transition-colors hover:scale-110"
@@ -895,22 +867,22 @@ export default function SmartTaskManager() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-gray-300 font-semibold mb-2">Judul Tugas</label>
+                <label className="block text-gray-300 font-semibold mb-2">{t('tasks.form.title')}</label>
                 <input
                   type="text"
                   value={newTask.title}
                   onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                  placeholder="Contoh: Mengerjakan PR Matematika"
+                  placeholder={t('tasks.placeholders.title')}
                   className="w-full bg-gray-800/70 text-white rounded-xl px-4 py-3 border border-gray-600/50 focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-gray-300 font-semibold mb-2">Deskripsi</label>
+                <label className="block text-gray-300 font-semibold mb-2">{t('tasks.form.description')}</label>
                 <textarea
                   value={newTask.description}
                   onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                  placeholder="Detail tugas..."
+                  placeholder={t('tasks.placeholders.description')}
                   rows={3}
                   className="w-full bg-gray-800/70 text-white rounded-xl px-4 py-3 border border-gray-600/50 focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 transition-all"
                 />
@@ -918,12 +890,12 @@ export default function SmartTaskManager() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-2">Mata Kuliah</label>
+                  <label className="block text-gray-300 font-semibold mb-2">{t('tasks.form.category')}</label>
                   <input
                     type="text"
                     value={newTask.category}
                     onChange={(e) => setNewTask({ ...newTask, category: e.target.value })}
-                    placeholder="Contoh: Matematika, Fisika, dll"
+                    placeholder={t('tasks.placeholders.category')}
                     list="categories-list"
                     className="w-full bg-gray-800/70 text-white rounded-xl px-4 py-3 border border-gray-600/50 focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 transition-all"
                   />
@@ -935,20 +907,20 @@ export default function SmartTaskManager() {
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-2">Prioritas</label>
+                  <label className="block text-gray-300 font-semibold mb-2">{t('tasks.form.priority')}</label>
                   <select
                     value={newTask.priority}
                     onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as any })}
                     className="w-full bg-gray-800/70 text-white rounded-xl px-4 py-3 border border-gray-600/50 focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-400/20 transition-all"
                   >
-                    <option value="low">Rendah</option>
-                    <option value="medium">Sedang</option>
-                    <option value="high">Tinggi</option>
+                    <option value="low">{t('tasks.priorities.low')}</option>
+                    <option value="medium">{t('tasks.priorities.medium')}</option>
+                    <option value="high">{t('tasks.priorities.high')}</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-gray-300 font-semibold mb-2">Deadline</label>
+                  <label className="block text-gray-300 font-semibold mb-2">{t('tasks.form.deadline')}</label>
                   <input
                     type="date"
                     value={newTask.deadline}
@@ -964,13 +936,13 @@ export default function SmartTaskManager() {
                   disabled={!newTask.title.trim()}
                   className="flex-1 bg-white text-black py-3 rounded-xl font-bold hover:shadow-xl hover:shadow-white/30 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed border border-gray-400"
                 >
-                  Tambah Tugas
+                  {t('tasks.buttons.addTask')}
                 </button>
                 <button
                   onClick={() => setShowAddModal(false)}
                   className="flex-1 bg-gray-800/70 text-gray-200 py-3 rounded-xl font-bold hover:bg-gray-700/70 transition-all duration-300 hover:scale-[1.02] border border-gray-600/50"
                 >
-                  Batal
+                  {t('tasks.buttons.cancel')}
                 </button>
               </div>
             </div>

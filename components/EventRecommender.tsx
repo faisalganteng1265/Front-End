@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Atom } from 'react-loading-indicators';
+import { useLanguage } from '@/contexts/LanguageContext';
 import StaggeredMenu from './StaggeredMenu';
 import PixelBlast from './PixelBlast';
 
@@ -28,15 +29,15 @@ interface RecommendationResponse {
   matchedEvents?: number;
 }
 
-const interestOptions = [
-  { value: 'teknologi', label: 'Teknologi & IT', icon: '/ICONKOMPUTER.png' },
-  { value: 'bisnis', label: 'Bisnis & Entrepreneurship', icon: '/ICONBISNIS.png' },
-  { value: 'seni', label: 'Seni & Kreatif', icon: '/SENIICON.png' },
-  { value: 'sosial', label: 'Sosial & Volunteering', icon: '/SOSIALICON.png' },
-  { value: 'akademik', label: 'Akademik & Penelitian', icon: '/AKADEMIKICON.png' },
-  { value: 'olahraga', label: 'Olahraga & Kesehatan', icon: '/OLAHRAGAICON.png' },
-  { value: 'leadership', label: 'Leadership & Organisasi', icon: '/ORGANISASIICON.png' },
-  { value: 'lingkungan', label: 'Lingkungan & Sustainability', icon: '/LINGKUNGANICON.png' },
+const getInterestOptions = (t: (key: string) => string) => [
+  { value: 'teknologi', label: t('events.interest.teknologi'), icon: '/ICONKOMPUTER.png' },
+  { value: 'bisnis', label: t('events.interest.bisnis'), icon: '/ICONBISNIS.png' },
+  { value: 'seni', label: t('events.interest.seni'), icon: '/SENIICON.png' },
+  { value: 'sosial', label: t('events.interest.sosial'), icon: '/SOSIALICON.png' },
+  { value: 'akademik', label: t('events.interest.akademik'), icon: '/AKADEMIKICON.png' },
+  { value: 'olahraga', label: t('events.interest.olahraga'), icon: '/OLAHRAGAICON.png' },
+  { value: 'leadership', label: t('events.interest.leadership'), icon: '/ORGANISASIICON.png' },
+  { value: 'lingkungan', label: t('events.interest.lingkungan'), icon: '/LINGKUNGANICON.png' },
 ];
 
 const categoryColors: { [key: string]: string } = {
@@ -47,6 +48,7 @@ const categoryColors: { [key: string]: string } = {
 };
 
 export default function EventRecommender() {
+  const { language, setLanguage, t } = useLanguage();
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [recommendations, setRecommendations] = useState<Event[]>([]);
   const [summary, setSummary] = useState<string>('');
@@ -54,6 +56,9 @@ export default function EventRecommender() {
   const [hasSearched, setHasSearched] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [allEvents, setAllEvents] = useState<Event[]>([]);
+
+  // Get localized interest options
+  const interestOptions = getInterestOptions(t);
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests(prev =>
@@ -88,7 +93,7 @@ export default function EventRecommender() {
         const data = await response.json();
         setAllEvents(data.events);
         setRecommendations(data.events);
-        setSummary(`Menampilkan semua ${data.events.length} event yang tersedia. Pilih minat untuk filter yang lebih spesifik.`);
+        setSummary(t('events.allEventsMessage').replace('{count}', data.events.length.toString()));
       } else {
         // Get filtered recommendations based on interests
         const response = await fetch('/api/events', {
@@ -111,7 +116,7 @@ export default function EventRecommender() {
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Terjadi kesalahan. Silakan coba lagi.');
+      alert(t('events.errorMessage'));
     } finally {
       setIsLoading(false);
     }
@@ -192,6 +197,30 @@ export default function EventRecommender() {
         isFixed={true}
       />
 
+      {/* Language Toggle - Top Left */}
+      <div className="fixed top-8 right-80 z-[9999] flex items-center gap-2 pointer-events-auto">
+        <button
+          onClick={() => setLanguage('id')}
+          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
+            language === 'id'
+              ? 'bg-lime-500 text-black shadow-lg shadow-lime-500/50'
+              : 'bg-gray-800/80 text-white hover:bg-gray-700 border border-gray-700'
+          }`}
+        >
+          ID
+        </button>
+        <button
+          onClick={() => setLanguage('en')}
+          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
+            language === 'en'
+              ? 'bg-lime-500 text-black shadow-lg shadow-lime-500/50'
+              : 'bg-gray-800/80 text-white hover:bg-gray-700 border border-gray-700'
+          }`}
+        >
+          EN
+        </button>
+      </div>
+
       {/* Header */}
       <div className="py-8 px-3 relative z-10">
         <div className="max-w-full mx-auto">
@@ -210,10 +239,10 @@ export default function EventRecommender() {
               </div>
             </div>
             <h1 className="text-5xl font-bold text-white mb-3" style={{ textShadow: '0 0 20px rgba(34, 197, 94, 0.8), 0 0 40px rgba(34, 197, 94, 0.5), 0 0 60px rgba(34, 197, 94, 0.3)' }}>
-              EVENT RECOMMENDER
+              {t('events.title')}
             </h1>
             <p className="text-gray-300 text-lg" style={{ textShadow: '0 0 10px rgba(0, 0, 0, 0.8)' }}>
-              Temukan event kampus yang sesuai dengan minatmu!
+              {t('events.subtitle')}
             </p>
           </div>
         </div>
@@ -228,7 +257,7 @@ export default function EventRecommender() {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-white font-semibold text-lg flex items-center gap-2">
                   <img src="/LISTICON.png" alt="Filter Icon" className="w-5 h-5 object-contain" />
-                  <span>Filter Minat</span>
+                  <span>{t('events.filterTitle')}</span>
                 </h3>
                 {selectedInterests.length > 0 && (
                   <button
@@ -237,7 +266,7 @@ export default function EventRecommender() {
                     className="bg-red-500/20 border border-red-500/50 hover:bg-red-500 hover:border-red-500 text-red-400 hover:text-white font-semibold px-3 py-1.5 rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 text-xs"
                   >
                     <span>✕</span>
-                    <span>Clear</span>
+                    <span>{t('events.clearButton')}</span>
                   </button>
                 )}
               </div>
@@ -267,12 +296,12 @@ export default function EventRecommender() {
                 {isLoading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-sm">Mencari...</span>
+                    <span className="text-sm">{t('events.searching')}</span>
                   </>
                 ) : (
                   <>
                     <span>🔍</span>
-                    <span className="text-sm">Cari Event</span>
+                    <span className="text-sm">{t('events.searchButton')}</span>
                   </>
                 )}
               </button>
@@ -292,7 +321,7 @@ export default function EventRecommender() {
                     textShadow: '0 0 20px rgba(34, 197, 94, 0.9), 0 0 40px rgba(34, 197, 94, 0.6), 0 0 60px rgba(34, 197, 94, 0.4), 0 0 2px rgba(0, 0, 0, 0.8)'
                   }}
                 >
-                  AI sedang menganalisis event yang cocok untukmu...
+                  {t('events.analyzing')}
                 </p>
               </div>
             )}
@@ -300,8 +329,8 @@ export default function EventRecommender() {
             {!isLoading && hasSearched && recommendations.length === 0 && (
               <div className="text-center py-12 bg-neutral-800 rounded-2xl border border-gray-600 shadow-md">
                 <div className="text-6xl mb-4">😕</div>
-                <h3 className="text-2xl font-bold text-white mb-2">Tidak Ada Event yang Cocok</h3>
-                <p className="text-gray-400">Coba pilih minat yang berbeda atau tunggu event baru!</p>
+                <h3 className="text-2xl font-bold text-white mb-2">{t('events.noResults')}</h3>
+                <p className="text-gray-400">{t('events.noResultsDesc')}</p>
               </div>
             )}
 
@@ -323,7 +352,7 @@ export default function EventRecommender() {
                         />
                       </div>
                       <div>
-                        <h3 className="text-white font-semibold mb-2" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' }}>REKOMENDASI AI:</h3>
+                        <h3 className="text-white font-semibold mb-2" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' }}>{t('events.aiRecommendation')}</h3>
                         <p className="text-gray-300">{summary}</p>
                       </div>
                     </div>
@@ -342,7 +371,7 @@ export default function EventRecommender() {
                       <div className="flex items-start justify-between mb-3">
                         <span className="text-3xl font-bold text-white">#{index + 1}</span>
                         <div className="text-right flex-shrink-0 ml-2">
-                          <p className="text-xs text-gray-500">Penyelenggara</p>
+                          <p className="text-xs text-gray-500">{t('events.organizer')}</p>
                           <p className="text-xs font-bold text-white">{event.organizer}</p>
                         </div>
                       </div>
@@ -374,9 +403,9 @@ export default function EventRecommender() {
                       {/* Kuota Progress Bar */}
                       <div className="mt-auto">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-semibold text-gray-400">Kuota Peserta</span>
+                          <span className="text-xs font-semibold text-gray-400">{t('events.quota')}</span>
                           <span className="text-xs text-white font-bold">
-                            {Math.floor(event.quota * 0.5)} / {event.quota} orang
+                            {Math.floor(event.quota * 0.5)} / {event.quota} {t('events.people')}
                           </span>
                         </div>
                         <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
@@ -410,8 +439,8 @@ export default function EventRecommender() {
                       />
                     </div>
                     <div>
-                      <h3 className="text-white font-semibold mb-2" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' }}>SEMUA EVENT TERSEDIA:</h3>
-                      <p className="text-gray-300">Menampilkan {allEvents.length} event yang tersedia. Pilih minat dan klik "Cari Event" untuk filter yang lebih spesifik.</p>
+                      <h3 className="text-white font-semibold mb-2" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' }}>{t('events.allEventsTitle')}</h3>
+                      <p className="text-gray-300">{t('events.allEventsDesc').replace('{count}', allEvents.length.toString())}</p>
                     </div>
                   </div>
                 </div>
@@ -428,7 +457,7 @@ export default function EventRecommender() {
                       <div className="flex items-start justify-between mb-3">
                         <span className="text-3xl font-bold text-white">#{index + 1}</span>
                         <div className="text-right flex-shrink-0 ml-2">
-                          <p className="text-xs text-gray-500">Penyelenggara</p>
+                          <p className="text-xs text-gray-500">{t('events.organizer')}</p>
                           <p className="text-xs font-bold text-white">{event.organizer}</p>
                         </div>
                       </div>
@@ -455,9 +484,9 @@ export default function EventRecommender() {
                       {/* Kuota Progress Bar */}
                       <div className="mt-auto">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-semibold text-gray-400">Kuota Peserta</span>
+                          <span className="text-xs font-semibold text-gray-400">{t('events.quota')}</span>
                           <span className="text-xs text-white font-bold">
-                            {Math.floor(event.quota * 0.5)} / {event.quota} orang
+                            {Math.floor(event.quota * 0.5)} / {event.quota} {t('events.people')}
                           </span>
                         </div>
                         <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
@@ -477,8 +506,8 @@ export default function EventRecommender() {
             {!hasSearched && allEvents.length === 0 && (
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">🔄</div>
-                <h3 className="text-2xl font-bold text-white mb-2">Memuat Event...</h3>
-                <p className="text-gray-400">Sedang mengambil data event yang tersedia</p>
+                <h3 className="text-2xl font-bold text-white mb-2">{t('events.loadingTitle')}</h3>
+                <p className="text-gray-400">{t('events.loadingDesc')}</p>
               </div>
             )}
           </div>
@@ -518,7 +547,7 @@ export default function EventRecommender() {
               <h2 className="text-3xl font-bold text-white mb-2">{selectedEvent.title}</h2>
               <p className="text-gray-400 text-sm mb-2">📅 {formatDate(selectedEvent.date)} • 📍 {selectedEvent.location}</p>
               <p className="text-sm text-gray-500">
-                <span className="font-semibold text-white">Penyelenggara:</span> {selectedEvent.organizer}
+                <span className="font-semibold text-white">{t('events.organizer')}:</span> {selectedEvent.organizer}
               </p>
             </div>
 
@@ -526,7 +555,7 @@ export default function EventRecommender() {
             {selectedEvent.recommendationReason && (
               <div className="bg-neutral-700 border border-gray-600 rounded-xl p-4 mb-6">
                 <p className="text-gray-300 text-sm">
-                  <span className="font-semibold text-white">💡 Kenapa cocok untuk kamu: </span>
+                  <span className="font-semibold text-white">{t('events.whyMatch')}</span>
                   {selectedEvent.recommendationReason}
                 </p>
               </div>
@@ -534,7 +563,7 @@ export default function EventRecommender() {
 
             {/* Description */}
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-white mb-2">Deskripsi Event</h3>
+              <h3 className="text-lg font-semibold text-white mb-2">{t('events.eventDescription')}</h3>
               <p className="text-gray-300">{selectedEvent.description}</p>
             </div>
 
@@ -553,9 +582,9 @@ export default function EventRecommender() {
             {/* Kuota Progress Bar */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-gray-400">Kuota Peserta</span>
+                <span className="text-sm font-semibold text-gray-400">{t('events.quota')}</span>
                 <span className="text-sm text-white font-bold">
-                  {Math.floor(selectedEvent.quota * 0.5)} / {selectedEvent.quota} orang
+                  {Math.floor(selectedEvent.quota * 0.5)} / {selectedEvent.quota} {t('events.people')}
                 </span>
               </div>
               <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
@@ -568,7 +597,7 @@ export default function EventRecommender() {
 
             {/* Fee */}
             <div className="mb-6 pb-6 border-b border-gray-700">
-              <span className="text-gray-400">Biaya Pendaftaran: </span>
+              <span className="text-gray-400">{t('events.registrationFee')}</span>
               <span className="font-bold text-white text-xl">{selectedEvent.fee}</span>
             </div>
 
@@ -579,7 +608,7 @@ export default function EventRecommender() {
               rel="noopener noreferrer"
               className="w-full bg-[#00d9ff] hover:bg-[#00b8d9] text-black font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
             >
-              <span>Daftar Sekarang</span>
+              <span>{t('events.registerNow')}</span>
               <span>→</span>
             </a>
           </div>

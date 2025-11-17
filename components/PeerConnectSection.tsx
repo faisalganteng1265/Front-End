@@ -598,8 +598,24 @@ export default function PeerConnectSection() {
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl blur-2xl opacity-20"></div>
                 <div className="relative bg-gray-800/50 rounded-2xl p-2 border border-gray-700 overflow-hidden">
                   <Image
-                    key={activeFeature}
-                    src={currentFeature.image}
+                    key={`${activeFeature}-${activeTab}`}
+                    src={
+                      currentFeature.id === 'aicampus' && activeTab === 'campus'
+                        ? '/FITUR1A.png'
+                        : currentFeature.id === 'aicampus' && activeTab === 'general'
+                        ? '/FITUR1B.png'
+                        : currentFeature.id === 'eventreminder'
+                        ? '/FITUR2.png'
+                        : currentFeature.id === 'smartschedule' && activeTab === 'optimization'
+                        ? '/FITUR3A.png'
+                        : currentFeature.id === 'smartschedule' && activeTab === 'integration'
+                        ? '/FITUR3B.png'
+                        : currentFeature.id === 'taskmanager'
+                        ? '/FITUR5.png'
+                        : currentFeature.id === 'collaboration'
+                        ? '/FITUR6.png'
+                        : currentFeature.image
+                    }
                     alt={`${currentFeature.id} Interface`}
                     width={2400}
                     height={1500}

@@ -3,12 +3,15 @@
 import ChatInterface from '@/components/ChatInterface';
 import StaggeredMenu from '@/components/StaggeredMenu';
 import Particles from '@/components/Particles';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Fitur1() {
+  const { language, setLanguage } = useLanguage();
+
   return (
     <div className="min-h-screen bg-black relative">
       {/* Particles Background */}
-      <div className="fixed inset-0 z-0">
+      <div className="fixed inset-0 z-0 pointer-events-none">
         <Particles
           particleCount={1500}
           particleSpread={15}
@@ -46,6 +49,30 @@ export default function Fitur1() {
         changeMenuColorOnOpen={true}
         isFixed={true}
       />
+
+      {/* Language Toggle - Top Left */}
+      <div className="fixed top-8 right-80 z-[9999] flex items-center gap-2 pointer-events-auto">
+        <button
+          onClick={() => setLanguage('id')}
+          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
+            language === 'id'
+              ? 'bg-lime-500 text-black shadow-lg shadow-lime-500/50'
+              : 'bg-gray-800/80 text-white hover:bg-gray-700 border border-gray-700'
+          }`}
+        >
+          ID
+        </button>
+        <button
+          onClick={() => setLanguage('en')}
+          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
+            language === 'en'
+              ? 'bg-lime-500 text-black shadow-lg shadow-lime-500/50'
+              : 'bg-gray-800/80 text-white hover:bg-gray-700 border border-gray-700'
+          }`}
+        >
+          EN
+        </button>
+      </div>
 
       {/* Full Screen Chat Interface */}
       <div className="relative h-screen w-full bg-transparent p-4">

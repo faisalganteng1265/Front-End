@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { getAllProjects } from '@/lib/supabase/projects';
 import type { Project } from '@/types/projects';
 import ProjectList from '@/components/fitur-6/ProjectList';
@@ -20,6 +21,7 @@ type TabType = 'all' | 'my-projects' | 'my-applications';
 
 export default function ProjectCollaborationPage() {
   const { user, signOut } = useAuth();
+  const { t, language, setLanguage } = useLanguage();
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,6 +74,30 @@ export default function ProjectCollaborationPage() {
         </a>
       </div>
 
+      {/* Language Toggle Buttons */}
+      <div className="fixed top-8 right-80 z-[9999] flex gap-2">
+        <button
+          onClick={() => setLanguage('id')}
+          className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+            language === 'id'
+              ? 'bg-white text-black'
+              : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+          }`}
+        >
+          ID
+        </button>
+        <button
+          onClick={() => setLanguage('en')}
+          className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+            language === 'en'
+              ? 'bg-white text-black'
+              : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+          }`}
+        >
+          EN
+        </button>
+      </div>
+
       {/* Top Left Navigation */}
       <div className="fixed top-4 left-40 z-[1005] pt-1 flex items-center gap-4">
         {user && (
@@ -82,7 +108,7 @@ export default function ProjectCollaborationPage() {
               className="px-4 py-2 bg-white/10 backdrop-blur-lg text-white rounded-xl font-semibold hover:bg-white/20 transition-all duration-300 border border-white/20 hover:scale-105 flex items-center gap-2 shadow-lg cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              Buat Project
+              {t('projects.buttons.createProject')}
             </button>
           </>
         )}
@@ -90,16 +116,15 @@ export default function ProjectCollaborationPage() {
 
       {/* Hero Section */}
       <div className="relative overflow-hidden pt-8 bg-0">
-        
+
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Project Collaboration Hub
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4"style={{ textShadow: '0 0 8px rgba(255, 255, 255, 0.99)' }}>
+              {t('projects.title')}
             </h1>
             <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
-              Temukan proyek menarik atau buat proyek Anda sendiri.
-              Kolaborasi dengan talenta terbaik untuk mewujudkan ide-ide hebat!
+              {t('projects.subtitle')}
             </p>
           </div>
         </div>
@@ -113,7 +138,7 @@ export default function ProjectCollaborationPage() {
           <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-300 text-sm">Total Projects</p>
+                <p className="text-gray-300 text-sm">{t('projects.stats.totalProjects')}</p>
                 <p className="text-3xl font-bold text-white mt-1">{projects.length}</p>
               </div>
               <Briefcase className="w-12 h-12 text-blue-400" />
@@ -122,7 +147,7 @@ export default function ProjectCollaborationPage() {
           <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-300 text-sm">Open Projects</p>
+                <p className="text-gray-300 text-sm">{t('projects.stats.openProjects')}</p>
                 <p className="text-3xl font-bold text-white mt-1">
                   {projects.filter(p => p.status === 'open').length}
                 </p>
@@ -133,7 +158,7 @@ export default function ProjectCollaborationPage() {
           <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-300 text-sm">Active Collaborators</p>
+                <p className="text-gray-300 text-sm">{t('projects.stats.activeCollaborators')}</p>
                 <p className="text-3xl font-bold text-white mt-1">
                   {projects.reduce((acc, p) => acc + (p.members?.length || 0), 0)}
                 </p>
@@ -153,7 +178,7 @@ export default function ProjectCollaborationPage() {
                 : 'bg-white/10 text-white hover:bg-white/20'
             }`}
           >
-            Semua Project
+            {t('projects.tabs.all')}
           </button>
           {user && (
             <>
@@ -165,7 +190,7 @@ export default function ProjectCollaborationPage() {
                     : 'bg-white/10 text-white hover:bg-white/20'
                 }`}
               >
-                Project Saya
+                {t('projects.tabs.myProjects')}
               </button>
               <button
                 onClick={() => setActiveTab('my-applications')}
@@ -175,7 +200,7 @@ export default function ProjectCollaborationPage() {
                     : 'bg-white/10 text-white hover:bg-white/20'
                 }`}
               >
-                Aplikasi Saya
+                {t('projects.tabs.myApplications')}
               </button>
             </>
           )}
@@ -184,17 +209,17 @@ export default function ProjectCollaborationPage() {
         {/* Filter by Status */}
         {activeTab === 'all' && (
           <div className="mb-6">
-            <label className="text-white font-semibold mb-2 block">Filter Status:</label>
+            <label className="text-white font-semibold mb-2 block">{t('projects.filter.status')}</label>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as Project['status'] | 'all')}
               className="bg-white/10 border border-white/20 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
             >
-              <option value="all" className="bg-gray-900 text-white cursor-pointer">Semua Status</option>
-              <option value="open" className="bg-gray-900 text-white cursor-pointer">Open</option>
-              <option value="in_progress" className="bg-gray-900 text-white cursor-pointer">In Progress</option>
-              <option value="completed" className="bg-gray-900 text-white cursor-pointer">Completed</option>
-              <option value="cancelled" className="bg-gray-900 text-white cursor-pointer">Cancelled</option>
+              <option value="all" className="bg-gray-900 text-white cursor-pointer">{t('projects.status.all')}</option>
+              <option value="open" className="bg-gray-900 text-white cursor-pointer">{t('projects.status.open')}</option>
+              <option value="in_progress" className="bg-gray-900 text-white cursor-pointer">{t('projects.status.inProgress')}</option>
+              <option value="completed" className="bg-gray-900 text-white cursor-pointer">{t('projects.status.completed')}</option>
+              <option value="cancelled" className="bg-gray-900 text-white cursor-pointer">{t('projects.status.cancelled')}</option>
             </select>
           </div>
         )}

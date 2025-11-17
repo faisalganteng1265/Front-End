@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { updateProjectProgress } from '@/lib/supabase/projects';
 import { TrendingUp, Save, X } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ProgressSliderProps {
   projectId: string;
@@ -17,6 +18,7 @@ export default function ProgressSlider({
   onUpdate,
   isInitiator,
 }: ProgressSliderProps) {
+  const { t } = useLanguage();
   const [isEditing, setIsEditing] = useState(false);
   const [progress, setProgress] = useState(currentProgress);
   const [saving, setSaving] = useState(false);
@@ -33,7 +35,7 @@ export default function ProgressSlider({
       setProgress(progress);
     } catch (err: any) {
       console.error('Error updating progress:', err);
-      setError(err.message || 'Failed to update progress');
+      setError(err.message || t('projects.alerts.updateProgressFailed'));
     } finally {
       setSaving(false);
     }
@@ -73,7 +75,7 @@ export default function ProgressSlider({
         <div className="flex justify-between items-center mb-2">
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-white" />
-            <span className="text-sm font-semibold text-white">Project Progress</span>
+            <span className="text-sm font-semibold text-white">{t('projects.progress.title')}</span>
           </div>
           <span className="text-2xl font-bold text-white">{currentProgress}%</span>
         </div>
@@ -96,7 +98,7 @@ export default function ProgressSlider({
               className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-md flex items-center gap-2"
             >
               <TrendingUp className="w-4 h-4" />
-              Update Progress
+              {t('projects.progress.updateButton')}
             </button>
           ) : (
             <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 space-y-3">
@@ -109,7 +111,7 @@ export default function ProgressSlider({
               {/* Slider with Dynamic Color */}
               <div>
                 <label className="block text-sm font-semibold text-white mb-2">
-                  Set Progress: {progress}%
+                  {t('projects.progress.setProgress')} {progress}%
                 </label>
                 <input
                   type="range"
@@ -133,7 +135,7 @@ export default function ProgressSlider({
                   className="flex-1 flex items-center justify-center px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                 >
                   <Save className="w-4 h-4 mr-2" />
-                  {saving ? 'Saving...' : 'Save Progress'}
+                  {saving ? t('projects.buttons.saving') : t('projects.buttons.saveProgress')}
                 </button>
                 <button
                   onClick={handleCancel}

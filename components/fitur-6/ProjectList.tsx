@@ -5,6 +5,7 @@ import type { Project } from '@/types/projects';
 import ProjectCard from './ProjectCard';
 import ProjectDetailModal from './ProjectDetailModal';
 import { Loader2 } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ProjectListProps {
   projects: Project[];
@@ -13,6 +14,7 @@ interface ProjectListProps {
 }
 
 export default function ProjectList({ projects, loading, onRefresh }: ProjectListProps) {
+  const { t } = useLanguage();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   if (loading) {
@@ -27,8 +29,8 @@ export default function ProjectList({ projects, loading, onRefresh }: ProjectLis
     return (
       <div className="text-center py-20">
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-12 border border-white/20">
-          <p className="text-xl text-gray-300">Belum ada project tersedia</p>
-          <p className="text-gray-400 mt-2">Jadilah yang pertama membuat project!</p>
+          <p className="text-xl text-gray-300">{t('projects.empty.noProjects')}</p>
+          <p className="text-gray-400 mt-2">{t('projects.empty.noProjectsDesc')}</p>
         </div>
       </div>
     );

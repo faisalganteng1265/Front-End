@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/lib/supabase';
 
 interface Message {
@@ -13,18 +14,9 @@ interface Message {
 
 interface QuickQuestion {
   icon: string;
-  question: string;
-  category: string;
+  questionKey: string;
+  categoryKey: string;
 }
-
-const quickQuestions: QuickQuestion[] = [
-  { icon: '/KRSICON.png', question: 'Bagaimana cara mengisi KRS?', category: 'KRS' },
-  { icon: '/GEDUNGICON.png', question: 'Di mana lokasi perpustakaan pusat?', category: 'Gedung' },
-  { icon: '/DOSENICON.png', question: 'Bagaimana cara mencari info dosen?', category: 'Dosen' },
-  { icon: '/BEASISWAICON.png', question: 'Beasiswa apa saja yang tersedia?', category: 'Beasiswa' },
-  { icon: '/JADWALICON.png', question: 'Kapan jadwal UTS dan UAS?', category: 'Akademik' },
-  { icon: '/ORGANISASIICON.png', question: 'UKM apa saja yang ada?', category: 'UKM' },
-];
 
 const universities = [
   'Universitas Sebelas Maret (UNS)',
@@ -39,6 +31,7 @@ const universities = [
 
 export default function ChatInterface() {
   const { user, loading } = useAuth();
+  const { t } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [customQuestion, setCustomQuestion] = useState('');
@@ -54,6 +47,15 @@ export default function ChatInterface() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const answerSectionRef = useRef<HTMLDivElement>(null);
+
+  const quickQuestions: QuickQuestion[] = [
+    { icon: '/KRSICON.png', questionKey: 'chat.question.krs', categoryKey: 'chat.category.krs' },
+    { icon: '/GEDUNGICON.png', questionKey: 'chat.question.library', categoryKey: 'chat.category.gedung' },
+    { icon: '/DOSENICON.png', questionKey: 'chat.question.lecturer', categoryKey: 'chat.category.dosen' },
+    { icon: '/BEASISWAICON.png', questionKey: 'chat.question.scholarship', categoryKey: 'chat.category.beasiswa' },
+    { icon: '/JADWALICON.png', questionKey: 'chat.question.schedule', categoryKey: 'chat.category.akademik' },
+    { icon: '/ORGANISASIICON.png', questionKey: 'chat.question.organization', categoryKey: 'chat.category.ukm' },
+  ];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -153,25 +155,25 @@ export default function ChatInterface() {
   const handleStartChat = () => {
     // Validasi mode dipilih
     if (!selectedMode) {
-      alert('Silakan pilih mode terlebih dahulu!');
+      alert(t('chat.alertSelectMode'));
       return;
     }
 
     // Hanya cek universitas untuk mode kampus
     if (selectedMode === 'campus' && !selectedUniversity) {
-      alert('Silakan pilih universitas terlebih dahulu!');
+      alert(t('chat.alertSelectUniversity'));
       return;
     }
 
     // Check if university is UNS - only UNS is available for now
     if (selectedMode === 'campus' && selectedUniversity !== 'Universitas Sebelas Maret (UNS)') {
-      alert('Coming Soon! Saat ini hanya tersedia untuk Universitas Sebelas Maret (UNS). Universitas lain akan segera hadir.');
+      alert(t('chat.alertComingSoon'));
       return;
     }
 
     const questionToAsk = selectedMode === 'campus' ? selectedQuestion : customQuestion;
     if (!questionToAsk.trim()) {
-      alert('Silakan pilih atau ketik pertanyaan!');
+      alert(t('chat.alertSelectQuestion'));
       return;
     }
 
@@ -184,8 +186,8 @@ export default function ChatInterface() {
 
     // Welcome message berbeda untuk setiap mode
     const welcomeContent = selectedMode === 'general'
-      ? `Halo! Saya asisten AI yang siap membantu menjawab berbagai pertanyaan Anda.`
-      : `Halo! Saya AI Campus Navigator untuk ${selectedUniversity}. Saya siap membantu menjawab pertanyaan Anda.`;
+      ? t('chat.welcomeGeneral')
+      : `${t('chat.welcomeCampus')} ${selectedUniversity}. ${t('chat.welcomeCampusEnd')}`;
 
     const welcomeMessage: Message = {
       role: 'assistant',
@@ -265,7 +267,7 @@ export default function ChatInterface() {
       console.error('Error:', error);
       const errorMessage: Message = {
         role: 'assistant',
-        content: `Maaf, terjadi kesalahan. Silakan coba lagi.`,
+        content: t('chat.error'),
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -284,7 +286,7 @@ export default function ChatInterface() {
     if (selectedMode === 'campus' && selectedUniversity) {
       // Check if university is UNS - only UNS is available for now
       if (selectedUniversity !== 'Universitas Sebelas Maret (UNS)') {
-        setDirectAnswer('🚧 Coming Soon!\n\nSaat ini AI Campus Navigator hanya tersedia untuk Universitas Sebelas Maret (UNS). Data untuk universitas lain sedang dalam proses pengembangan dan akan segera hadir.\n\nTerima kasih atas pengertiannya! 🙏');
+        setDirectAnswer(t('chat.comingSoon'));
         return;
       }
 
@@ -326,7 +328,7 @@ export default function ChatInterface() {
         setDirectAnswer(data.response);
       } catch (error: any) {
         console.error('Error:', error);
-        setDirectAnswer(`Maaf, terjadi kesalahan: ${error.message}. Silakan coba lagi.`);
+        setDirectAnswer(t('chat.error'));
       } finally {
         setIsAnswerLoading(false);
       }
@@ -356,17 +358,17 @@ export default function ChatInterface() {
                 </div>
               </div>
               <h1 className="text-3xl font-bold text-white mb-2" style={{ textShadow: '0 0 20px rgba(34, 197, 94, 0.8), 0 0 40px rgba(34, 197, 94, 0.5), 0 0 60px rgba(34, 197, 94, 0.3)' }}>
-                AI CAMPUS CHATBOT
+                {t('chat.welcome')}
               </h1>
               <p className="text-gray-300 text-sm mb-6" style={{ textShadow: '0 0 10px rgba(0, 0, 0, 0.8)' }}>
-                Asisten virtual cerdas untuk membantu menjawab semua pertanyaan seputar kampus
+                {t('chat.subtitle')}
               </p>
             </div>
 
             {/* Mode Selection */}
             <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
               <h3 className="text-white font-semibold mb-4">
-                Pilih Mode Chat
+                {t('chat.selectMode')}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button
@@ -379,10 +381,10 @@ export default function ChatInterface() {
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <Image src="/AKADEMIKICON.png" alt="Akademik Icon" width={48} height={48} className="object-contain" />
-                    <h4 className="text-xl font-bold text-white">Mode Kampus</h4>
+                    <h4 className="text-xl font-bold text-white">{t('chat.campusMode')}</h4>
                   </div>
                   <p className="text-gray-300 text-sm">
-                    Tanya tentang informasi kampus, KRS, gedung, dosen, beasiswa, dan kehidupan kampus
+                    {t('chat.campusModeDesc')}
                   </p>
                 </button>
 
@@ -396,10 +398,10 @@ export default function ChatInterface() {
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <Image src="/GENERALICON.png" alt="General Icon" width={64} height={64} className="object-contain" />
-                    <h4 className="text-xl font-bold text-white">Mode Umum</h4>
+                    <h4 className="text-xl font-bold text-white">{t('chat.generalMode')}</h4>
                   </div>
                   <p className="text-gray-300 text-sm">
-                    Tanya apapun: teknologi, sains, budaya, tips, resep, dan topik lainnya
+                    {t('chat.generalModeDesc')}
                   </p>
                 </button>
               </div>
@@ -410,7 +412,7 @@ export default function ChatInterface() {
               <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
                 <label className="block text-white font-semibold mb-3 flex items-center gap-2">
                   <Image src="/KAMPUSICON.png" alt="Kampus" width={32} height={32} className="object-contain" />
-                  {selectedUniversity && !isLoadingProfile ? 'Universitas Kamu' : 'Pilih Universitas'}
+                  {selectedUniversity && !isLoadingProfile ? t('chat.yourUniversity') : t('chat.selectUniversity')}
                 </label>
 
                 {isLoadingProfile ? (
@@ -427,7 +429,7 @@ export default function ChatInterface() {
                         style={{ animationDelay: '0.4s' }}
                       ></span>
                     </div>
-                    <span className="text-gray-400 text-sm">Memuat data universitas dari profil...</span>
+                    <span className="text-gray-400 text-sm">{t('chat.loadingUniversity')}</span>
                   </div>
                 ) : selectedUniversity && user ? (
                   // Auto-filled from profile - Read-only display
@@ -450,7 +452,7 @@ export default function ChatInterface() {
                     onChange={(e) => setSelectedUniversity(e.target.value)}
                     className="w-full bg-gray-900/50 text-white rounded-xl px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                   >
-                    <option value="">-- Pilih Universitas --</option>
+                    <option value="">{t('chat.selectUniversityPlaceholder')}</option>
                     {universities.map((uni, index) => (
                       <option key={index} value={uni}>
                         {uni}
@@ -465,7 +467,7 @@ export default function ChatInterface() {
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    💡 Login dan isi profil untuk auto-fill universitas
+                    {t('chat.loginToAutofill')}
                   </p>
                 )}
               </div>
@@ -476,34 +478,34 @@ export default function ChatInterface() {
               <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
                 <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
                   <Image src="/TANDATANYAICON.png" alt="Pertanyaan" width={12} height={12} className="object-contain" />
-                  Pilih Pertanyaan
+                  {t('chat.selectQuestion')}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {quickQuestions.map((item, index) => (
                     <button
                       key={index}
-                      onClick={() => handleQuestionSelect(item.question)}
+                      onClick={() => handleQuestionSelect(t(item.questionKey))}
                       className={`flex items-start gap-3 p-4 rounded-xl transition-all text-left border ${
-                        selectedQuestion === item.question
+                        selectedQuestion === t(item.questionKey)
                           ? 'bg-green-500/20 border-green-500 ring-2 ring-green-500'
                           : 'bg-gray-900/50 border-gray-700 hover:bg-white/95 hover:border-white'
                       } group`}
                     >
-                      <Image src={item.icon} alt={item.category} width={32} height={32} className="object-contain flex-shrink-0" />
+                      <Image src={item.icon} alt={t(item.categoryKey)} width={32} height={32} className="object-contain flex-shrink-0" />
                       <div className="flex-1">
                         <p className={`text-sm transition-colors ${
-                          selectedQuestion === item.question
+                          selectedQuestion === t(item.questionKey)
                             ? 'text-white font-semibold'
                             : 'text-gray-300 group-hover:text-gray-800'
                         }`}>
-                          {item.question}
+                          {t(item.questionKey)}
                         </p>
                         <span className={`text-xs mt-1 inline-block ${
-                          selectedQuestion === item.question
+                          selectedQuestion === t(item.questionKey)
                             ? 'text-green-300'
                             : 'text-green-400 group-hover:text-green-600'
                         }`}>
-                          {item.category}
+                          {t(item.categoryKey)}
                         </span>
                       </div>
                     </button>
@@ -517,15 +519,15 @@ export default function ChatInterface() {
               <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
                 <label className="block text-white font-semibold mb-2 flex items-center gap-2">
                   <span className="text-xl">✏️</span>
-                  Ketik Pertanyaan Apapun
+                  {t('chat.typeQuestion')}
                 </label>
                 <p className="text-gray-400 text-sm mb-3">
-                  Mode umum - Tanyakan apapun yang ingin kamu ketahui
+                  {t('chat.generalModeNote')}
                 </p>
                 <textarea
                   value={customQuestion}
                   onChange={(e) => setCustomQuestion(e.target.value)}
-                  placeholder="Contoh: Jelaskan tentang AI, Resep makanan sehat, Tips belajar efektif, dll."
+                  placeholder={t('chat.generalModePlaceholder')}
                   rows={5}
                   className="w-full bg-gray-900/50 text-white rounded-xl px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all placeholder-gray-500 resize-none"
                 />
@@ -540,7 +542,7 @@ export default function ChatInterface() {
                 className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-6 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-green-500 disabled:hover:to-green-600 hover:shadow-lg hover:shadow-green-500/50 hover:scale-105 flex items-center justify-center gap-3"
               >
                 <span className="text-xl">💬</span>
-                <span>Mulai Chat</span>
+                <span>{t('chat.startChat')}</span>
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -562,7 +564,7 @@ export default function ChatInterface() {
               <div ref={answerSectionRef} className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
                 <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
                   <Image src="/ICONLAMPU.png" alt="Jawaban" width={24} height={24} className="object-contain" />
-                  Jawaban
+                  {t('chat.answer')}
                 </h3>
 
                 {isAnswerLoading ? (
@@ -607,10 +609,10 @@ export default function ChatInterface() {
                   </div>
                   <div>
                     <h1 className="text-lg font-bold text-white">
-                      {selectedMode === 'general' ? 'AI Assistant' : 'AI Campus Chatbot'}
+                      {selectedMode === 'general' ? t('chat.aiAssistant') : t('chat.welcome')}
                     </h1>
                     <p className="text-gray-400 text-sm">
-                      {selectedMode === 'general' ? 'Mode Umum' : selectedUniversity}
+                      {selectedMode === 'general' ? t('chat.generalMode') : selectedUniversity}
                     </p>
                   </div>
                 </div>
@@ -628,7 +630,7 @@ export default function ChatInterface() {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
-                  Reset
+                  {t('chat.reset')}
                 </button>
               </div>
             </div>
@@ -737,8 +739,8 @@ export default function ChatInterface() {
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={
                     selectedMode === 'general'
-                      ? 'Tanya apapun yang ingin kamu ketahui...'
-                      : 'Ketik pertanyaan lanjutan tentang kampus...'
+                      ? t('chat.inputPlaceholderGeneral')
+                      : t('chat.inputPlaceholderCampus')
                   }
                   className="flex-1 bg-gray-800/40 text-white rounded-full px-6 py-4 focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-gray-400 border border-gray-700/50 hover:bg-white/95 hover:text-gray-800 hover:border-white focus:bg-white/95 focus:text-gray-800 focus:border-white transition-all"
                   disabled={isLoading}
@@ -761,15 +763,15 @@ export default function ChatInterface() {
                       d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
                     />
                   </svg>
-                  <span className="hidden sm:inline">Kirim</span>
+                  <span className="hidden sm:inline">{t('chat.send')}</span>
                 </button>
               </form>
 
               {/* Helper Text */}
               <p className="text-gray-400 text-xs mt-3 text-center">
                 {selectedMode === 'general'
-                  ? '💡 Mode Umum: Tanya apapun yang ingin kamu ketahui'
-                  : '💡 Tips: Tanya tentang KRS, gedung, dosen, beasiswa, atau kehidupan kampus'}
+                  ? t('chat.generalModeTip')
+                  : t('chat.campusModeTip')}
               </p>
             </div>
           </div>
