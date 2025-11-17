@@ -117,7 +117,7 @@ const translations: Record<Language, Record<string, string>> = {
     'aicampus.generalFeature3': 'Pertanyaan umum tentang apapun',
 
     // Event Reminder Section
-    'eventreminder.title': 'Event Reminder',
+    'eventreminder.title': 'Event Recommender',
     'eventreminder.subtitle': 'Rekomendasi event kampus yang sesuai dengan minat dan kebutuhanmu',
     'eventreminder.recommendations': 'Rekomendasi Event',
     'eventreminder.recommendationsDesc': 'Dapatkan rekomendasi event kampus yang sesuai dengan minat dan kebutuhanmu',
@@ -633,7 +633,7 @@ const translations: Record<Language, Record<string, string>> = {
     'aicampus.generalFeature3': 'General questions about anything',
 
     // Event Reminder Section
-    'eventreminder.title': 'Event Reminder',
+    'eventreminder.title': 'Event Recommender',
     'eventreminder.subtitle': 'Campus event recommendations that match your interests and needs',
     'eventreminder.recommendations': 'Event Recommendations',
     'eventreminder.recommendationsDesc': 'Get campus event recommendations that match your interests and needs',
