@@ -51,10 +51,10 @@ export default function Fitur1() {
       />
 
       {/* Language Toggle - Top Left */}
-      <div className="fixed top-8 right-80 z-[9999] flex items-center gap-2 pointer-events-auto">
+      <div className="fixed top-4 sm:top-6 md:top-8 right-4 sm:right-8 md:right-80 z-[9999] flex items-center gap-2 pointer-events-auto">
         <button
           onClick={() => setLanguage('id')}
-          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
+          className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
             language === 'id'
               ? 'bg-lime-500 text-black shadow-lg shadow-lime-500/50'
               : 'bg-gray-800/80 text-white hover:bg-gray-700 border border-gray-700'
@@ -64,7 +64,7 @@ export default function Fitur1() {
         </button>
         <button
           onClick={() => setLanguage('en')}
-          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
+          className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
             language === 'en'
               ? 'bg-lime-500 text-black shadow-lg shadow-lime-500/50'
               : 'bg-gray-800/80 text-white hover:bg-gray-700 border border-gray-700'
@@ -75,7 +75,7 @@ export default function Fitur1() {
       </div>
 
       {/* Full Screen Chat Interface */}
-      <div className="relative h-screen w-full bg-transparent p-4">
+      <div className="relative h-screen w-full bg-transparent p-2 sm:p-4">
         <div className="h-full max-w-6xl mx-auto">
           <ChatInterface />
         </div>

@@ -340,67 +340,67 @@ export default function ChatInterface() {
       {showInitialForm ? (
         // Initial Form - University Selection and Questions
         <div className="flex-1 overflow-y-auto bg-transparent">
-          <div className="max-w-4xl mx-auto space-y-6 py-6">
+          <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 py-4 sm:py-6 px-3 sm:px-4">
             {/* Welcome Section */}
-            <div className="text-center mb-8">
-              <div className="mb-3 flex justify-center">
+            <div className="text-center mb-6 sm:mb-8">
+              <div className="mb-2 sm:mb-3 flex justify-center">
                 <div className="relative">
-                  <div className="absolute inset-0 blur-2xl bg-green-500/60 rounded-full"></div>
-                  <div className="relative bg-white/10 backdrop-blur-md rounded-full p-4 border border-white/20">
+                  <div className="absolute inset-0 blur-xl sm:blur-2xl bg-green-500/60 rounded-full"></div>
+                  <div className="relative bg-white/10 backdrop-blur-md rounded-full p-3 sm:p-4 border border-white/20">
                     <Image
                       src="/GEMINIICON.png"
                       alt="AI Campus Chatbot"
                       width={64}
                       height={64}
-                      className="object-contain"
+                      className="object-contain w-12 h-12 sm:w-16 sm:h-16"
                     />
                   </div>
                 </div>
               </div>
-              <h1 className="text-3xl font-bold text-white mb-2" style={{ textShadow: '0 0 20px rgba(34, 197, 94, 0.8), 0 0 40px rgba(34, 197, 94, 0.5), 0 0 60px rgba(34, 197, 94, 0.3)' }}>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2 px-4" style={{ textShadow: '0 0 20px rgba(34, 197, 94, 0.8), 0 0 40px rgba(34, 197, 94, 0.5), 0 0 60px rgba(34, 197, 94, 0.3)' }}>
                 {t('chat.welcome')}
               </h1>
-              <p className="text-gray-300 text-sm mb-6" style={{ textShadow: '0 0 10px rgba(0, 0, 0, 0.8)' }}>
+              <p className="text-gray-300 text-xs sm:text-sm mb-4 sm:mb-6 px-4" style={{ textShadow: '0 0 10px rgba(0, 0, 0, 0.8)' }}>
                 {t('chat.subtitle')}
               </p>
             </div>
 
             {/* Mode Selection */}
-            <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
-              <h3 className="text-white font-semibold mb-4">
+            <div className="bg-transparent rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-700/20 backdrop-blur-sm">
+              <h3 className="text-white font-semibold mb-3 sm:mb-4 text-sm sm:text-base">
                 {t('chat.selectMode')}
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <button
                   onClick={() => setSelectedMode('campus')}
-                  className={`p-6 rounded-xl transition-all text-left border ${
+                  className={`p-4 sm:p-6 rounded-lg sm:rounded-xl transition-all text-left border ${
                     selectedMode === 'campus'
                       ? 'bg-green-500/20 border-green-500 ring-2 ring-green-500'
                       : 'bg-gray-900/50 border-gray-700 hover:bg-white/10 hover:border-white/50'
                   }`}
                 >
-                  <div className="flex items-center gap-3 mb-3">
-                    <Image src="/AKADEMIKICON.png" alt="Akademik Icon" width={48} height={48} className="object-contain" />
-                    <h4 className="text-xl font-bold text-white">{t('chat.campusMode')}</h4>
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                    <Image src="/AKADEMIKICON.png" alt="Akademik Icon" width={48} height={48} className="object-contain w-8 h-8 sm:w-12 sm:h-12" />
+                    <h4 className="text-base sm:text-xl font-bold text-white">{t('chat.campusMode')}</h4>
                   </div>
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-gray-300 text-xs sm:text-sm">
                     {t('chat.campusModeDesc')}
                   </p>
                 </button>
 
                 <button
                   onClick={() => setSelectedMode('general')}
-                  className={`p-6 rounded-xl transition-all text-left border ${
+                  className={`p-4 sm:p-6 rounded-lg sm:rounded-xl transition-all text-left border ${
                     selectedMode === 'general'
                       ? 'bg-green-500/20 border-green-500 ring-2 ring-green-500'
                       : 'bg-gray-900/50 border-gray-700 hover:bg-white/10 hover:border-white/50'
                   }`}
                 >
-                  <div className="flex items-center gap-3 mb-3">
-                    <Image src="/GENERALICON.png" alt="General Icon" width={64} height={64} className="object-contain" />
-                    <h4 className="text-xl font-bold text-white">{t('chat.generalMode')}</h4>
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                    <Image src="/GENERALICON.png" alt="General Icon" width={64} height={64} className="object-contain w-8 h-8 sm:w-12 sm:h-12" />
+                    <h4 className="text-base sm:text-xl font-bold text-white">{t('chat.generalMode')}</h4>
                   </div>
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-gray-300 text-xs sm:text-sm">
                     {t('chat.generalModeDesc')}
                   </p>
                 </button>
@@ -409,15 +409,15 @@ export default function ChatInterface() {
 
             {/* University Selection - Hanya tampil jika mode campus */}
             {selectedMode === 'campus' && (
-              <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
-                <label className="block text-white font-semibold mb-3 flex items-center gap-2">
-                  <Image src="/KAMPUSICON.png" alt="Kampus" width={32} height={32} className="object-contain" />
+              <div className="bg-transparent rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-700/20 backdrop-blur-sm">
+                <label className="block text-white font-semibold mb-2 sm:mb-3 flex items-center gap-2 text-sm sm:text-base">
+                  <Image src="/KAMPUSICON.png" alt="Kampus" width={32} height={32} className="object-contain w-6 h-6 sm:w-8 sm:h-8" />
                   {selectedUniversity && !isLoadingProfile ? t('chat.yourUniversity') : t('chat.selectUniversity')}
                 </label>
 
                 {isLoadingProfile ? (
                   // Loading state
-                  <div className="w-full bg-gray-900/50 rounded-xl px-4 py-3 border border-gray-700 flex items-center gap-3">
+                  <div className="w-full bg-gray-900/50 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-700 flex items-center gap-2 sm:gap-3">
                     <div className="flex gap-2">
                       <span className="w-2 h-2 bg-green-400 rounded-full animate-bounce"></span>
                       <span
@@ -429,19 +429,19 @@ export default function ChatInterface() {
                         style={{ animationDelay: '0.4s' }}
                       ></span>
                     </div>
-                    <span className="text-gray-400 text-sm">{t('chat.loadingUniversity')}</span>
+                    <span className="text-gray-400 text-xs sm:text-sm">{t('chat.loadingUniversity')}</span>
                   </div>
                 ) : selectedUniversity && user ? (
                   // Auto-filled from profile - Read-only display
-                  <div className="w-full bg-green-500/10 border border-green-500/30 rounded-xl px-4 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
-                        <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-full bg-green-500/10 border border-green-500/30 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <div>
-                        <p className="text-white font-medium">{selectedUniversity}</p>
+                      <div className="min-w-0">
+                        <p className="text-white font-medium text-xs sm:text-sm truncate">{selectedUniversity}</p>
                       </div>
                     </div>
                   </div>
@@ -450,7 +450,7 @@ export default function ChatInterface() {
                   <select
                     value={selectedUniversity}
                     onChange={(e) => setSelectedUniversity(e.target.value)}
-                    className="w-full bg-gray-900/50 text-white rounded-xl px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                    className="w-full bg-gray-900/50 text-white rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-xs sm:text-sm"
                   >
                     <option value="">{t('chat.selectUniversityPlaceholder')}</option>
                     {universities.map((uni, index) => (
@@ -463,11 +463,11 @@ export default function ChatInterface() {
 
                 {/* Info message for non-logged-in users */}
                 {!user && !loading && (
-                  <p className="text-gray-400 text-xs mt-2 flex items-center gap-2">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <p className="text-gray-400 text-xs mt-2 flex items-center gap-1.5 sm:gap-2">
+                    <svg className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    {t('chat.loginToAutofill')}
+                    <span>{t('chat.loginToAutofill')}</span>
                   </p>
                 )}
               </div>
@@ -475,32 +475,32 @@ export default function ChatInterface() {
 
             {/* Question Selection - Campus Mode */}
             {selectedMode === 'campus' && (
-              <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
-                <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                  <Image src="/TANDATANYAICON.png" alt="Pertanyaan" width={12} height={12} className="object-contain" />
+              <div className="bg-transparent rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-700/20 backdrop-blur-sm">
+                <h3 className="text-white font-semibold mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
+                  <Image src="/TANDATANYAICON.png" alt="Pertanyaan" width={12} height={12} className="object-contain w-3 h-3 sm:w-4 sm:h-4" />
                   {t('chat.selectQuestion')}
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                   {quickQuestions.map((item, index) => (
                     <button
                       key={index}
                       onClick={() => handleQuestionSelect(t(item.questionKey))}
-                      className={`flex items-start gap-3 p-4 rounded-xl transition-all text-left border ${
+                      className={`flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg sm:rounded-xl transition-all text-left border ${
                         selectedQuestion === t(item.questionKey)
                           ? 'bg-green-500/20 border-green-500 ring-2 ring-green-500'
                           : 'bg-gray-900/50 border-gray-700 hover:bg-white/95 hover:border-white'
                       } group`}
                     >
-                      <Image src={item.icon} alt={t(item.categoryKey)} width={32} height={32} className="object-contain flex-shrink-0" />
-                      <div className="flex-1">
-                        <p className={`text-sm transition-colors ${
+                      <Image src={item.icon} alt={t(item.categoryKey)} width={32} height={32} className="object-contain flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8" />
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-xs sm:text-sm transition-colors ${
                           selectedQuestion === t(item.questionKey)
                             ? 'text-white font-semibold'
                             : 'text-gray-300 group-hover:text-gray-800'
                         }`}>
                           {t(item.questionKey)}
                         </p>
-                        <span className={`text-xs mt-1 inline-block ${
+                        <span className={`text-xs mt-0.5 sm:mt-1 inline-block ${
                           selectedQuestion === t(item.questionKey)
                             ? 'text-green-300'
                             : 'text-green-400 group-hover:text-green-600'
@@ -516,12 +516,12 @@ export default function ChatInterface() {
 
             {/* General Question Input - Untuk Mode Umum */}
             {selectedMode === 'general' && (
-              <div className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
-                <label className="block text-white font-semibold mb-2 flex items-center gap-2">
-                  <span className="text-xl">✏️</span>
+              <div className="bg-transparent rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-700/20 backdrop-blur-sm">
+                <label className="block text-white font-semibold mb-2 flex items-center gap-2 text-sm sm:text-base">
+                  <span className="text-lg sm:text-xl">✏️</span>
                   {t('chat.typeQuestion')}
                 </label>
-                <p className="text-gray-400 text-sm mb-3">
+                <p className="text-gray-400 text-xs sm:text-sm mb-2 sm:mb-3">
                   {t('chat.generalModeNote')}
                 </p>
                 <textarea
@@ -529,7 +529,7 @@ export default function ChatInterface() {
                   onChange={(e) => setCustomQuestion(e.target.value)}
                   placeholder={t('chat.generalModePlaceholder')}
                   rows={5}
-                  className="w-full bg-gray-900/50 text-white rounded-xl px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all placeholder-gray-500 resize-none"
+                  className="w-full bg-gray-900/50 text-white rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all placeholder-gray-500 resize-none text-xs sm:text-sm"
                 />
               </div>
             )}
@@ -539,12 +539,12 @@ export default function ChatInterface() {
               <button
                 onClick={handleStartChat}
                 disabled={!customQuestion.trim()}
-                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-6 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-green-500 disabled:hover:to-green-600 hover:shadow-lg hover:shadow-green-500/50 hover:scale-105 flex items-center justify-center gap-3"
+                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg sm:rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-green-500 disabled:hover:to-green-600 hover:shadow-lg hover:shadow-green-500/50 hover:scale-105 flex items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base"
               >
-                <span className="text-xl">💬</span>
+                <span className="text-lg sm:text-xl">💬</span>
                 <span>{t('chat.startChat')}</span>
                 <svg
-                  className="w-5 h-5"
+                  className="w-4 h-4 sm:w-5 sm:h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -558,17 +558,17 @@ export default function ChatInterface() {
                 </svg>
               </button>
             )}
-            
+
             {/* Direct Answer Display - Only for Campus Mode */}
             {selectedMode === 'campus' && selectedQuestion && selectedUniversity && (
-              <div ref={answerSectionRef} className="bg-transparent rounded-2xl p-6 border border-gray-700/20 backdrop-blur-sm">
-                <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
-                  <Image src="/ICONLAMPU.png" alt="Jawaban" width={24} height={24} className="object-contain" />
+              <div ref={answerSectionRef} className="bg-transparent rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-700/20 backdrop-blur-sm">
+                <h3 className="text-white font-semibold mb-2 sm:mb-3 flex items-center gap-2 text-sm sm:text-base">
+                  <Image src="/ICONLAMPU.png" alt="Jawaban" width={24} height={24} className="object-contain w-5 h-5 sm:w-6 sm:h-6" />
                   {t('chat.answer')}
                 </h3>
 
                 {isAnswerLoading ? (
-                  <div className="flex items-center justify-center py-8">
+                  <div className="flex items-center justify-center py-6 sm:py-8">
                     <div className="flex gap-2">
                       <span className="w-3 h-3 bg-green-400 rounded-full animate-bounce"></span>
                       <span

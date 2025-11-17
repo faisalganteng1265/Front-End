@@ -14,10 +14,10 @@ export default function Fitur5Page() {
       <Particles />
 
       {/* Language Toggle Buttons */}
-      <div className="fixed top-8 right-80 z-[9999] flex gap-2">
+      <div className="fixed top-4 sm:top-6 md:top-8 right-4 sm:right-8 md:right-80 z-[9999] flex gap-2">
         <button
           onClick={() => setLanguage('id')}
-          className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${
+          className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-300 ${
             language === 'id'
               ? 'bg-white text-black shadow-lg'
               : 'bg-gray-800 text-white hover:bg-gray-700'
@@ -27,7 +27,7 @@ export default function Fitur5Page() {
         </button>
         <button
           onClick={() => setLanguage('en')}
-          className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${
+          className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-300 ${
             language === 'en'
               ? 'bg-white text-black shadow-lg'
               : 'bg-gray-800 text-white hover:bg-gray-700'

@@ -942,12 +942,12 @@ export default function PeerConnect() {
     return (
       <div className="relative h-screen bg-black overflow-hidden flex items-center justify-center">
         <Particles />
-        <div className="relative z-10 text-center">
-          <div className="mb-8">
+        <div className="relative z-10 text-center px-4">
+          <div className="mb-6 sm:mb-8">
             <Atom color="#84cc16" size="medium" text="" textColor="#84cc16" />
           </div>
           <p
-            className="text-white text-2xl font-semibold"
+            className="text-white text-lg sm:text-xl md:text-2xl font-semibold"
             style={{
               textShadow: '0 0 20px rgba(132, 204, 22, 0.9), 0 0 40px rgba(132, 204, 22, 0.6)'
             }}
@@ -988,22 +988,22 @@ export default function PeerConnect() {
       {showChat && (
         <div className="relative z-10 h-screen flex flex-col">
           {/* Top Header */}
-          <div className="bg-black/50 backdrop-blur-md border-b border-gray-700 p-4">
-            <h1 className="text-3xl font-bold text-white text-left flex items-center justify-start">
+          <div className="bg-black/50 backdrop-blur-md border-b border-gray-700 p-3 sm:p-4">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white text-left flex items-center justify-start">
               <Image
                 src="/AICAMPUS.png"
                 alt="Peer Connect Icon"
                 width={40}
                 height={40}
-                className="mr-3"
+                className="mr-2 sm:mr-3 w-8 h-8 sm:w-10 sm:h-10"
               />
-              <span>Peer Connect - Real Group Chat</span>
+              <span className="truncate">Peer Connect - Real Group Chat</span>
             </h1>
           </div>
 
           <div className="flex-1 flex overflow-hidden">
             {/* Left Sidebar - Group & Private Chat List */}
-            <div className="w-80 bg-black/40 backdrop-blur-xl overflow-y-auto custom-scrollbar border-r border-gray-700/30">
+            <div className="w-64 sm:w-72 md:w-80 bg-black/40 backdrop-blur-xl overflow-y-auto custom-scrollbar border-r border-gray-700/30">
               {/* Group Chats Section */}
               <div className="p-4 border-b border-black/50">
                 <button

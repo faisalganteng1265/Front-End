@@ -198,10 +198,10 @@ export default function EventRecommender() {
       />
 
       {/* Language Toggle - Top Left */}
-      <div className="fixed top-8 right-80 z-[9999] flex items-center gap-2 pointer-events-auto">
+      <div className="fixed top-4 sm:top-6 md:top-8 right-4 sm:right-8 md:right-80 z-[9999] flex items-center gap-2 pointer-events-auto">
         <button
           onClick={() => setLanguage('id')}
-          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
+          className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
             language === 'id'
               ? 'bg-lime-500 text-black shadow-lg shadow-lime-500/50'
               : 'bg-gray-800/80 text-white hover:bg-gray-700 border border-gray-700'
@@ -211,7 +211,7 @@ export default function EventRecommender() {
         </button>
         <button
           onClick={() => setLanguage('en')}
-          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
+          className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
             language === 'en'
               ? 'bg-lime-500 text-black shadow-lg shadow-lime-500/50'
               : 'bg-gray-800/80 text-white hover:bg-gray-700 border border-gray-700'
@@ -222,26 +222,26 @@ export default function EventRecommender() {
       </div>
 
       {/* Header */}
-      <div className="py-8 px-3 relative z-10">
+      <div className="py-6 sm:py-8 px-3 sm:px-4 relative z-10">
         <div className="max-w-full mx-auto">
-          <div className="text-center mb-6">
-            <div className="mb-4 flex justify-center">
+          <div className="text-center mb-4 sm:mb-6">
+            <div className="mb-3 sm:mb-4 flex justify-center">
               <div className="relative">
                 <div className="absolute inset-0 blur-2xl bg-green-500/60 rounded-full"></div>
                 <img
                   src="/ICONLAMPU.png"
                   alt="Event Recommender Icon"
-                  className="w-20 h-20 object-contain relative z-10"
+                  className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain relative z-10"
                   style={{
                     filter: 'drop-shadow(0 0 15px rgba(34, 197, 94, 1)) drop-shadow(0 0 30px rgba(34, 197, 94, 0.8)) drop-shadow(0 0 45px rgba(34, 197, 94, 0.6)) drop-shadow(0 0 60px rgba(34, 197, 94, 0.4))'
                   }}
                 />
               </div>
             </div>
-            <h1 className="text-5xl font-bold text-white mb-3" style={{ textShadow: '0 0 20px rgba(34, 197, 94, 0.8), 0 0 40px rgba(34, 197, 94, 0.5), 0 0 60px rgba(34, 197, 94, 0.3)' }}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2 sm:mb-3 px-4" style={{ textShadow: '0 0 20px rgba(34, 197, 94, 0.8), 0 0 40px rgba(34, 197, 94, 0.5), 0 0 60px rgba(34, 197, 94, 0.3)' }}>
               {t('events.title')}
             </h1>
-            <p className="text-gray-300 text-lg" style={{ textShadow: '0 0 10px rgba(0, 0, 0, 0.8)' }}>
+            <p className="text-gray-300 text-sm sm:text-base md:text-lg px-4" style={{ textShadow: '0 0 10px rgba(0, 0, 0, 0.8)' }}>
               {t('events.subtitle')}
             </p>
           </div>
@@ -249,41 +249,41 @@ export default function EventRecommender() {
       </div>
 
       {/* Main Content - Sidebar Layout */}
-      <div className="max-w-full mx-auto px-20 pb-8 relative z-10">
+      <div className="max-w-full mx-auto px-3 sm:px-4 md:px-8 lg:px-12 xl:px-20 pb-6 sm:pb-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
           {/* LEFT SIDEBAR - Filter */}
           <div className="lg:col-span-1">
-            <div className="bg-neutral-800 border border-gray-600 rounded-2xl p-6 border border-gray-700/50 shadow-md sticky top-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-white font-semibold text-lg flex items-center gap-2">
-                  <img src="/LISTICON.png" alt="Filter Icon" className="w-5 h-5 object-contain" />
+            <div className="bg-neutral-800 border border-gray-600 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 border border-gray-700/50 shadow-md lg:sticky lg:top-6">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <h3 className="text-white font-semibold text-base sm:text-lg flex items-center gap-2">
+                  <img src="/LISTICON.png" alt="Filter Icon" className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
                   <span>{t('events.filterTitle')}</span>
                 </h3>
                 {selectedInterests.length > 0 && (
                   <button
                     onClick={clearFilters}
                     disabled={isLoading}
-                    className="bg-red-500/20 border border-red-500/50 hover:bg-red-500 hover:border-red-500 text-red-400 hover:text-white font-semibold px-3 py-1.5 rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 text-xs"
+                    className="bg-red-500/20 border border-red-500/50 hover:bg-red-500 hover:border-red-500 text-red-400 hover:text-white font-semibold px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 sm:gap-1.5 text-xs"
                   >
                     <span>✕</span>
-                    <span>{t('events.clearButton')}</span>
+                    <span className="hidden sm:inline">{t('events.clearButton')}</span>
                   </button>
                 )}
               </div>
 
-              <div className="space-y-3 mb-6">
+              <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
                 {interestOptions.map((interest) => (
                   <button
                     key={interest.value}
                     onClick={() => toggleInterest(interest.value)}
-                    className={`w-full flex items-center gap-2 p-3 rounded-xl transition-all border ${
+                    className={`w-full flex items-center gap-2 p-2 sm:p-2.5 md:p-3 rounded-lg sm:rounded-xl transition-all border ${
                       selectedInterests.includes(interest.value)
                         ? 'bg-green-500 text-white border-green-500 shadow-lg shadow-green-500/50'
                         : 'bg-gray-700/30 text-gray-200 border-gray-600/50 hover:bg-green-500/80 hover:text-white hover:border-green-500'
                     }`}
                   >
-                    <img src={interest.icon} alt={interest.label} className="w-6 h-6 object-contain" />
-                    <span className="text-xs font-medium">{interest.label}</span>
+                    <img src={interest.icon} alt={interest.label} className="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" />
+                    <span className="text-xs sm:text-sm font-medium text-left">{interest.label}</span>
                   </button>
                 ))}
               </div>
@@ -291,17 +291,17 @@ export default function EventRecommender() {
               <button
                 onClick={getRecommendations}
                 disabled={isLoading}
-                className="w-full bg-gray-700/30 border border-gray-600/50 hover:bg-white/95 hover:border-white text-gray-200 hover:text-gray-800 font-bold py-3 rounded-xl hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full bg-gray-700/30 border border-gray-600/50 hover:bg-white/95 hover:border-white text-gray-200 hover:text-gray-800 font-bold py-2.5 sm:py-3 rounded-lg sm:rounded-xl hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-sm">{t('events.searching')}</span>
+                    <span className="text-xs sm:text-sm">{t('events.searching')}</span>
                   </>
                 ) : (
                   <>
                     <span>🔍</span>
-                    <span className="text-sm">{t('events.searchButton')}</span>
+                    <span className="text-xs sm:text-sm">{t('events.searchButton')}</span>
                   </>
                 )}
               </button>
@@ -311,12 +311,12 @@ export default function EventRecommender() {
           {/* RIGHT CONTENT - Results */}
           <div className="lg:col-span-4">
             {isLoading && (
-              <div className="text-center py-12">
-                <div className="flex justify-center mb-6">
+              <div className="text-center py-8 sm:py-12">
+                <div className="flex justify-center mb-4 sm:mb-6">
                   <Atom color="#22c55e" size="medium" text="" textColor="#22c55e" />
                 </div>
                 <p
-                  className="text-white text-xl font-semibold"
+                  className="text-white text-base sm:text-lg md:text-xl font-semibold px-4"
                   style={{
                     textShadow: '0 0 20px rgba(34, 197, 94, 0.9), 0 0 40px rgba(34, 197, 94, 0.6), 0 0 60px rgba(34, 197, 94, 0.4), 0 0 2px rgba(0, 0, 0, 0.8)'
                   }}
@@ -327,10 +327,10 @@ export default function EventRecommender() {
             )}
 
             {!isLoading && hasSearched && recommendations.length === 0 && (
-              <div className="text-center py-12 bg-neutral-800 rounded-2xl border border-gray-600 shadow-md">
-                <div className="text-6xl mb-4">😕</div>
-                <h3 className="text-2xl font-bold text-white mb-2">{t('events.noResults')}</h3>
-                <p className="text-gray-400">{t('events.noResultsDesc')}</p>
+              <div className="text-center py-8 sm:py-12 bg-neutral-800 rounded-xl sm:rounded-2xl border border-gray-600 shadow-md px-4">
+                <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">😕</div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">{t('events.noResults')}</h3>
+                <p className="text-gray-400 text-sm sm:text-base">{t('events.noResultsDesc')}</p>
               </div>
             )}
 
@@ -338,61 +338,61 @@ export default function EventRecommender() {
               <>
                 {/* Summary */}
                 {summary && (
-                  <div className="bg-neutral-800 border border-gray-600 rounded-2xl p-6 mb-8 shadow-md">
-                    <div className="flex items-start gap-3">
+                  <div className="bg-neutral-800 border border-gray-600 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 mb-6 sm:mb-8 shadow-md">
+                    <div className="flex items-start gap-2 sm:gap-3">
                       <div className="relative flex-shrink-0">
                         <div className="absolute inset-0 blur-xl bg-white/40 rounded-full"></div>
                         <img
                           src="/GEMINIICON.png"
                           alt="AI Icon"
-                          className="w-12 h-12 object-contain relative z-10"
+                          className="w-10 h-10 sm:w-12 sm:h-12 object-contain relative z-10"
                           style={{
                             filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 1)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 40px rgba(255, 255, 255, 0.4))'
                           }}
                         />
                       </div>
-                      <div>
-                        <h3 className="text-white font-semibold mb-2" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' }}>{t('events.aiRecommendation')}</h3>
-                        <p className="text-gray-300">{summary}</p>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-white font-semibold text-sm sm:text-base mb-1 sm:mb-2" style={{ textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' }}>{t('events.aiRecommendation')}</h3>
+                        <p className="text-gray-300 text-xs sm:text-sm md:text-base">{summary}</p>
                       </div>
                     </div>
                   </div>
                 )}
 
                 {/* Event Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                   {recommendations.map((event, index) => (
                     <div
                       key={event.id}
                       onClick={() => setSelectedEvent(event)}
-                      className="bg-neutral-800 rounded-2xl p-6 border border-gray-600 hover:border-white transition-all hover:shadow-lg shadow-md cursor-pointer flex flex-col h-full"
+                      className="bg-neutral-800 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 border border-gray-600 hover:border-white transition-all hover:shadow-lg shadow-md cursor-pointer flex flex-col h-full"
                     >
                       {/* Header: Number & Organizer */}
-                      <div className="flex items-start justify-between mb-3">
-                        <span className="text-3xl font-bold text-white">#{index + 1}</span>
+                      <div className="flex items-start justify-between mb-2 sm:mb-3">
+                        <span className="text-2xl sm:text-3xl font-bold text-white">#{index + 1}</span>
                         <div className="text-right flex-shrink-0 ml-2">
                           <p className="text-xs text-gray-500">{t('events.organizer')}</p>
-                          <p className="text-xs font-bold text-white">{event.organizer}</p>
+                          <p className="text-xs font-bold text-white truncate max-w-[120px]">{event.organizer}</p>
                         </div>
                       </div>
 
                       {/* Badge & Match */}
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className={`${categoryColors[event.category] || 'bg-gray-500'} text-white px-3 py-1 rounded-full text-xs font-medium`}>
+                      <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3 flex-wrap">
+                        <span className={`${categoryColors[event.category] || 'bg-gray-500'} text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-medium`}>
                           {event.category}
                         </span>
                         {event.relevanceScore && (
-                          <span className="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold">
+                          <span className="bg-yellow-500 text-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold">
                             {event.relevanceScore}% Match
                           </span>
                         )}
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-xl font-bold text-white mb-3 line-clamp-1">{event.title}</h3>
+                      <h3 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3 line-clamp-2">{event.title}</h3>
 
                       {/* Event Image */}
-                      <div className="w-full h-40 bg-gray-700 rounded-lg overflow-hidden mb-4 flex-grow">
+                      <div className="w-full h-32 sm:h-36 md:h-40 bg-gray-700 rounded-lg overflow-hidden mb-3 sm:mb-4 flex-grow">
                         <img
                           src="/FOTO3.jpg"
                           alt={event.title}
