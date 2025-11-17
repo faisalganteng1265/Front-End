@@ -64,9 +64,9 @@ export default function ApplyModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl max-w-2xl w-full">
+      <div className="bg-gray-700 border border-white rounded-2xl max-w-2xl w-full">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-2xl flex justify-between items-center">
+        <div className="bg-gray-700 text-white p-6 rounded-t-2xl flex justify-between items-center">
           <h2 className="text-2xl font-bold">Apply ke Project</h2>
           <button
             onClick={onClose}
@@ -85,34 +85,39 @@ export default function ApplyModal({
           )}
 
           {/* Project Info */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-bold text-gray-900 mb-2">{project.title}</h3>
-            <p className="text-gray-600 text-sm line-clamp-2">{project.description}</p>
+          <div className="bg-gray-700 rounded-lg p-4 border border-white mb-4">
+            <h3 className="font-bold text-white-900 mb-2">{project.title}</h3>
+            <p className="text-white-900 text-sm line-clamp-2">{project.description}</p>
           </div>
 
           {/* Select Role */}
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">
+            <label className="block text-black-900 font-bold mb-2">
               Pilih Role <span className="text-red-500">*</span>
             </label>
             {availableRoles.length === 0 ? (
-              <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-lg">
+              <div className="bg-yellow-50 text-black-900 px-4 py-3 rounded-lg">
                 Semua role sudah terpenuhi
               </div>
             ) : (
               <select
-                value={selectedRoleId}
-                onChange={(e) => setSelectedRoleId(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              >
-                <option value="">-- Pilih Role --</option>
-                {availableRoles.map((role) => (
-                  <option key={role.id} value={role.id}>
-                    {role.role_name} ({role.filled_count}/{role.required_count} filled)
-                  </option>
-                ))}
-              </select>
+  value={selectedRoleId}
+  onChange={(e) => setSelectedRoleId(e.target.value)}
+  className="w-full px-4 py-3 text-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+  required
+>
+  <option value="" className="text-black">-- Pilih Role --</option>
+  {availableRoles.map((role) => (
+    <option 
+      key={role.id}
+      value={role.id}
+      className="text-black"
+    >
+      {role.role_name} ({role.filled_count}/{role.required_count} filled)
+    </option>
+  ))}
+</select>
+
             )}
           </div>
 
@@ -135,7 +140,7 @@ export default function ApplyModal({
 
           {/* Message */}
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">
+            <label className="block text-white-900 font-bold mb-2">
               Pesan (Opsional)
             </label>
             <textarea
@@ -151,14 +156,14 @@ export default function ApplyModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all"
+              className="flex-1 px-6 py-3 border border-gray-300 text-white-900 rounded-lg font-semibold hover:bg-gray-50 transition-all"
               disabled={loading}
             >
               Batal
             </button>
             <button
               type="submit"
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all disabled:opacity-50"
+              className="flex-1 px-6 py-3 bg-gray-500 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all disabled:opacity-50 cursor:pointer"
               disabled={loading || availableRoles.length === 0}
             >
               {loading ? 'Mengirim...' : 'Kirim Aplikasi'}
